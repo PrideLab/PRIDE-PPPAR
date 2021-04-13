@@ -20,11 +20,11 @@ The phase bias products can be accessed at ftp://igs.gnsswhu.cn/pub/whu/phasebia
 Latest updates for Support, Training courses and FAQ can be found at https://pride.whu.edu.cn. 
 The copyright of this package is protected by GNU General Public License (version 3). 
 Relevant publications are  
-Geng, J., Chen, X., Pan, Y. & Zhao, Q. (2019a). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. Journal of Geodesy, 93(10), 2053-2067.  
-Geng, J., Chen, X., Pan, Y., Mao, S., Li, C., Zhou, J., Zhang, K. (2019b) PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. GPS Solutions 23:91 doi:10.1007/s10291-019-0888-1.  
+    Geng, J., Chen, X., Pan, Y. & Zhao, Q. (2019a). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. Journal of Geodesy, 93(10), 2053-2067.  
+    Geng, J., Chen, X., Pan, Y., Mao, S., Li, C., Zhou, J., Zhang, K. (2019b) PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. GPS Solutions 23:91 doi:10.1007/s10291-019-0888-1.  
 
 PRIDE PPP-AR II are available for:  
-    1)  GPS, GLONASS, Galileo, BDS-2/3 and QZSS capable;  
+        1)  GPS, GLONASS, Galileo, BDS-2/3 and QZSS capable;  
     2)  High-rate GNSS data processing of up to 50 Hz;  
     3)  Vienna Mapping Function 1/3 (VMF3) for troposphere modeling;  
     4)  Second-order ionospheric correction;  
