@@ -24,7 +24,7 @@ Relevant publications are
     Geng, J., Chen, X., Pan, Y., Mao, S., Li, C., Zhou, J., Zhang, K. (2019b) PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. GPS Solutions 23:91 doi:10.1007/s10291-019-0888-1.  
 
 PRIDE PPP-AR II are available for:  
-        1)  GPS, GLONASS, Galileo, BDS-2/3 and QZSS capable;  
+    1)  GPS, GLONASS, Galileo, BDS-2/3 and QZSS capable;  
     2)  High-rate GNSS data processing of up to 50 Hz;  
     3)  Vienna Mapping Function 1/3 (VMF3) for troposphere modeling;  
     4)  Second-order ionospheric correction;  
