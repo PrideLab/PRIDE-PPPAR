@@ -15,7 +15,6 @@ The entire open-source project is funded by National Science Foundation
 of China (No. 41674033 and 41861134009) and is under the auspices of IAG SC 4.4 
 “GNSS Integrity and Quality Control”.
 
-PRIDE PPP-AR II can be downloaded at https://pride.whu.edu.cn and https://github.com/PrideLab/PRIDE-PPPAR. 
 The phase bias products can be accessed at ftp://igs.gnsswhu.cn/pub/whu/phasebias/. 
 Latest updates for Support, Training courses and FAQ can be found at https://pride.whu.edu.cn. 
 The copyright of this package is protected by GNU General Public License (version 3). 
