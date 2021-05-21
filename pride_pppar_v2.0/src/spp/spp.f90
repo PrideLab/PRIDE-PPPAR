@@ -417,9 +417,9 @@ type(solopt_t) solopt
 type(gtime_t) ts, te
 real*8 :: tint, es(6),ee(6)
 integer*4 :: i, n, ret
-character(100) :: infile(MAXFILE), outfile, buff(6)
+character(1024) :: infile(MAXFILE), outfile, buff(6)
 integer*4 argc, info, nsize
-character(100), pointer :: argv(:)
+character(1024), pointer :: argv(:)
 
 call InitGlobal2()
 prcopt=prcopt_default; solopt=solopt_default
@@ -513,7 +513,7 @@ program spp
 use spp_all_
 implicit none
 integer*4 argc, i
-character(100), pointer :: argv(:)
+character(1024), pointer :: argv(:)
 argc=iargc()
 allocate(argv(argc))
 do i=1,argc
@@ -528,8 +528,8 @@ end program spp
 !use spp_all_
 !implicit none
 !integer*4 argc, calnum, info, i, nsize
-!character(100), pointer :: argv(:)
-!character(100) argv34(1024), buff, buffsplit(100), filepath
+!character(1024), pointer :: argv(:)
+!character(1024) argv34(1024), buff, buffsplit(100), filepath
 !
 !!argc=iargc()
 !!allocate(argv(argc))
