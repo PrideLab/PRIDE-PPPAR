@@ -2,7 +2,7 @@
 ## PRIDE-PPPAR II
 
 PRIDE PPP-AR II originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved 
-by Dr. Jianghui Geng and Dr. Songfeng Yang. 
+by Dr. Jianghui Geng's team including Songfeng Yang. 
 It is an open-source software package which is based on 
 many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. 
 We would like to thank them all for their brilliant contributions to this software. 
