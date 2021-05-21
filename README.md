@@ -1,11 +1,12 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/pride.png)
 ## PRIDE-PPPAR
 
-PRIDE PPP-AR II originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed 
+PRIDE PPP-AR II originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved 
 by Dr. Jianghui Geng and Dr. Songfeng Yang. 
 It is an open-source software package which is based on 
 many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. 
 We would like to thank them all for their brilliant contributions to this software. 
+
 No proprietary modules are used anymore in the software. 
 We make this package open source with the goal of benefiting those professionals 
 in their early career, and also advocate the geodetic and geophysical applications of PPP-AR. 
