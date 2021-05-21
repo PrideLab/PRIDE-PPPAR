@@ -1,5 +1,5 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/pride.png)
-## PRIDE-PPPAR
+## RIDE-PPPAR
 
 PRIDE PPP-AR II originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved 
 by Dr. Jianghui Geng and Dr. Songfeng Yang. 
