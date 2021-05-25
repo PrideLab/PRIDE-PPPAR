@@ -101,7 +101,7 @@ if(key)then
 else
     icond=b; return
 endif
-end
+end function
 
 ! conditional operation (real) -----------------------------------------------
 real*8 function rcond(key,a,b)
@@ -113,7 +113,7 @@ if(key)then
 else
     rcond=b; return
 endif
-end
+end function
 
 ! average of array (except 0) ------------------------------------------------
 real*8 function raver(x)
