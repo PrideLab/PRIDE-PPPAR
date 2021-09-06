@@ -1,5 +1,0 @@
-version 2
-Source: Xpole,Ypole,Xrt,Yrt,LOD estimated by PANDA at Wuhan University
-  MJD      Xpole   Ypole  UT1-UTC    LOD  Xsig  Ysig   UTsig  LODsig  Nr Nf Nt    Xrt    Yrt  Xrtsig  Yrtsig
-             (10**-6")       (0.1 usec)    (10**-6")     (0.1 usec)              (10**-6"/d)    (10**-6"/d)
-58848.50   77468  282086 -1770421   3919     5     5     248      11 120  0 51  -1510    351     20     25
