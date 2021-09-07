@@ -29,9 +29,9 @@ PRIDE PPP-AR II are available for:
     3)  Vienna Mapping Function 1/3 (VMF3) for troposphere modeling;  
     4)  Second-order ionospheric correction;  
     5)  High-dynamic mobile platforms applicable for aerial photogrammetry, ship-borne gravimetry, etc;  
-    6)  Receiver clock jump mitigation; 
-    7)  Multi-day processing; 
-    8)  Satellite attitude quaternions;
+    6)  Receiver clock jump mitigation;  
+    7)  Multi-day processing;  
+    8)  Satellite attitude quaternions;  
     9)  A Windows lite-version provided for very early career researchers;  
     10) PPP using data dating back to 1994 when SA was on;  
     11) GPS/Galileo/BDS-2/3 PPP-AR in the case of the bias-SINEX format phase biases (ftp://igs.gnsswhu.cn).  
