@@ -36,8 +36,8 @@ PRIDE PPP-AR II are available for:
     10) PPP using data dating back to 1994 when SA was on;  
     11) GPS/Galileo/BDS-2/3 PPP-AR in the case of the bias-SINEX format phase biases (ftp://igs.gnsswhu.cn).  
 
-`Notes: The multi-GNSS phase clock/bias products, which are computed and released 
-by Wuhan University in bias-SINEX format, 
+`Notes: The multi-GNSS multi-GNSS satellite orbit/clock/bias/quaternion products, which are computed and released 
+by Wuhan University, 
 are required by PRIDE PPP-AR II.`
 
 ## Getting in Touch
