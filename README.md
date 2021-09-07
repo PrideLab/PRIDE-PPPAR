@@ -1,7 +1,7 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/pride.png)
-## PRIDE-PPPAR II
+## PRIDE-PPPAR ver. 2.1
 
-PRIDE PPP-AR II originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved 
+PRIDE PPP-AR ver. 2.1 originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved 
 by Dr. Jianghui Geng's team including Songfeng Yang. 
 It is an open-source software package which is based on 
 many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. 
@@ -23,7 +23,7 @@ Relevant publications are
     Geng, J., Chen, X., Pan, Y. & Zhao, Q. (2019a). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. Journal of Geodesy, 93(10), 2053-2067.  
     Geng, J., Chen, X., Pan, Y., Mao, S., Li, C., Zhou, J., Zhang, K. (2019b) PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. GPS Solutions 23:91 doi:10.1007/s10291-019-0888-1.  
 
-PRIDE PPP-AR II are available for:  
+PRIDE PPP-AR ver. 2.1 are available for:  
     1)  GPS, GLONASS, Galileo, BDS-2/3 and QZSS capable;  
     2)  High-rate GNSS data processing of up to 50 Hz;  
     3)  Vienna Mapping Function 1/3 (VMF3) for troposphere modeling;  
@@ -38,7 +38,7 @@ PRIDE PPP-AR II are available for:
 
 `Notes: The multi-GNSS multi-GNSS satellite orbit/clock/bias/quaternion products, which are computed and released 
 by Wuhan University, 
-are required by PRIDE PPP-AR II.`
+are required by PRIDE PPP-AR ver. 2.1.`
 
 ## Getting in Touch
 
