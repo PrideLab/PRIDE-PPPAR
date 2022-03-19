@@ -42,8 +42,8 @@ main()
     local dow=`ymd2wkdow $year $mm $dd | awk '{printf("%d\n",$2)}'`
     local week=`ymd2wkdow $year $mm $dd | awk '{printf("%d\n",$1)}'`
     local args="-nv -t 3 --connect-timeout=10 --read-timeout=60"
-    url=ftp://gssc.esa.int/igs
-    
+    url=ftp://gssc.esa.int/gnss
+
 	if [ ! -e igs${yr}P${week}.ssc ]; then
       wget ${args} ${url}/products/${week}/igs${yr}P${week}.ssc.Z \
         && gunzip igs${yr}P${week}.ssc.Z
