@@ -45,13 +45,103 @@ The modifications leading to Version 2.2 include:
 
 `Notes: The multi-GNSS multi-GNSS satellite orbit/clock/bias/quaternion products, which are computed and released by Wuhan University, are required by PRIDE PPP-AR ver. 2.2`
 
+## Version History
+
+### v1.0
+
+2019-03-21
+
+Release of PRIDE-PPPAR v1.0
+
+### v1.1
+
+2019-04-03
+
+* Small bug fixing
+* RINEX-3 support
+* Fixed bug for high-rate computation
+* Support Linux-32 system (src/lib/shard/linux-32)
+* Support Mac OS system (src/lib/shard/mac)
+
+### v1.2
+
+2019-05-01
+
+* Support VMF1
+
+### v1.3
+
+2019-05-23
+
+* Auto-selection of IGS ATX
+* Change SP3 from COD to WHU since 2019
+
+2019-06-01
+
+* Add src/utils/xyz2enu
+
+2019-07-12
+
+* Support rapid phasebias product
+
+### v1.4
+
+2019-07-16
+
+* Add function: receiver clock jump check & recover
+* Print table valid time by pride_pppar
+* Compatibility fixing for pride_pppar.sh
+* If 'rnx2rtkp' doesn't work, please download the source code through
+   'https://github.com/tomojitakasu/RTKLIB/tree/rtklib_2.4.3' and compile it by yourself.
+   The binary we provided is a 32-bit version.
+
+2019-09-05
+
+* pride_pppar.sh: small bugs fixed
+* table: igs14.atx updated
+
+2019-12-15
+
+* install.sh: add install tips for src/lib/libpridepppar.so
+* pride_pppar.sh: fix known bugs & add error replay for debug
+* table: jpleph_de405 updated (valid until 2040-007)
+* table: update IGS14.atx (igs14_2082.atx)
+
+### v2.0
+
+2021-05-21
+
+Release of PRIDE PPP-AR v2.0
+
+### v2.1
+
+2021-09-06
+
+Release of PRIDE PPP-AR v2.1
+ 
+* Support for quaternion products
+
+### v2.2
+
+2022-04-07
+
+Release of PRIDE PPP-AR v2.2
+ 
+* Batch script name changed from “*pride_pppar*” to “*pdp3*”, corresponding command line input parameters also changed
+* Support multi-day processing
+* No more DCB products required
+* The default products after 2020 changed to the multi-GNSS satellite orbit, clock, bias, quaternion and ERP products, which are computed and released by Wuhan University
+* The table file “leap.sec” needs to be downloaded now, and the “glonass_chn” table file is removed and replaced by the “sat_parameters” table filex
+* GUI version of PRIDE PPP-AR with additional plotting functions
+* Fix known bugs
+ 
 ## Getting in Touch
 
-* You can contact us for **bug reports** and **comments** by sending an email or leaving a message on our website:
-    * Email: <pride@whu.edu.cn>
-    * Website: <http://pride.whu.edu.cn>
-* For Chinese users, we provide Tencent **QQ Group** service.
-    * QQ group: 971523302
+* You can contact us for**bug reports** and**comments** by sending an email or leaving a message on our website:
+   * Email: <pride@whu.edu.cn>
+   * Website: <http://pride.whu.edu.cn>
+* For Chinese users, we provide Tencent**QQ Group** service.
+   * QQ group: 971523302
 
 ## License
 
