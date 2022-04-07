@@ -27,7 +27,7 @@ Cutoff elevation    = 15                       ! cutoff mean elevation for eligi
 PCO on wide-lane    = YES                      ! pco corrections on Melbourne-Wubbena or not
 Widelane decision   = 0.20 0.15 1000.          ! deviation (cycle), sigma (cycle) and decision threshold for WL ambiguities
 Narrowlane decision = 0.15 0.15 1000.          ! deviation (cycle), sigma (cycle) and decision threshold for NL ambiguities
-Critical search     = 2 4 1.8 3.0              ! highest number of ambiguities to be excluded, lowest number to be reserved, fixed/float, ratio threshold
+Critical search     = 3 4 1.8 3.0              ! highest number of ambiguities to be excluded, lowest number to be reserved, fixed/float, ratio threshold
 
 ## Satellite list
 # Inserting `#' at the beginning of individual GNSS PRN means not to use this satellite
