@@ -51,7 +51,7 @@ The modifications leading to Version 2.2 include:
 
 2019-03-21
 
-Release of PRIDE-PPPAR v1.0
+Release of PRIDE PPP-AR v1.0
 
 ### v1.1
 
@@ -138,10 +138,10 @@ Release of PRIDE PPP-AR v2.2
 ## Getting in Touch
 
 * You can contact us for**bug reports** and**comments** by sending an email or leaving a message on our website:
-   * Email: <pride@whu.edu.cn>
-   * Website: <http://pride.whu.edu.cn>
+  * Email: <pride@whu.edu.cn>
+  * Website: <http://pride.whu.edu.cn>
 * For Chinese users, we provide Tencent**QQ Group** service.
-   * QQ group: 971523302
+  * QQ group: 971523302
 
 ## License
 
