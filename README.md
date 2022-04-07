@@ -9,12 +9,13 @@ The precise products can be accessed at ftp://igs.gnsswhu.cn/pub/whu/phasebias/.
 Latest updates for Support, Training courses and FAQ can be found at https://pride.whu.edu.cn. 
 The copyright of this package is protected by GNU General Public License (version 3). 
 
-Relevant publications are  
-    Geng J, Wen Q, Zhang Q, Li G, Zhang K (2022). GNSS observable-specific phase biases for all-frequency PPP ambiguity resolution. Journal of Geodesy, 96(11):1-18. doi:10.1007/s00190-022-01602-3
-    Geng J, Chen X, Pan Y, Zhao Q (2019). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. Journal of Geodesy, 93(10):2053-2067. doi:10.1007/s00190-019-01301-6
-    Geng J, Chen X, Pan Y, Mao S, Li C, Zhou J, Zhang K (2019). PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. GPS Solutions, 23(91):1-10. doi:10.1007/s10291-019-0888-1
-    Geng J, Yang S, Guo J (2021). Assessing IGS GPS/Galileo/BDS-2/BDS-3 phase bias products with PRIDE PPP-AR. Satellite Navigation, 2(1):1-15. doi:10.1186/s43020-021-00049-9
-    Geng J, Mao S. Massive GNSS network analysis without baselines: Undifferenced ambiguity resolution. J. Geophys. Res. 2021, 126(10), e2020JB021558. doi:10.1029/2020JB021558
+Relevant publications are
+
+* Geng J, Wen Q, Zhang Q, Li G, Zhang K (2022). GNSS observable-specific phase biases for all-frequency PPP ambiguity resolution. Journal of Geodesy, 96(11):1-18. doi:10.1007/s00190-022-01602-3
+* Geng J, Chen X, Pan Y, Zhao Q (2019). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. Journal of Geodesy, 93(10):2053-2067. doi:10.1007/s00190-019-01301-6
+* Geng J, Chen X, Pan Y, Mao S, Li C, Zhou J, Zhang K (2019). PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. GPS Solutions, 23(91):1-10. doi:10.1007/s10291-019-0888-1
+* Geng J, Yang S, Guo J (2021). Assessing IGS GPS/Galileo/BDS-2/BDS-3 phase bias products with PRIDE PPP-AR. Satellite Navigation, 2(1):1-15. doi:10.1186/s43020-021-00049-9
+* Geng J, Mao S. Massive GNSS network analysis without baselines: Undifferenced ambiguity resolution. J. Geophys. Res. 2021, 126(10), e2020JB021558. doi:10.1029/2020JB021558
 
 PRIDE PPP-AR ver. 2.2 are available for:  
 
