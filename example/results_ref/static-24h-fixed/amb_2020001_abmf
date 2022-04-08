@@ -25,7 +25,7 @@ YES  GPS    40  GAL    24  BDS2    2  BDS3   21  QZSS    0  AMB FIXING
    15.00                                                    AMB CUTOFF (deg)
     0.20    0.15 1000.00                                    AMB WIDELANE
     0.15    0.15 1000.00                                    AMB NARROWLANE
-    2       4       1.80    3.00                            AMB SEARCH
+    3       4       1.80    3.00                            AMB SEARCH
    73                                                       # OF AMB RESOLVABLE SAT
 G01 G02 G03 G05 G06 G07 G08 G09 G10 G11 G12 G13 G14 G15 G16 AMB RESOLVABLE SATELLITES
 G17 G19 G20 G21 G22 G23 G24 G25 G26 G27 G28 G29 G30 G31 G32 AMB RESOLVABLE SATELLITES

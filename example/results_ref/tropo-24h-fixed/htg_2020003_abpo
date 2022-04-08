@@ -25,7 +25,7 @@ YES  GPS    41  GAL    28  BDS2   12  BDS3   21  QZSS    0  AMB FIXING
    15.00                                                    AMB CUTOFF (deg)
     0.20    0.15 1000.00                                    AMB WIDELANE
     0.15    0.15 1000.00                                    AMB NARROWLANE
-    2       4       1.80    3.00                            AMB SEARCH
+    3       4       1.80    3.00                            AMB SEARCH
 Start Field Description                                     COMMENT
 YearS                                                       START YEAR (GPS TIME)
 MonS                                                        START MONTH (GPS TIME)

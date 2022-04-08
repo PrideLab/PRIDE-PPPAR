@@ -25,7 +25,7 @@ YES  GPS     7  GAL     0  BDS2    0  BDS3    0  QZSS    0  AMB FIXING
    15.00                                                    AMB CUTOFF (deg)
     0.20    0.15 1000.00                                    AMB WIDELANE
     0.15    0.15 1000.00                                    AMB NARROWLANE
-    2       4       1.80    3.00                            AMB SEARCH
+    3       4       1.80    3.00                            AMB SEARCH
 Start Field Description                                     COMMENT
 Mjd                                                         MODIFIED JULIAN DAY
 Sod                                                         SECOND OF DAY
