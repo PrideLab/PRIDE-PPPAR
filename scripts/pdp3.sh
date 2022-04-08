@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Apr-04, 2022                                                    ##
+##  DATE   : Apr-08, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -386,7 +386,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
 
     # Create temporary config file
     ctrl_file=$(mktemp -u | sed "s/tmp\./config\./")
-    cp -f "$ctrl_path" "$ctrl_file"
+    cp -f "$ctrl_path" "$ctrl_file" && chmod 644 "$ctrl_file"
     if [ $? -ne 0 ]; then
         >&2 echo -e "$MSGERR failed to create temporary config file: $ctrl_file"
         exit 1
