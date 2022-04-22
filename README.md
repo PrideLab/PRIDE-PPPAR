@@ -134,6 +134,13 @@ Release of PRIDE PPP-AR v2.2
 * The table file “leap.sec” needs to be downloaded now, and the “glonass_chn” table file is removed and replaced by the “sat_parameters” table filex
 * GUI version of PRIDE PPP-AR with additional plotting functions
 * Fix known bugs
+
+2022-04-22
+
+* install.sh: default table directory can be set outside /home directory
+* pdp3.sh: support file path with spaces, improve recognition ability of RINEX file name in multi-day processing
+* pdp3.sh: bug fixes for not using M14.ATX in multi-day processing with CODE products
+* table: add M14.ATX
  
 ## Getting in Touch
 

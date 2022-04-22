@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Mar-25, 2022                                                    ##
+##  DATE   : Apr-22, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -88,9 +88,9 @@ chmod 755 $install_dir/*
 work_dir=$(pwd)
 cp ./table/config_template $install_dir
 if [ "$SYS" == "Darwin" ]; then
-    sed -i '' "s#/home/username/path-to-table#${work_dir}#" $install_dir/config_template
+    sed -i '' "/Table directory/s#Default#$work_dir/table/#" $install_dir/config_template
 else
-    sed -i    "s#/home/username/path-to-table#${work_dir}#" $install_dir/config_template
+    sed -i    "/Table directory/s#Default#$work_dir/table/#" $install_dir/config_template
 fi
 
 chmod 444 $install_dir/config_template
