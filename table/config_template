@@ -3,7 +3,7 @@
 ## Observation session configuration
 Interval            = Default 
 Session time        = -YYYY- -MM- -DD- -HH- -MI- -SS- -SE-
-Table directory     = /home/username/path-to-table/table/
+Table directory     = Default
 
 ## Satellite product
 Product directory   = Default
