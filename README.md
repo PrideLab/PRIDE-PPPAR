@@ -135,19 +135,19 @@ Release of PRIDE PPP-AR v2.2
 * GUI version of PRIDE PPP-AR with additional plotting functions
 * Fix known bugs
 
-2022-04-22
+2022-05-03
 
 * install.sh: default table directory can be set outside /home directory
 * pdp3.sh: support file path with spaces, improve recognition ability of RINEX file name in multi-day processing
-* pdp3.sh: bug fixes for not using M14.ATX in multi-day processing with CODE products
+* pdp3.sh: bug fixes for not using M14.ATX in multi-day processing with CODE products, adjust PCO/PCV models used for different CODE products
 * table: add M14.ATX
  
 ## Getting in Touch
 
-* You can contact us for**bug reports** and**comments** by sending an email or leaving a message on our website:
+* You can contact us for **bug reports** and **comments** by sending an email or leaving a message on our website:
   * Email: <pride@whu.edu.cn>
   * Website: <http://pride.whu.edu.cn>
-* For Chinese users, we provide Tencent**QQ Group** service.
+* For Chinese users, we provide Tencent **QQ Group** service.
   * QQ group: 971523302
 
 ## License

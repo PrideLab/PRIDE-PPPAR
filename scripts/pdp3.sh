@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Apr-22, 2022                                                    ##
+##  DATE   : May-03, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -1304,6 +1304,12 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
 
     echo -e "$MSGSTA PrepareTables ..."
 
+    if [ ! -d "$table_dir" ]; then
+        echo -e "$MSGERR PrepareTables: table directory doesn't exist: $table_dir"
+        [ "$table_dir" == "Default" ] && echo -e "$MSGINF please define your table directory in configuration file"
+        return 1
+    fi
+
     local tables=(file_name oceanload orography_ell orography_ell_1x1 gpt3_1.grd)
     for table in ${tables[*]}; do
         if [ ! -f "$table_dir/$table" ]; then
@@ -1313,62 +1319,71 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
         ln -sf "$table_dir/$table" ./
     done
 
-    # downlaod leap.sec
+    # Check leap.sec
     local leapsec="leap.sec"
-    local leapsec_ftp=0 leapsec_exi=0
+    local leapsec_ftp="0"
+    local leapsec_exi="0"
     local leapsec_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/table/$leapsec"
-    if [ -f $leapsec ]; then
-        sed -n '1 p' $leapsec | grep "*"  &>/dev/null
-        leapsec_ftp=$?
+    if [ -f "$leapsec" ]; then
+        sed -n "1p;q" "$leapsec" | grep -q "*" || leapsec_ftp="1"
+        grep -q "\-leap sec" "$leapsec"        || leapsec_ftp="1"
     else
         leapsec_exi=$?
     fi
     if [ "$leapsec_ftp" != 0 -o "$leapsec_exi" != 0 ]; then
         rm -f "$leapsec"
         WgetDownload "$leapsec_url"
-        if [ $? -ne 0 ]; then
-            cp -f "$table_dir/$leapsec" ./ &>/dev/null
-        else
-            local diff=$(diff "$leapsec" "$table_dir/$leapsec")
-            [ -n "$diff" ] && cp -f "$leapsec" "$table_dir/$leapsec"
+        local diff=$(diff "$leapsec" "$table_dir/$leapsec")
+        if [ -n "$diff" ]; then
+            if ! grep -q "\-leap sec" "$leapsec"; then
+                echo -e "$MSGWAR PrepareTables: failed to download $leapsec, use default instead"
+                cp -f "$table_dir/$leapsec" .
+            else
+                cp -f "$leapsec" "$table_dir/"
+            fi
         fi
     fi
-    if [ ! -f "$leapsec" ]; then
-        echo -e "$MSGERR PrepareTables: no leap.sec"
+    if ! grep -q "\-leap sec" "$leapsec"; then
+        echo -e "$MSGERR PrepareTables: no available $leapsec"
         echo -e "$MSGINF please download this file from $leapsrc_url"
         return 1
     fi
 
-    # downlaod sat_parameters
+    # Check sat_parameters
     local satpara="sat_parameters"
-    local satpara_ftp=0 satpara_exi=0
+    local satpara_ftp="0"
+    local satpara_exi="0"
     local satpara_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/table/$satpara"
-    if [ -f $satpara ]; then
-        local tmpymd=($(sed -n '1 p' $satpara | awk '{print(substr($0,56,4),substr($0,61,2),substr($0,64,2))}'))
+    if [ -f "$satpara" ]; then
+        local tmpymd=($(sed -n "1p;q" "$satpara" | awk '{print(substr($0,56,4),substr($0,61,2),substr($0,64,2))}'))
         local tmpmjd=$(ymd2mjd ${tmpymd[@]})
-        [ $? -ne 0 -o "$tmpmjd" -lt "$mjd_e" ] && satpara_ftp=1
+        [ $? -ne 0 -o "$tmpmjd" -lt "$mjd_e" ] && satpara_ftp="1"
+        grep -q "\-prn_indexed" "$satpara"     || satpara_ftp="1"
     else
         satpara_exi=$?
     fi
     if [ "$satpara_ftp" != 0 -o "$satpara_exi" != 0 ]; then
         rm -f "$satpara"
         WgetDownload "$satpara_url"
-        if [ $? -ne 0 ]; then
-            cp -f "$table_dir/$satpara" ./ &>/dev/null
-        else
-            local diff=$(diff "$satpara" "$table_dir/$satpara")
-            [ -n "$diff" ] && cp -f "$satpara" "$table_dir/$satpara"
+        local diff=$(diff "$satpara" "$table_dir/$satpara")
+        if [ -n "$diff" ]; then
+            if ! grep -q "\-prn_indexed" "$satpara"; then
+                echo -e "$MSGWAR PrepareTables: failed to download $satpara, use default instead"
+                cp -f "$table_dir/$satpara" .
+            else
+                cp -f "$satpara" "$table_dir/"
+            fi
         fi
     fi
-    if [ ! -f "$satpara" ]; then
-        echo -e "$MSGERR PrepareTables: no sat_parameters"
+    if ! grep -q "\-prn_indexed" "$satpara"; then
+        echo -e "$MSGERR PrepareTables: no available $satpara"
         echo -e "$MSGINF please download this file from $satpara_url"
         return 1
     else
-        local tmpymd=($(sed -n '1 p' $satpara | awk '{print(substr($0,56,4),substr($0,61,2),substr($0,64,2))}'))
+        local tmpymd=($(sed -n "1p;q" "$satpara" | awk '{print(substr($0,56,4),substr($0,61,2),substr($0,64,2))}'))
         local tmpmjd=$(ymd2mjd ${tmpymd[@]})
         if [ $? -ne 0 -o "$tmpmjd" -lt "$mjd_e" ]; then
-            echo -e "$MSGWAR PrepareTables: outdated sat_parameters"
+            echo -e "$MSGWAR PrepareTables: outdated $satpara"
             echo -e "$MSGINF please update this file from $satpara_url"
         fi
     fi
@@ -1958,9 +1973,9 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     # IGS ANTEX
     local abs_atx abs_url
     abs_atx="$(grep "SYS / PCVS APPLIED" $clk | head -1 | cut -c21-34 | tr 'A-Z' 'a-z' | sed 's/r3/R3/; s/ //g')"
-    echo "$custom_pro_clk" | grep -qE "^ *(COD|COM)"
+    echo "$custom_pro_clk" | grep -qE "^ *(COD0MGX|COM)"
     if [[ $? -eq 0 ]] && [[ $abs_atx == "igs14" ]]; then
-        abs_atx="M14.ATX"
+        [[ "$mjd_s" -le 59336 ]] && abs_atx="M14.ATX" || abs_atx="M20.ATX"
         atx_url="ftp://ftp.aiub.unibe.ch/CODE_MGEX/CODE/$abs_atx"
     fi
 
