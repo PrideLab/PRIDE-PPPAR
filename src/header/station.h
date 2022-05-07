@@ -25,8 +25,8 @@ type station
 !
 !! meteorology
   character*3 map
-  integer*4 nvm,jdv(13)
-  real*8 ztdcor,dztd0,qztd,dhtg0,qhtg,p0,t0,hr0,undu,sodv(13),vm1(4,13)
+  integer*4 nvm,jdv(maxday*4+1)
+  real*8 ztdcor,dztd0,qztd,dhtg0,qhtg,p0,t0,hr0,undu,sodv(maxday*4+1),vm1(4,maxday*4+1)
 !
 !! phase wind-up
   logical*1 first(maxsat)

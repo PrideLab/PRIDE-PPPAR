@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : May-03, 2022                                                    ##
+##  DATE   : May-06, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -1333,14 +1333,15 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
     if [ "$leapsec_ftp" != 0 -o "$leapsec_exi" != 0 ]; then
         rm -f "$leapsec"
         WgetDownload "$leapsec_url"
-        local diff=$(diff "$leapsec" "$table_dir/$leapsec")
-        if [ -n "$diff" ]; then
+        if [ ! -f "$leapsec" ]; then
+            cp -f "$table_dir/$leapsec" .
+        else
             if ! grep -q "\-leap sec" "$leapsec"; then
                 echo -e "$MSGWAR PrepareTables: failed to download $leapsec, use default instead"
                 cp -f "$table_dir/$leapsec" .
-            else
-                cp -f "$leapsec" "$table_dir/"
             fi
+            local diff=$(diff "$leapsec" "$table_dir/$leapsec")
+            [[ -n "$diff" ]] && cp -f "$leapsec" "$table_dir/"
         fi
     fi
     if ! grep -q "\-leap sec" "$leapsec"; then
@@ -1365,14 +1366,15 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
     if [ "$satpara_ftp" != 0 -o "$satpara_exi" != 0 ]; then
         rm -f "$satpara"
         WgetDownload "$satpara_url"
-        local diff=$(diff "$satpara" "$table_dir/$satpara")
-        if [ -n "$diff" ]; then
+        if [ ! -f "$satpara" ]; then
+            cp -f "$table_dir/$satpara" .
+        else
             if ! grep -q "\-prn_indexed" "$satpara"; then
                 echo -e "$MSGWAR PrepareTables: failed to download $satpara, use default instead"
                 cp -f "$table_dir/$satpara" .
-            else
-                cp -f "$satpara" "$table_dir/"
             fi
+            local diff=$(diff "$satpara" "$table_dir/$satpara")
+            [[ -n "$diff" ]] && cp -f "$satpara" "$table_dir/"
         fi
     fi
     if ! grep -q "\-prn_indexed" "$satpara"; then
@@ -2255,9 +2257,10 @@ CopyOrDownloadProduct() { # purpose : copy or download a product
 WgetDownload() { # purpose : download a file with wget
                  # usage   : WgetDownload url
     local url="$1"
-    local args="-q -nv -nc -c -t 3 --connect-timeout=10 --read-timeout=60 --show-progress"
-    local cmd="wget $args $url"
-    $cmd
+    local arg="-q -nv -nc -c -t 3 --connect-timeout=10 --read-timeout=60"
+    wget --help | grep -q "\-\-show\-progress" && arg="$arg --show-progress"
+    local cmd="wget $arg $url"
+    echo "$cmd" | bash
     [ -e $(basename "$url") ] && return 0 || return 1
 }
 

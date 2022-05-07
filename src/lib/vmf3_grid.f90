@@ -230,7 +230,7 @@ else
         lfill(1:4)=.false.
         read(line(23:),*) iy,imon,id,ih,im,sec
         SITE%nvm=SITE%nvm+1
-        if(SITE%nvm.gt.MAXDAY+1) then           ! at most for 3 days
+        if(SITE%nvm.gt.MAXDAY*4+1) then
           write(*,'(a)') '***ERROR(vmf3_grid): too many epochs for vmf3 '
           call exit(1)
         endif

@@ -56,8 +56,9 @@
  - GUI version of PRIDE PPP-AR with additional plotting functions
  - Fix known bugs
 
-13. 2022-05-03 (v2.2)
+13. 2022-05-07 (v2.2)
  - install.sh: default table directory can be set outside /home directory
  - pdp3.sh: support file path with spaces, improve recognition ability of RINEX file name in multi-day processing
+ - pdp3.sh: support old versions of wget
  - pdp3.sh: bug fixes for not using M14.ATX in multi-day processing with CODE products, adjust PCO/PCV models used for different CODE products
  - table: add M14.ATX
