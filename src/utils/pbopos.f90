@@ -106,10 +106,10 @@ program pbopos
 !! case conversion
   do i = 1, len(site)
     j = ichar(site(i:i))
-    if (j >= 65 .and. j < 90) then
+    if (j >= 65 .and. j <= 90) then
        lsit(i:i) = char(j+32)
        usit(i:i) = char(j)
-    elseif (j >=97 .and. j < 122) then
+    elseif (j >=97 .and. j <= 122) then
        lsit(i:i) = char(j)
        usit(i:i) = char(j-32)
     else
@@ -144,7 +144,7 @@ program pbopos
       if (trim(line(61:)) .eq. 'SAT ORBIT') then
         do i = 1, 3
             j = ichar(line(i:i))
-            if (j >= 65 .and. j < 90) then
+            if (j >= 65 .and. j <= 90) then
               analcent_type(i:i) = char(j+32)
             else
               analcent_type(i:i) = line(i:i)
