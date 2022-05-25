@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Apr-22, 2022                                                    ##
+##  DATE   : May-23, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -47,6 +47,11 @@ if [ $? -ne 0 ]; then
 fi
 
 # Compilation & Installation
+if [[ "${HOME}" == /root* ]]; then
+    printf "${RED}error:${NC} unable to install PRIDE-PPPAR in /root \n"
+    printf "${RED}error:${NC} PRIDE-PPPAR installation failed\n"; exit
+fi
+
 install_dir=${HOME}/.PRIDE_PPPAR_BIN
 rm -rf "$install_dir"
 cd src && make clean && make && make install \

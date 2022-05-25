@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : May-06, 2022                                                    ##
+##  DATE   : May-23, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -462,8 +462,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 [ -z "$hms_e" ] && hms_e=$(echo "$time" | awk '{printf("%02d:%02d:%05.2f\n",$4,$5,$6)}')
             fi
         else
-           >&2 echo -e "$MSGERR no valid end time from command or observation file"
-           >&2 echo -e "$MSGINF please input end time with option ‘-e’ or ‘--end’"
+            >&2 echo -e "$MSGERR no valid end time from command or observation file"
+            >&2 echo -e "$MSGINF please input end time with option ‘-e’ or ‘--end’"
             exit 1
         fi
     fi
@@ -481,51 +481,56 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     sed -i '' "/^Session time/s/ = .*/ = $session_time/" "$ctrl_file"
 
     # Try getting observation interval option from config file
-    if [ -z "$interval" ]; then
-        interval=$(get_ctrl "$ctrl_file" "Interval")
-        [ -z "$time_sec" ] && time_sec=$(grep -E "^(>| [ 0-9][0-9] [ 0-1][0-9] )" "$rnxo_file")
-        if [ "$interval" == "Default" ]; then
-            interval=$(echo "$time_sec" | awk 'BEGIN{
-                                                   mdif = 30
-                                               }{
-                                                   if ($1 == ">") {
-                                                       this_sec = $5*3600+$6*60+$7
-                                                   } else {
-                                                       this_sec = $4*3600+$5*60+$6
-                                                   }
-                                                   if (last_sec != "") {
-                                                       vdif = this_sec - last_sec
-                                                       if (vdif < 0) vdif *= -1
-                                                       if (vdif < mdif && vdif != 0) mdif = vdif
-                                                   }
-                                                   last_sec = this_sec
-                                               }END{
-                                                  print(mdif)
-                                               }')
-           ## Align to the nearest candidate
-           local last_can last_dif this_dif
-           local cand=("86400" "30" "25" "20" "15" "10" "5" "2" "1" "0.5" "0.25" "0.2" "0.1" "0.05" "0.02" "-86400")
-           for i in $(seq 1 $[${#cand[@]}-1]); do
-               last_can=${cand[$[$i-1]]}
-               last_dif=$(echo "$interval" | awk '{print("'${last_can}'"-$0)}')
-               this_dif=$(echo "$interval" | awk '{print($0-"'${cand[$i]}'")}')
-               if [[ $(echo "$last_dif < $this_dif" | bc) -eq 1 ]]; then
-                  if [[ $(echo "$interval == $last_can" | bc) -ne 1 ]]; then
-                     >&2 echo -e "$MSGWAR singular observation interval, rounded to the nearest candidate: $interval -> $last_can"
-                  fi
-                  interval="$last_can" && break
-               fi
-           done
+    [ -n "$interval" ] || interval=$(get_ctrl "$ctrl_file" "Interval")
+    [ -z "$time_sec" ] && time_sec=$(grep -E "^(>| [ 0-9][0-9] [ 0-1][0-9] )" "$rnxo_file")
+    obsintvl=$(echo "$time_sec" | awk 'BEGIN{
+                                           mdif = 30
+                                       }{
+                                           if ($1 == ">") {
+                                               this_sec = $5*3600+$6*60+$7
+                                           } else {
+                                               this_sec = $4*3600+$5*60+$6
+                                           }
+                                           if (last_sec != "") {
+                                               vdif = this_sec - last_sec
+                                               if (vdif < 0) vdif *= -1
+                                               if (vdif < mdif && vdif != 0) mdif = vdif
+                                           }
+                                           last_sec = this_sec
+                                       }END{
+                                          print(mdif)
+                                       }')
+
+    if [[ -n "$interval" ]] && [[ "$interval" != "Default" ]]; then
+        if [[ $(echo "$interval < $obsintvl" | bc) -eq 1 ]]; then
+            >&2 echo -e "$MSGERR input interval is short than the observation interval: $interval < $obsintvl"
+            exit 1
         fi
+    else
+        ## Align to the nearest candidate
+        local last_can last_dif this_dif
+        local cand=("86400" "30" "25" "20" "15" "10" "5" "2" "1" "0.5" "0.25" "0.2" "0.1" "0.05" "0.02" "-86400")
+        for i in $(seq 1 $[${#cand[@]}-1]); do
+            last_can=${cand[$[$i-1]]}
+            last_dif=$(echo "$obsintvl" | awk '{print("'${last_can}'"-$0)}')
+            this_dif=$(echo "$obsintvl" | awk '{print($0-"'${cand[$i]}'")}')
+            if [[ $(echo "$last_dif < $this_dif" | bc) -eq 1 ]]; then
+               if [[ $(echo "$obsintvl == $last_can" | bc) -ne 1 ]]; then
+                  >&2 echo -e "$MSGWAR singular observation interval, rounded to the nearest candidate: $obsintvl -> $last_can"
+               fi
+               obsintvl="$last_can" && break
+            fi
+        done
+        interval="$obsintvl"
     fi
 
     if [[ $(echo "0.02 > $interval" | bc) -eq 1 ]]; then
-       >&2 echo -e "$MSGWAR observation interval too small, rounded to the nearest candidate: $interval -> 0.02"
+       >&2 echo -e "$MSGWAR observation interval is too small, rounded to the nearest candidate: $interval -> 0.02"
        interval="0.02"
     fi
 
     if [[ $(echo "$interval > 30.0" | bc) -eq 1 ]]; then
-       >&2 echo -e "$MSGWAR observation interval too large, rounded to the nearest candidate: $interval -> 30.0"
+       >&2 echo -e "$MSGWAR observation interval is too large, rounded to the nearest candidate: $interval -> 30.0"
        interval="30.0"
     fi
 
@@ -535,6 +540,12 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     [ -n "$edt_opt" ] || edt_opt=$(get_ctrl "$ctrl_file" "Strict editing")
     [ "$edt_opt" == "Default" ] && edt_opt="YES"
     sed -i '' "/^Strict editing/s/ = .*/ = $edt_opt/" "$ctrl_file"
+
+    [ "$edt_opt" == "YES" ] && min_sspan="600.0" || min_sspan="120.0"
+    if [[ $(echo "$sspan < $min_sspan" | bc) -eq 1 ]]; then
+        >&2 echo -e "$MSGERR observation period is too short: $sspan < $min_sspan"
+        exit 1
+    fi
 
     # ZTD model
     [ -n "$ztd_opt" ] || ztd_opt=$(get_ctrl "$ctrl_file" "ZTD model")
@@ -610,6 +621,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     sed -i '' "/^PCO on wide-lane/s/ = .*/ = $pco_opt/" "$ctrl_file"
 
     # GNSS
+    sed -i '' "/^#[GRECJ][0-9][0-9] /s/^#/ /" "$ctrl_file"
     for s in ${gnss_mask[@]}; do
         s=$(echo $s | tr 'a-z' 'A-Z')
         case $s in
@@ -621,6 +633,9 @@ ParseCmdArgs() { # purpose : parse command line into arguments
             sed -i '' "/^ $prn /s/^ /#/" "$ctrl_file"
         done
     done
+
+    # Disable ambiguity resolution when process with GLONASS only
+    grep -q "^ [GECJ][0-9][0-9] " "$ctrl_file" || AR="N"
 
     # Mapping function
     [ -n "$map_opt" ] || map_opt=$(echo "$opt_lin" | awk '{print($3)}')
@@ -1518,14 +1533,20 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
         fi
 
         # check brdm for each satellite system
+        local nsys="0"
         local sys avail_sys=("R" "E" "C" "J")
         for sys in ${avail_sys[@]}; do
            grep -q "^ $sys[0-9][0-9] " "$config" || continue
            grep -q "^$sys[ 0-9][0-9] " "$rinex_dir/$rinexnav"
+           nsys=$[$nsys+1]
            if [ $? -ne 0 ]; then
                echo -e "$MSGWAR no $sys satellite in RINEX navigation file: $rinexnav"
            fi
         done
+        if [ "$nsys" -eq 0 ]; then
+            echo -e "$MSGERR all GNSS in RINEX navigation file have been disabled: $rinexnav"
+            exit 1
+        fi
     done
 
     echo -e "$MSGSTA PrepareRinexNav done"
@@ -1565,8 +1586,11 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local sp3_url="$sp3"
             CopyOrDownloadProduct "$product_cmn_dir/$sp3" "$sp3_url"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: no such file: $sp3"
-                return 1
+                CopyOrDownloadProduct "$product_dir/$sp3" "$sp3_url"
+                if [ $? -ne 0 ]; then
+                    echo -e "$MSGERR PrepareProducts: no such file: $sp3"
+                    return 1
+                fi
             fi          
         done
         local argnum=$(echo "$custom_pro_sp3" | wc -w)
@@ -1657,8 +1681,11 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local clk_url="$clk"
             CopyOrDownloadProduct "$product_cmn_dir/$clk" "$clk_url"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: no such file: $clk"
-                return 1
+                CopyOrDownloadProduct "$product_dir/$clk" "$clk_url"
+                if [ $? -ne 0 ]; then
+                    echo -e "$MSGERR PrepareProducts: no such file: $clk"
+                    return 1
+                fi
             fi          
         done
         local argnum=$(echo "$custom_pro_clk" | wc -w)
@@ -1743,8 +1770,11 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local erp_url="$erp"
             CopyOrDownloadProduct "$product_cmn_dir/$erp" "$erp_url"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: no such file: $erp"
-                return 1
+                CopyOrDownloadProduct "$product_dir/$erp" "$erp_url"
+                if [ $? -ne 0 ]; then
+                    echo -e "$MSGERR PrepareProducts: no such file: $erp"
+                    return 1
+                fi
             fi          
         done
         local argnum=$(echo "$custom_pro_erp" | wc -w)
@@ -1834,8 +1864,11 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local att_url="$att"
                 CopyOrDownloadProduct "$product_cmn_dir/$att" "$att_url"
                 if [ $? -ne 0 ]; then
-                    echo -e "$MSGERR PrepareProducts: no such file: $att"
-                    return 1
+                    CopyOrDownloadProduct "$product_dir/$att" "$att_url"
+                    if [ $? -ne 0 ]; then
+                        echo -e "$MSGERR PrepareProducts: no such file: $att"
+                        return 1
+                    fi
                 fi          
             done
             local argnum=$(echo "$custom_pro_att" | wc -w)
@@ -1896,8 +1929,11 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local fcb_url="$fcb"
                 CopyOrDownloadProduct "$product_cmn_dir/$fcb" "$fcb_url"
                 if [ $? -ne 0 ]; then
-                    echo -e "$MSGWAR PrepareProducts: no such file: $fcb"
-                    [ $AR == Y ] && echo -e "$MSGERR no phase bias product: $fcb" && return 1
+                    CopyOrDownloadProduct "$product_dir/$fcb" "$fcb_url"
+                    if [ $? -ne 0 ]; then
+                        echo -e "$MSGERR PrepareProducts: no such file: $fcb"
+                        [ $AR == Y ] && echo -e "$MSGERR no phase bias product: $fcb" && return 1
+                    fi
                 fi
             done
             local argnum=$(echo "$custom_pro_fcb" | wc -w)
@@ -2043,9 +2079,9 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         local ssc_cmp="${ssc}.Z"
         CopyOrDownloadProduct "$product_ssc_dir/$ssc" "$ssc"
         if [ $? -ne 0 ]; then
-            for ssc_url in "ftp://igs.gnsswhu.cn/pub/gps/products/${wkdow[0]}" \
-                           "ftp://nfs.kasi.re.kr/gps/products/${wkdow[0]}"     \
-                           "ftp://gssc.esa.int/cddis/gnss/products/${wkdow[0]}"; do
+            for ssc_url in "ftp://igs.gnsswhu.cn/pub/gps/products/$wkdow" \
+                           "ftp://nfs.kasi.re.kr/gps/products/$wkdow"     \
+                           "ftp://gssc.esa.int/cddis/gnss/products/$wkdow"; do
                 CopyOrDownloadProduct "$product_ssc_dir/$ssc_cmp" "$ssc_url/$ssc_cmp"
                 [ $? -eq 0 ] && break
             done
@@ -2211,7 +2247,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         echo -e "$MSGSTA Downloading VMF3 Grid done"
     fi
 
-    # rename products
+    # Rename products
     mv -f ${clk} sck_${ymd_s}${doy_s} || return 1
     [ -e ${fcb} ] && mv -f ${fcb} fcb_${ymd_s}${doy_s}
     [ -e ${att} ] && mv -f ${att} att_${ymd_s}${doy_s}
