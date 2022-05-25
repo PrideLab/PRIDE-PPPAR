@@ -616,7 +616,6 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     sed -i "/^PCO on wide-lane/s/ = .*/ = $pco_opt/" "$ctrl_file"
 
     # GNSS
-    sed -i "/^#[GRECJ][0-9][0-9] /s/^#/ /" "$ctrl_file"
     for s in ${gnss_mask[@]}; do
         s="${s^^}"
         case $s in
