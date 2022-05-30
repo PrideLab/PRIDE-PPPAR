@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : May-23, 2022                                                    ##
+##  DATE   : May-30, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -50,8 +50,9 @@ readonly MSGSTA="${BLUE}===>$NC"
 
 shopt -s extglob                        # Enable Extendded Globbing
 
-readonly USECACHE=YES                   # YES/NO (uppercase!)
-readonly DEBUG=NO
+readonly DEBUG=NO                       # YES/NO (uppercase!)
+readonly OFFLINE=NO                     # OFFLINE=YES will overwrite USECACHE=NO
+readonly USECACHE=YES
 
 readonly SCRIPT_NAME="pdp3"
 readonly VERSION_NUM="2.2"
@@ -904,7 +905,7 @@ ProcessSingleDay() { # purpose : process data of single day
     fi
 
     # Prepare tables
-    local table_dir=$(get_ctrl "$ctrl_file" "Table directory" | sed "s/^[ \t]*//; s/[ \t]*$//")
+    local table_dir=$(get_ctrl "$ctrl_file" "Table directory" | sed "s/^[ \t]*//; s/[ \t]*$//; s#^~#$HOME#")
     PrepareTables "$mjd" "$mjd" "$table_dir"
     if [ $? -ne 0 ]; then
         echo -e "$MSGERR PrepareTables failed"
@@ -939,7 +940,7 @@ ProcessSingleDay() { # purpose : process data of single day
     fi
 
     # Prepare products
-    local product_dir=$(get_ctrl "$ctrl_file" "Product directory" | sed "s/^[ \t]*//; s/[ \t]*$//")
+    local product_dir=$(get_ctrl "$ctrl_file" "Product directory" | sed "s/^[ \t]*//; s/[ \t]*$//; s#^~#$HOME#")
     PrepareProducts "$mjd" "$mjd" "$product_dir" "$ctrl_file" "$AR"
     if [ $? -ne 0 ]; then
         echo -e "$MSGERR PrepareProducts failed"
@@ -1006,7 +1007,7 @@ ProcessMultiDays() { # purpose : process data of single day
     fi
 
     # Prepare tables
-    local table_dir=$(get_ctrl "$ctrl_file" "Table directory" | sed "s/^[ \t]*//; s/[ \t]*$//")
+    local table_dir=$(get_ctrl "$ctrl_file" "Table directory" | sed "s/^[ \t]*//; s/[ \t]*$//; s#^~#$HOME#")
     PrepareTables "$mjd_s" "$mjd_e" "$table_dir" || return 1
     if [ $? -ne 0 ]; then
         echo -e "$MSGERR PrepareTables failed"
@@ -1060,7 +1061,7 @@ ProcessMultiDays() { # purpose : process data of single day
     fi
 
     # Prepare products
-    local product_dir=$(get_ctrl "$ctrl_file" "Product directory" | sed "s/^[ \t]*//; s/[ \t]*$//")
+    local product_dir=$(get_ctrl "$ctrl_file" "Product directory" | sed "s/^[ \t]*//; s/[ \t]*$//; s#^~#$HOME#")
     PrepareProducts "$mjd_s" "$mjd_e" "$product_dir" "$ctrl_file" "$AR"
     if [ $? -ne 0 ]; then
         echo -e "$MSGERR PrepareProducts failed"
@@ -1318,7 +1319,7 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
 
     echo -e "$MSGSTA PrepareTables ..."
 
-    if [ ! -d "$table_dir" ]; then
+    if ! ls $table_dir &>/dev/null; then
         echo -e "$MSGERR PrepareTables: table directory doesn't exist: $table_dir"
         [ "$table_dir" == "Default" ] && echo -e "$MSGINF please define your table directory in configuration file"
         return 1
@@ -1422,7 +1423,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
         local doy=${ydoy[1]}
         local rinexnav="brdm${doy}0.${year:2:2}p"
 
-        # try downloading hourly navigation file when processing current day's data
+        # Try downloading hourly navigation file when processing current day's data
         if [ $(date -u +"%Y%j") -eq "$year$doy" ]; then
             local navgps="hour${doy}0.${year:2:2}n" && rm -f "$navgps"
             local urlnav="ftp://igs.gnsswhu.cn/pub/gps/data/hourly/${year}/${doy}/${navgps}.gz"
@@ -1457,7 +1458,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
             fi
         fi
 
-        # try finding brdm from RINEX directory
+        # Try finding brdm from RINEX directory
         if [ ! -f "$rinex_dir/$rinexnav" ]; then
             local tmpnav="BRDC00IGS_R_${year}${doy}0000_01D_MN.rnx"
             [ -f "$rinex_dir/$tmpnav" -a ! -f "$rinex_dir/$rinexnav" ] && mv -f "$rinex_dir/$tmpnav" "$rinex_dir/$rinexnav"
@@ -1467,7 +1468,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
             [ -f "$rinex_dir/$tmpnav" -a ! -f "$rinex_dir/$rinexnav" ] && mv -f "$rinex_dir/$tmpnav" "$rinex_dir/$rinexnav"
         fi
 
-        # try downloading brdm
+        # Try downloading brdm
         if [ ! -f "$rinex_dir/$rinexnav" ]; then
             if [ $year -ge 2016 ]; then
                 local tmpnav="BRDC00IGS_R_${year}${doy}0000_01D_MN.rnx"
@@ -1488,26 +1489,28 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
             fi
         fi
 
-        # try downloading GPS and GLONASS brdc
+        # Try downloading GPS and GLONASS brdc
         if [ ! -f "$rinex_dir/$rinexnav" ]; then
             local navgps="brdc${doy}0.${year:2:2}n"
             if [ ! -f "$navgps" ]; then
                 local urlnav="ftp://igs.gnsswhu.cn/pub/gps/data/daily/${year}/${doy}/${year:2:2}n/${navgps}.Z"
-                WgetDownload "$urlnav"
-                if [ $? -eq 0 ]; then
-                    gunzip -f ${navgps}.Z
-                else
-                    echo -e "$MSGWAR download rinexnav failed: $navgps"
+                CopyOrDownloadProduct "$rinex_dir/$navgps" "$navgps"
+                if [ $? -ne 0 ]; then
+                    CopyOrDownloadProduct "$rinex_dir/$navgps" "$urlnav"
+                    if [ $? -ne 0 ]; then
+                        echo -e "$MSGWAR download rinexnav failed: $navgps"
+                    fi
                 fi
             fi
             local navglo="brdc${doy}0.${year:2:2}g"
             if [ ! -f "$navglo" ]; then
                 local urlnav="ftp://igs.gnsswhu.cn/pub/gps/data/daily/${year}/${doy}/${year:2:2}g/${navglo}.Z"
-                WgetDownload "$urlnav"
-                if [ $? -eq 0 ]; then
-                    gunzip -f ${navglo}.Z
-                else
-                    echo -e "$MSGWAR download rinexnav failed: $navglo"
+                CopyOrDownloadProduct "$rinex_dir/$navglo" "$navglo"
+                if [ $? -ne 0 ]; then
+                    CopyOrDownloadProduct "$rinex_dir/$navglo" "$urlnav"
+                    if [ $? -ne 0 ]; then
+                        echo -e "$MSGWAR download rinexnav failed: $navglo"
+                    fi
                 fi
             fi
             if [ -f "$navgps" -a -f "$navglo" ]; then
@@ -1526,17 +1529,29 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
             fi
         fi
 
-        # check brdm for each satellite system
-        local nsys="0"
-        local sys avail_sys=("R" "E" "C" "J")
-        for sys in ${avail_sys[@]}; do
-           grep -q "^ $sys[0-9][0-9] " "$config" || continue
-           grep -q "^$sys[ 0-9][0-9] " "$rinex_dir/$rinexnav"
-           nsys=$[$nsys+1]
-           if [ $? -ne 0 ]; then
-               echo -e "$MSGWAR no $sys satellite in RINEX navigation file: $rinexnav"
-           fi
-        done
+        # Check brdm for each GNSS
+        local sys="G" nsys="0"
+        local rinexver=$(head -1 "$rinex_dir/$rinexnav" | cut -c 6-6)
+        case "$rinexver" in
+        "2" )
+            head -1 "$rinex_dir/$rinexnav" | grep -Eq "GLO"       && sys="R"
+            head -1 "$rinex_dir/$rinexnav" | grep -Eq "GAL"       && sys="E"
+            head -1 "$rinex_dir/$rinexnav" | grep -Eq "(COM|BEI)" && sys="C"
+            head -1 "$rinex_dir/$rinexnav" | grep -Eq "QZS"       && sys="J"
+            grep -q "^ $sys[0-9][0-9] " "$config" && nsys=$[$nsys+1]
+            echo -e "$MSGWAR using single-GNSS($sys) RINEX navigation file: $rinexnav"
+            ;;
+        "3" )
+            local avail_sys=("G" "R" "E" "C" "J")
+            for sys in ${avail_sys[@]}; do
+               grep -Eq "^ $sys[0-9][0-9] " "$config" || continue
+               grep -Eq "^$sys[ 0-9][0-9] " "$rinex_dir/$rinexnav" && nsys=$[$nsys+1]
+               if [ $? -ne 0 ]; then
+                   echo -e "$MSGWAR no $sys satellite in RINEX navigation file: $rinexnav"
+               fi
+            done
+            ;;
+        esac
         if [ "$nsys" -eq 0 ]; then
             echo -e "$MSGERR all GNSS in RINEX navigation file have been disabled: $rinexnav"
             exit 1
@@ -2268,9 +2283,10 @@ CopyOrDownloadProduct() { # purpose : copy or download a product
                           # usage   : CopyOrDownloadProduct copy url
     local copy="$1"
     local url="$2"
-    local file="$(basename "$copy")"
-    if [ "$USECACHE" = "YES" ]; then
-        # try copying file from product directory
+    local file=$(basename "$copy")
+
+    # Try using cache from path "copy"
+    if [ "$OFFLINE" = "YES" ] || [ "$USECACHE" = "YES" ]; then
         if [ -f "$copy" ]; then
             cp -f "$copy" .
         elif [ -f "$copy".gz ]; then
@@ -2279,13 +2295,15 @@ CopyOrDownloadProduct() { # purpose : copy or download a product
             cp -f "$copy".Z  . && gunzip -f "$file".Z
         fi
     fi
+
+    # Try downloading file from "url"
     if [ ! -f "$file" ]; then
         WgetDownload "$url" || return 1
+        if [ "$OFFLINE" = "YES" ] || [ "$USECACHE" = "YES" ]; then
+            ls "$copy".@(gz|Z) &>/dev/null || cp -f "$(basename "$url")" "$copy"
+        fi
     fi
-    if [ ! -f "$copy".gz -a ! -f "$copy".Z ]; then
-        # do not copy when compressed file exists
-        cp -f "$(basename "$url")" "$copy"
-    fi
+
     [ -f "$file" ] && return 0 || return 1
 }
 
@@ -2293,6 +2311,7 @@ WgetDownload() { # purpose : download a file with wget
                  # usage   : WgetDownload url
     local url="$1"
     local arg="-q -nv -nc -c -t 3 --connect-timeout=10 --read-timeout=60"
+    [ "$OFFLINE" = "YES" ] && return 1
     wget --help | grep -q "\-\-show\-progress" && arg="$arg --show-progress"
     local cmd="wget $arg $url"
     echo "$cmd" | bash

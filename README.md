@@ -139,6 +139,7 @@ Release of PRIDE PPP-AR v2.2
 
 * install.sh: default table directory can be set outside /home directory
 * pdp3.sh: add notices for some improper operations
+* pdp3.sh: add "OFFLINE" mode
 * pdp3.sh: improve recognition ability of RINEX file name in multi-day processing
 * pdp3.sh: support file path with spaces
 * pdp3.sh: support old versions of wget
