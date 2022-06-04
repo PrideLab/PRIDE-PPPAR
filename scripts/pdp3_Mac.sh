@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : May-30, 2022                                                    ##
+##  DATE   : Jun-04, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -499,7 +499,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                                            }
                                            last_sec = this_sec
                                        }END{
-                                          print(mdif)
+                                           print(mdif)
                                        }')
 
     if [[ -n "$interval" ]] && [[ "$interval" != "Default" ]]; then
@@ -1945,7 +1945,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 if [ $? -ne 0 ]; then
                     CopyOrDownloadProduct "$product_dir/$fcb" "$fcb_url"
                     if [ $? -ne 0 ]; then
-                        echo -e "$MSGERR PrepareProducts: no such file: $fcb"
+                        echo -e "$MSGWAR PrepareProducts: no such file: $fcb"
                         [ $AR == Y ] && echo -e "$MSGERR no phase bias product: $fcb" && return 1
                     fi
                 fi
@@ -2045,41 +2045,46 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         echo -e "$MSGWAR no PCO/PCV model defined in $clk, use default instead"
     fi
 
-    if [ -n "$atx_url" ]; then
-        CopyOrDownloadProduct "$table_dir/$abs_atx" "$atx_url"
-        if [ $? -ne 0 ]; then
-            echo -e "$MSGERR PrepareProducts: no IGS ANTEX file: $table_dir/$abs_atx"
-            return 1
-        fi
-    elif [[ $abs_atx =~ ^igs(05|08|14) ]]; then
-        atx_url="https://files.igs.org/pub/station/general/$abs_atx"
-        CopyOrDownloadProduct "$table_dir/$abs_atx" "$atx_url"
-        if [ $? -ne 0 ]; then
-            atx_url="https://files.igs.org/pub/station/general/pcv_archive/$abs_atx"
-            CopyOrDownloadProduct "$table_dir/$abs_atx" "$atx_url"
-            if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: no IGS ANTEX file: $table_dir/$abs_atx"
-                return 1
-            fi
-        fi
-    elif [[ $abs_atx =~ ^igsR3 ]]; then
-        atx_url="ftp://igs-rf.ign.fr/pub/IGSR3/$abs_atx"
-        CopyOrDownloadProduct "$table_dir/$abs_atx" "$atx_url"
-        if [ $? -ne 0 ]; then
-            atx_url="ftp.aiub.unibe.ch/users/villiger/$abs_atx"
-            CopyOrDownloadProduct "$table_dir/$abs_atx" "$atx_url"
-            if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: no IGS ANTEX file: $table_dir/$abs_atx"
-                return 1
-            fi
-        fi
-    fi
-
     if [ -f "$table_dir/$abs_atx" ]; then
         ln -sf "$table_dir/$abs_atx" abs_igs.atx
     else
-        echo -e "$MSGERR PrepareProducts: no IGS ANTEX file: $table_dir/$abs_atx"
-        return 1
+        if [ -n "$atx_url" ]; then
+            WgetDownload "$atx_url"
+            if [ $? -ne 0 ]; then
+                echo -e "$MSGERR PrepareProducts: failed to download $abs_atx"
+                echo -e "$MSGINF please download this file from $atx_url"
+                return 1
+            fi
+        elif [[ $abs_atx =~ ^igs(05|08|14) ]]; then
+            atx_url="https://files.igs.org/pub/station/general/$abs_atx"
+            WgetDownload "$atx_url"
+            if [ $? -ne 0 ]; then
+                atx_url="https://files.igs.org/pub/station/general/pcv_archive/$abs_atx"
+                WgetDownload "$atx_url"
+                if [ $? -ne 0 ]; then
+                    echo -e "$MSGERR PrepareProducts: failed to download $abs_atx"
+                    return 1
+                fi
+            fi
+        elif [[ $abs_atx =~ ^igsR3 ]]; then
+            atx_url="ftp://igs-rf.ign.fr/pub/IGSR3/$abs_atx"
+            WgetDownload "$atx_url"
+            if [ $? -ne 0 ]; then
+                atx_url="ftp.aiub.unibe.ch/users/villiger/$abs_atx"
+                WgetDownload "$atx_url"
+                if [ $? -ne 0 ]; then
+                    echo -e "$MSGERR PrepareProducts: failed to download $abs_atx"
+                    return 1
+                fi
+            fi
+        fi
+        if [ -f "$abs_atx" ]; then
+            [ -f "$table_dir/$abs_atx" ] || cp -f "$abs_atx" "$table_dir/"
+            mv -f "$abs_atx" abs_igs.atx
+        else
+            echo -e "$MSGERR PrepareProducts: no IGS ANTEX file: $table_dir/$abs_atx"
+            return 1
+        fi
     fi
 
     echo -e "$MSGINF Prepare IGS ANTEX product: $abs_atx done"

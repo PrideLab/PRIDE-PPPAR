@@ -48,7 +48,7 @@
 
 12. 2022-04-07 (v2.2)
  Release of PRIDE PPP-AR v2.2
- - Batch script name changed from “*pride_pppar*” to “*pdp3*”, corresponding command line input parameters also changed
+ - Batch script name changed from “pride_pppar” to “pdp3”, corresponding command line input parameters also changed
  - Support multi-day processing
  - No more DCB products required
  - The default products after 2020 changed to the multi-GNSS satellite orbit, clock, bias, quaternion and ERP products, which are computed and released by Wuhan University
@@ -56,12 +56,16 @@
  - GUI version of PRIDE PPP-AR with additional plotting functions
  - Fix known bugs
 
-13. 2022-05-30 (v2.2)
+13. 2022-05-07 (v2.2)
  - install.sh: default table directory can be set outside /home directory
- - pdp3.sh: add notices for some improper operations
- - pdp3.sh: add "OFFLINE" mode
+ - pdp3.sh: adjust PCO/PCV models used for different CODE products
+ - pdp3.sh: bug fixes for not using M14.ATX in multi-day processing with CODE products
  - pdp3.sh: improve recognition ability of RINEX file name in multi-day processing
- - pdp3.sh: support file path with spaces
+ - pdp3.sh: support file paths with spaces
  - pdp3.sh: support old versions of wget
- - pdp3.sh: bug fixes for not using M14.ATX in multi-day processing with CODE products, adjust PCO/PCV models used for different CODE products
  - table: add M14.ATX
+
+14. 2022-06-04 (v2.2)
+ - pdp3.sh: add alerts to some improper operations
+ - pdp3.sh: add OFFLINE mode
+ - pdp3.sh: bug fixes for possible damage to ANTEX file during batch processing
