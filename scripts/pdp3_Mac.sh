@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Jun-04, 2022                                                    ##
+##  DATE   : Jun-06, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -1501,7 +1501,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
                 local urlnav="ftp://igs.gnsswhu.cn/pub/gps/data/daily/${year}/${doy}/${year:2:2}n/${navgps}.Z"
                 CopyOrDownloadProduct "$rinex_dir/$navgps" "$navgps"
                 if [ $? -ne 0 ]; then
-                    CopyOrDownloadProduct "$rinex_dir/$navgps" "$urlnav"
+                    WgetDownload "$urlnav" && gunzip -f "${navgps}.Z"
                     if [ $? -ne 0 ]; then
                         echo -e "$MSGWAR download rinexnav failed: $navgps"
                     fi
@@ -1512,7 +1512,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
                 local urlnav="ftp://igs.gnsswhu.cn/pub/gps/data/daily/${year}/${doy}/${year:2:2}g/${navglo}.Z"
                 CopyOrDownloadProduct "$rinex_dir/$navglo" "$navglo"
                 if [ $? -ne 0 ]; then
-                    CopyOrDownloadProduct "$rinex_dir/$navglo" "$urlnav"
+                    WgetDownload "$urlnav" && gunzip -f "${navglo}.Z"
                     if [ $? -ne 0 ]; then
                         echo -e "$MSGWAR download rinexnav failed: $navglo"
                     fi
