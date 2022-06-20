@@ -16,6 +16,7 @@ type prcopt_t                ! processing options type
     integer(4) exsats(MAXSAT) ! excluded satellites (1:excluded,2:included)
     character(256) rnxopt(2) ! rinex options {rover,base}
     integer*4 posopt(6)      ! positioning options
+    logical lsa              ! SA data (before 2000/123)
 end type
 
 type solopt_t                ! solution options type 

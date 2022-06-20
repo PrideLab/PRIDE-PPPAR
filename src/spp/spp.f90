@@ -33,7 +33,7 @@ integer*4 argc, info, nsize, getrnxtyp, postpos, flexist  ! flnumlim
 character(1024), pointer :: argv(:)
 logical*1 :: isexceed, isnext, IsDayRight, IsTimeRight
 external :: epoch2time, getrnxtyp, postpos, flexist, timediff, IsDayRight, IsTimeRight
-integer*4 :: mjd
+integer*4 :: mjd_s, ymd2mjd
 real*8 :: sod
 call InitGlobal()
 
@@ -71,6 +71,8 @@ do while(i<=argc)
         call string_split(argv(i+1),'/',buff(1:3),3)
         call string_split(argv(i+2),':',buff(4:6),3)
         read(buff(1:3),*,iostat=info) es(1),es(2),es(3)
+        mjd_s=ymd2mjd(int(es(1:3)))
+        if(mjd_s<=51666) prcopt%lsa=.true.
         read(buff(4:6),*,iostat=info) es(4),es(5),es(6); i=i+2
         if(.not.IsDayRight (int(es(1)),int(es(2)),int(es(3)))) call exit(3)
         if(.not.IsTimeRight(int(es(4)),int(es(5)),es(6))) call exit(3)

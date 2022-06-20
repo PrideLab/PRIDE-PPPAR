@@ -139,18 +139,19 @@ Release of PRIDE PPP-AR v2.2
 
 * install.sh: default table directory can be set outside /home directory
 * pdp3.sh: adjust PCO/PCV models used for different CODE products
-* pdp3.sh: bug fixes for not using M14.ATX in multi-day processing with CODE products
-* pdp3.sh: improve recognition ability of RINEX file name in multi-day processing
+* pdp3.sh: naming patterns for RINEX observation file are more compatible
 * pdp3.sh: support file paths with spaces
 * pdp3.sh: support old versions of *wget*
 * table: add M14.ATX 
 
-2022-06-04
+2022-06-20
 
 * pdp3.sh: add alerts to some improper operations
-* pdp3.sh: add OFFLINE mode
-* pdp3.sh: bug fixes for possible damage to ANTEX file during batch processing
-
+* pdp3.sh: add OFFLINE mode that can save the time from calling *wget*
+* pdp3.sh: add SA mode for SPP processing
+* pdp3.sh: bug fixes in creating linkage to ANTEX file which may damage this file in batch processing 
+* pdp3.sh: bug fixes in unexpected break off in multi-day processing when the first observation file is truncated
+* pdp3.sh: increase the maximum number of days for multi-day processing from 5 to 32
  
 ## Getting in Touch
 

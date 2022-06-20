@@ -48,10 +48,10 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
   real*4 v(nepo, MAXSAT)
   real*8 sstart, x(nepo), y(nepo), z(nepo), interval, lglimit, nwlimit, cutoff_elevation, pclimit
   character*(*) flnrnx, stanam
-  type(brdeph) EPHEM(1:*)
+  type(brdeph) ephem(1:*)
 
   integer*4 nsat, flagall(nepo, MAXSAT), jd0, nobs(MAXSAT), iday
-  real*8 ti(nepo), ts(nepo), obs(nepo, MAXSAT, 6), bias(MAXSAT, 36)
+  real*8 ti(nepo), ts(nepo), obs(nepo, MAXSAT, 6), bias(MAXSAT, MAXTYP)
 
 ! local
   integer*4 nprn, iepo, isat, j, k, iunit, iunit_next, ichn, ieph, nused, ilast(MAXSAT)
@@ -192,7 +192,8 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
 ! loop over session and epoch
   iday = 1
   iepo = 1
-  do while (iepo .le. nepo .and. ierr .eq. 0)
+  do while (iepo .le. nepo)
+    if (ierr .ne. 0 .and. ierr .ne. 2) cycle
     nprn = 0
     prn = ''
     !
@@ -204,6 +205,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
         close(iunit)
         iunit = iunit_next
       endif
+      ierr = 0
     endif
 ! ***************************************************************************************** !
 ! purpose  : read one epoch data from a RINEX o-file
@@ -216,10 +218,12 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
 !            HD ----------------- rinex header structure
 !            OB ----------------- o_file body structure
 ! **************************************************************************************** !
-    if (HD%ver .eq. 3) then
-      call rdrnxoi3(iunit, jd0, tobs, dwnd, nprn, prn, HD, OB, bias, ierr)
-    else
-      call rdrnxoi2(iunit, jd0, tobs, dwnd, nprn, prn, HD, OB, bias, ierr)
+    if (ierr .ne. 2) then
+      if (HD%ver .eq. 3) then
+        call rdrnxoi3(iunit, jd0, tobs, dwnd, nprn, prn, HD, OB, bias, ierr)
+      else
+        call rdrnxoi2(iunit, jd0, tobs, dwnd, nprn, prn, HD, OB, bias, ierr)
+      endif
     endif
     if (ierr .eq. 0) then
       obsval(0,:,:) = obsval(1,:,:)
@@ -468,6 +472,11 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
       enddo
       iepo = iepo + 1
       tobs = tobs + interval
+    endif
+    if (ierr .eq. 2) then
+      iepo = iepo + 1
+      tobs = tobs + interval
+      flagall(iepo, :) = set_flag(0, 'no4')
     endif
   enddo
   close (10)

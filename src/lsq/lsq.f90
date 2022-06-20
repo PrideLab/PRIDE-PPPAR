@@ -259,19 +259,22 @@ program lsq
       LCF%bias = 0.d0
       call read_bias(LCF%flnfcb, LCF%nprn, LCF%prn, LCF%bias, jd*1.d0, (jd+1)*1.d0)
       jd_sav = jd
+      ierr = 0
     endif
 !
 !! read one epoch of observations
     OB%typuse = ' '
     k = 0
     if (SITE%iunit .eq. 0) cycle
-    if (HD%ver .eq. 3) then
-      call rdrnxoi3(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, LCF%bias, ierr)
-    else
-      call rdrnxoi2(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, LCF%bias, ierr)
+    if (ierr .ne. 2) then
+      if (HD%ver .eq. 3) then
+        call rdrnxoi3(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, LCF%bias, ierr)
+      else
+        call rdrnxoi2(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, LCF%bias, ierr)
+      endif
     endif
-    if (ierr .ne. 0) SITE%iunit = 0
-    if (ierr .eq. 0) then
+    if (ierr .ne. 0 .and. ierr .ne. 2) SITE%iunit = 0
+    if (ierr .eq. 0 .or.  ierr .eq. 2) then
       k = k + 1
       call read_obsrhd(jd, sod, LCF%nprn, LCF%prn, OB)
       if(SITE%lfnjmp .ne. 0) call read_clkjmp(jd, sod, SITE%lfnjmp, LCF%nprn, OB)

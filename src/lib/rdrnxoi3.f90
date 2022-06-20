@@ -52,7 +52,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
   integer*4 ioerr, iy, im, id, ih, imi, nprn, l1, l2, p1, p2
   character*3 prn(MAXSAT)
   integer*4 iflag, i, j, i0, nline, nobstype
-  real*8 sec, ds, dt, obs(MAXTYP), bias(MAXSAT, 36)
+  real*8 sec, ds, dt, obs(MAXTYP), bias(MAXSAT, MAXTYP)
   character*1 sysid(MAXSAT)
   character*80 line, msg, name
   ! R

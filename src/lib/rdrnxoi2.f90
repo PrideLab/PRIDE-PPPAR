@@ -55,7 +55,7 @@ subroutine rdrnxoi2(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
   integer*4 ioerr, iy, im, id, ih, imi, nprn
   character*3 prn(MAXSAT)
   integer*4 iflag, i, j, i0, nline, ii, nobstype
-  real*8 sec, ds, dt, obs(MAXTYP), bias(MAXSAT, 36)
+  real*8 sec, ds, dt, obs(MAXTYP), bias(MAXSAT, MAXTYP)
   character*1 sysid(MAXSAT)
   character*80 line, cline, msg, name
   character*1024 string

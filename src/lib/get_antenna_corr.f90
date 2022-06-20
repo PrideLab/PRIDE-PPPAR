@@ -1,7 +1,7 @@
 !
 !! get_ant_corr.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2022 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
 !! 
 !!
 !!
@@ -65,7 +65,7 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
   iptatx = natx
 !
 !! get antenna phase offset
-5 continue
+  5 continue
   sys=0
   frequency1=0
   frequency2=0
@@ -136,7 +136,13 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
 !!    output : var   -- phase center variation
 !
   Entry get_ant_pcv(ript, sipt, zeni, azim, nadir, var, system) ! add multisystem-GREC
-
+!
+!! constant
+  rad2deg = 180.d0/PI
+  var = 0.d0
+!
+!! receiver pcv index
+  if (ript .le. 0) goto 10
   sys=0
   frequency1=0
   frequency2=0
@@ -181,9 +187,6 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
       frequency2=2
     endif
   endif
-  rad2deg = 180.d0/PI
-  var(1) = 0.d0
-  var(2) = 0.d0
 !
 !! receiver pcv
   zen = zeni*rad2deg
@@ -219,7 +222,9 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
   alpha = (zen - AX(ript)%zen1)/AX(ript)%dzen - izen + 1
   var(frequency2) = var(frequency2) + x1 + (x2 - x1)*alpha
 !
-!! satellite pcv
+!! satellite pcv index
+ 10 continue
+  if (sipt .le. 0) goto 20
   sys=0
   frequency1=0
   frequency2=0
@@ -264,6 +269,8 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
       frequency2=2
     endif
   endif
+!
+!! satellite pcv
   if (AX(sipt)%dzen .eq. 0.d0) return
   nad = nadir*rad2deg
   if (nad .gt. AX(sipt)%zen2) nad = AX(sipt)%zen2
@@ -282,5 +289,6 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
   alpha = (nad - AX(sipt)%zen1)/AX(sipt)%dzen - izen + 1
   var(frequency2) = var(frequency2) + x1 + (x2 - x1)*alpha
 
+ 20 continue
   return
-end
+end subroutine

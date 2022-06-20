@@ -14,10 +14,10 @@ integer*4, intent(out) :: vsat(n), stat
 character(*), intent(out) :: msg
 real*8 :: x(NX),dx(NX),Q(NX,NX),v(n+4,1),H(n+4,NX),var(n+4,1),sig,HT(NX,n+4)
 integer*4 i,j,k,info,stat1,nv,ns
-real*8 thres, fact, vara(n), rr0(3)  ! valpos
+real*8 thres, fact, vara(n), rr0(3), maxresp  ! valpos
 integer*4 valres(MAXSAT), nslim, nt, nf  ! number of true / false
 integer*4 navsy2,ii,prn,sy2,method,re1
-integer*4 valrag(MAXSAT)
+integer*4 valrag(MAXSAT), maxindex
 real*8, external :: norm, rcond
 integer*4, external :: icond
 type(gtime_t), external :: timeadd
@@ -31,7 +31,7 @@ do i=1,MAXITR
     ! pseudorange residuals 
 100 call rescode(i-1,obs,n,rs,dts,vare,svh,nav,x,opt,v,H,var,vara,valres,valrag,azel,vsat,resp,ns,nv)
     
-    nslim=4; navsy2=SYS_NONE
+    nslim=3; navsy2=SYS_NONE
     do ii=1,n
         if(valrag(ii)==0)then
             call satsys(obs(ii)%sat,prn,sy2)
@@ -64,6 +64,17 @@ do i=1,MAXITR
     do j=1,NX
         x(j)=x(j)+dx(j)
     enddo
+    if(i==5) then ! del outlier
+        maxresp=0.d0
+        maxindex=0
+        do j=1,n 
+           if(dabs(resp(j))>=maxresp) then
+                maxresp=dabs(resp(j))
+                maxindex=j
+            endif
+        enddo
+        if(maxindex/=0 .and. maxresp>=10) valres(obs(maxindex)%sat)=-1
+    endif
     if(method==2)then  ! nf<nt
         nt=0; nf=0
         do j=1,n

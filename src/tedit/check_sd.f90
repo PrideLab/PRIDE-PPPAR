@@ -41,7 +41,7 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
   real*8 ti(nepo), ts(nepo), obs(nepo, MAXSAT, 6)
 !
   integer*4 neph, lfnsd, ndgr, niter, mepo, nstep
-  type(brdeph) EPHEM(MAXEPH)
+  type(brdeph) ephem(1:*)
   real*8 interval, lclimit, x(nepo), y(nepo), z(nepo)
 !
 !! local

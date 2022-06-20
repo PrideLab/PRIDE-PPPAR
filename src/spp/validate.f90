@@ -23,7 +23,7 @@ if(nv>nx1)then
     endif
 endif
 ! validation of sigma
-if(sol%qr(1)>=100 .or. sol%qr(2)>=100)then
+if(.not. opt%lsa .and. (sol%qr(1)>=400 .or. sol%qr(2)>=400))then
     stat=0; return
 endif
 ! large gdop check 

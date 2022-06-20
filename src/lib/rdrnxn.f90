@@ -18,7 +18,7 @@
 !! Contributor: Maorong Ge, Jihang Lin
 !! 
 !!
-!!! purpose   : read rinex navigation file.  choose only records
+!! purpose   : read rinex navigation file.  choose only records
 !!             within time (fjd0,fjd1) and duplicated records are
 !!             ignored.
 !!
@@ -45,6 +45,7 @@ subroutine rdrnxn(flneph, fjd0, fjd1, neph, ephem)
   character*3 svn
   character*2 svn_str
   integer*4 svn_int
+  integer*4 meph
   logical*1 already
   real*8 sec, dt1, dt2, a0, a1, a2
   character*80 line, fmt1
@@ -56,6 +57,8 @@ subroutine rdrnxn(flneph, fjd0, fjd1, neph, ephem)
   integer*4 modified_julday
   real*8 taiutc
 
+  meph = MAXEPH
+  if (neph .ne. 0) meph = neph
   neph = 0
 
   ierr = 0
@@ -151,22 +154,24 @@ subroutine rdrnxn(flneph, fjd0, fjd1, neph, ephem)
       dt2 = 0.d0
       if (fjd0 .ne. 0.d0) dt1 = eph%jd + eph%sod/86400.d0 - fjd0
       if (fjd1 .ne. 0.d0) dt2 = eph%jd + eph%sod/86400.d0 - fjd1
-      !! GPS ephemerides interval (2 hour) 
+      !! GPS ephemerides interval (2 hours) 
       if (dt1 .lt. -2.d0/24.d0 .or. dt2 .gt. 2.d0/24.d0) cycle
 !  
 !! in case of repetition
       already = .false.
       do j = 1, neph
-        if (ephem(j)%svn .eq. eph%svn .and. ephem(j)%jd .eq. eph%jd .and. ephem(j)%sod .eq. eph%sod) then
-          already = .true.
-          exit
-        endif
+        if (ephem(j)%svn .ne. eph%svn) cycle
+        dt1 = (ephem(j)%jd - eph%jd)*86400.d0 + (ephem(j)%sod - eph%sod)
+        !! Galileo ephemerides interval (10 minutes)
+        if (dt1 .lt. -600.d0 .or. dt1 .gt. 600.d0) cycle
+        already = .true.
+        exit
       enddo
-      if (.not. already .and. neph .lt. maxeph) then
+      if (.not. already .and. neph .lt. meph) then
         neph = neph + 1
         ephem(neph) = eph
-      else if (neph .gt. maxeph) then
-        write (*, *) '###WARNING(rdrnxn): too many ephemeris records(maxeph,neph),', maxeph, neph
+      else if (neph .gt. meph) then
+        write (*, *) '###WARNING(rdrnxn): too many ephemeris records(maxeph, neph),', meph, neph
         return
       endif
     enddo
@@ -185,4 +190,4 @@ subroutine rdrnxn(flneph, fjd0, fjd1, neph, ephem)
 100 continue
   write (*, *) '***ERROR(rdrnxn): open/read nav. file,', trim(flneph)
   call exit(1)
-end
+end subroutine

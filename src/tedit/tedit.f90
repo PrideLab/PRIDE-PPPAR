@@ -30,13 +30,13 @@ program tedit
   integer*4 nsat, jd0, nobs(MAXSAT)
   integer*4, pointer :: flagall(:, :)
   real*8, pointer :: ti(:), ts(:)
-  real*8 bias(MAXSAT, 36)
+  real*8 bias(MAXSAT, MAXTYP)
   real*8, pointer :: obs(:, :, :)
   integer*4 nepo, ierr
 
 ! broadcast ephemeris
   integer*4 neph
-  type(brdeph) ephem(MAXEPH)
+  type(brdeph), allocatable :: ephem(:)
 
   integer*4 lfnsd
   logical*1 again, use_brdeph, check_pc, check_lc, turbo_edit, &
@@ -133,7 +133,11 @@ program tedit
   fjd1 = fjd0 + session_length/86400.d0
 
 ! read broadcast ephemeris
-  if (use_brdeph) call rdrnxn(flneph, fjd0, fjd1, neph, ephem)
+  if (use_brdeph) then
+    neph = int(ceiling(fjd1)-floor(fjd0)+1) * (MAXSAT*24 + MAXSAT_E*120)
+    allocate(ephem(neph))
+    call rdrnxn(flneph, fjd0, fjd1, neph, ephem)
+  endif
 
 ! read GLONASS channel numbers
   call read_glschn(int(fjd0), fraction(fjd0), glschn)
@@ -231,6 +235,8 @@ program tedit
   if (flnrhd(1:1) .ne. ' ') then
     call write_diag_rpt(flnrhd, nepo, nsat, stanam, jd0, ts, session_length, flagall, interval)
   endif
+
+  if (allocated(ephem)) deallocate (ephem) 
 
   deallocate (ti)
   deallocate (ts)
