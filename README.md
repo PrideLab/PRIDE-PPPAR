@@ -152,6 +152,10 @@ Release of PRIDE PPP-AR v2.2
 * pdp3.sh: bug fixes in creating linkage to ANTEX file which may damage this file in batch processing 
 * pdp3.sh: bug fixes in unexpected break off in multi-day processing when the first observation file is truncated
 * pdp3.sh: increase the maximum number of days for multi-day processing from 5 to 32
+
+2022-07-03
+
+* pdp3.sh: increase the maximum processing interval from 30.0 to 300.0 seconds
  
 ## Getting in Touch
 

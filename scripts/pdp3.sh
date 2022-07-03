@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Jun-20, 2022                                                    ##
+##  DATE   : Jul-03, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -253,8 +253,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 [ -z "$interval" ]                              || throw_conflict_opt "$1"
                 check_optional_arg "$2" "$last_arg"             || throw_require_arg  "$1"
                 if [[ $2 =~ $PNUM_REGEX ]]               && \
-                   [[ $(echo "0.02 <= $2" | bc) -eq 1 ]] && \
-                   [[ $(echo "$2 <= 30.0" | bc) -eq 1 ]]; then
+                   [[ $(echo "0.02  <= $2" | bc) -eq 1 ]] && \
+                   [[ $(echo "$2 <= 300.0" | bc) -eq 1 ]]; then
                     interval="$2"
                 else
                     throw_invalid_arg "interval" "$2"
@@ -452,7 +452,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
         local doy_e=$(date -d "${ymd_e[*]}" +"%j")
 
         readonly local RNXO2_GLOB="${rnxo_name:0:4}${doy_s}0.${ymd_s:2:2}@(o|O)"
-        readonly local RNXO3_GLOB="${rnxo_name:0:9}_?_${ymd_s}${doy_s}0000_01D_30S_MO.@(rnx|RNX)"
+        readonly local RNXO3_GLOB="${rnxo_name:0:9}_?_${ymd_s:0:4}${doy_s}0000_01D_30S_MO.@(rnx|RNX)"
 
         local tmpfobs tmpydoy
         for mjd in $(seq $mjd_s $mjd_e); do
@@ -532,7 +532,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     else
         ## Align to the nearest candidate
         local last_can last_dif this_dif
-        local cand=("86400" "30" "25" "20" "15" "10" "5" "2" "1" "0.5" "0.25" "0.2" "0.1" "0.05" "0.02" "-86400")
+        local cand=("86400" "300" "60" "30" "25" "20" "15" "10" "5" "2" "1" "0.5" "0.25" "0.2" "0.1" "0.05" "0.02" "-86400")
         for i in $(seq 1 $[${#cand[@]}-1]); do
             last_can=${cand[$[$i-1]]}
             last_dif=$(echo "$obsintvl" | awk '{print("'${last_can}'"-$0)}')
@@ -552,9 +552,9 @@ ParseCmdArgs() { # purpose : parse command line into arguments
        interval="0.02"
     fi
 
-    if [[ $(echo "$interval > 30.0" | bc) -eq 1 ]]; then
-       >&2 echo -e "$MSGWAR observation interval is too large, rounded to the nearest candidate: $interval -> 30.0"
-       interval="30.0"
+    if [[ $(echo "$interval > 300.0" | bc) -eq 1 ]]; then
+       >&2 echo -e "$MSGWAR observation interval is too large, rounded to the nearest candidate: $interval -> 300.0"
+       interval="300.0"
     fi
 
     sed -i "/^Interval/s/ = .*/ = $interval/" "$ctrl_file"
@@ -833,7 +833,7 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
     >&2 echo "                                               * default: the MARKER NAME in obs-file, or the first four"
     >&2 echo "                                                   characters of the filename in RINEX naming convention"
     >&2 echo ""
-    >&2 echo "  -i <num>,  --interval <num>                processing interval in seconds, 0.02 <= interval <= 30"
+    >&2 echo "  -i <num>,  --interval <num>                processing interval in seconds, 0.02 <= interval <= 300"
     >&2 echo "                                               * default: the minimal observation interval in obs-file"
     >&2 echo ""
     >&2 echo "Advanced options:"

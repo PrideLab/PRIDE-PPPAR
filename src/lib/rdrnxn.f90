@@ -185,6 +185,8 @@ subroutine rdrnxn(flneph, fjd0, fjd1, neph, ephem)
     close (iunit)
     iunit = iunit_next
   enddo
+
+  close (iunit)
   return
 
 100 continue
