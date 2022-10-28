@@ -72,5 +72,9 @@
  - pdp3.sh: bug fixes in unexpected break off in multi-day processing when the first observation file is truncated
  - pdp3.sh: increase the maximum number of days for multi-day processing from 5 to 32
 
-15. 2022-07-03 (v2.2)
+15. 2022-10-28 (v2.2)
  - pdp3.sh: increase the maximum processing interval from 30.0 to 300.0 seconds
+ - pdp3.sh: fix syntax errors in some of the output
+ - spp: the timestamp of the initial coordinates file are now aligned to the timestamp of observations
+ - lsq: fixed some possible fatal issues caused by rounding errors
+ - tedit: arguments with decimal comma now no longer causes the run to hang indefinitely

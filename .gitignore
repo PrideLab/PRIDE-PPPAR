@@ -498,3 +498,5 @@ src/spp/.obj/readrnxnav.o
 src/spp/.obj/solution.o
 src/spp/.obj/string.o
 src/spp/.obj/time.o
+*.20p
+*.21p

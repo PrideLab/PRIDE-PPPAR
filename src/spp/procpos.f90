@@ -15,21 +15,9 @@ character(3) satid
 integer*4 i,nobs,n,prn,sys,info
 type(sol_t), pointer :: sol_data(:)
 
-!integer*4 fpres  ! output res
-!fpres=FPADD
-!open(unit=fpres,file='D:\Desktop\data\out.res',status='replace',iostat=info)
-
 integer*4 fpclk1  ! output sat clock
 fpclk1=FPCLK
 if(clkfile_/="") open(unit=fpclk1,file=clkfile_,status='replace',iostat=info)
-
-!integer*4 fpclk2  ! output rcv clock
-!fpclk2=FPCLK
-!open(unit=fpclk2,file='D:\Desktop\out.clk',status='replace',iostat=info)
-
-!integer*4 fppos1  ! output sat position
-!fppos1=FPPOS
-!open(unit=fppos1,file='D:\Desktop\out.pos',status='replace',iostat=info)
 
 call rtkinit(rtk,popt);
 do while(.true.)
@@ -66,18 +54,9 @@ do while(.true.)
             nullify(sol_data)
         endif
     ! endif
-    
-    !do i=1,MAXSAT  !add res
-    !    write(fpres,"(F12.4\)") rtk%ssat(i)%resp(1)
-    !enddo
-    !write(fpres,"(A\)") char(10)  ! \n]
-    !write(fpclk2,*) rtk%sol%dtr(:)  ! rcv clock
 enddo
 call rtkfree(rtk);
-!close(unit=fpres, status='keep')  ! output res
 if(clkfile_/="") close(unit=fpclk1,status='keep')  ! output sat clock
-!close(unit=fpclk2,status='keep')  ! output rcv clock
-!close(unit=fppos1,status='keep')  ! output sat position
 
 if(solindex_==0)then
     write(*,*) "Info : no solution are computed, procpos()"
@@ -214,7 +193,6 @@ if(clkfile_/="")then
     do i=1,n
         call time2mjd(sol%time, clkmjd, clksod)
         call satno2id(obs(i)%sat, clkprn)
-        !write(FPCLK,"(F12.4\)") sol%time, clkprn, dts(i,1), dts(i,1) ! nowrap
         write(FPCLK,*) clkmjd, clksod, clkprn, dts(i,1), dts(i,2)
     enddo
 endif

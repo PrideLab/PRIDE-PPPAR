@@ -440,7 +440,7 @@ program lsq
       nbias = 0
       do ipar = NM%nc + NM%np + 1, NM%ipm
         if (PM(ipar)%pname(1:3) .ne. 'AMB' .or. PM(ipar)%ipt .eq. 0) cycle
-        if ((jd - PM(ipar)%ptend)*86400.d0 + sod .lt. MAXWND - LCF%dintv) cycle
+        if ((jd - PM(ipar)%ptend)*86400.d0 + sod .lt. MAXWND - LCF%dintv + 1.d-3) cycle
         isat = PM(ipar)%psat
         iamb = pointer_string(OB%npar, OB%pname, 'AMBC')
         nbias = nbias + 1

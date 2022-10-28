@@ -47,11 +47,6 @@ rnxobslist=""; rnxnavlist=""; obsdir=""; navdir=""
 argc=argcIn
 allocate(argv(argc))
 argv(1:argc)=argvIn(1:argc)
-!write(unit=6,fmt="('argc =',I2)") argc
-!do i=1,argc
-!    write(unit=6,fmt="(I2,' ',A)") i, argv(i)
-!enddo
-!print*
 
 if(argc==0)then
     call printhelp(); call exit(0)

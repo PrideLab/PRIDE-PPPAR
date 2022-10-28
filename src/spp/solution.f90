@@ -91,16 +91,16 @@ timeu=0
 if(opt%maxsolstd>0.d0 .and. sol_std(sol)>opt%maxsolstd)then
     stat1=0; return
 endif
-time=sol%time
+time=sol%time0
+! time=sol%time
 if (opt%times>=TIMES_UTC) time=gpst2utc(time)
 if (opt%times==TIMES_JST) time=timeadd(time,9*3600.d0)
-!call time2gpst(time,week,gpst)
 call time2mjd(time,mjd,sod)
 if(dabs(86400.d0-sod)<1d-3)then
     mjd=mjd+1; sod=0.d0
 endif
 fmtstr="(I5,F10.2)"
-write(s,trim(fmtstr)) mjd,ROUNDF(sod,2)
+write(s,trim(fmtstr)) mjd,sod
 call outecef(buff,s,sol,opt,info)
 stat1=len_trim(buff)  ! p-(char*)buff
 end subroutine

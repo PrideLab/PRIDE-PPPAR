@@ -93,6 +93,10 @@ subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x
       if (.not. display_help) then
         if (nval(ipar) .eq. 4) then
           mode = 'S'
+          do i = 2, 4
+            i0 = index(arg(ipar, i), ',')
+            if (i0 .gt. 0) arg(ipar, i)(i0:i0) = '.'
+          end do
           read (arg(ipar, 2), *, iostat=ioerr) x1_tmp
           read (arg(ipar, 3), *, iostat=ioerr) x2_tmp
           read (arg(ipar, 4), *, iostat=ioerr) x3_tmp
