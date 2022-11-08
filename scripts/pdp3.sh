@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Oct-28, 2022                                                    ##
+##  DATE   : Nov-08, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -455,10 +455,10 @@ ParseCmdArgs() { # purpose : parse command line into arguments
         if [ -n "$time" ]; then
             if [[ $time =~ ^\> ]]; then
                 [ -z "$ymd_s" ] && ymd_s=$(echo "$time" | awk '{printf("%04d-%02d-%02d\n",$2,$3,$4)}')
-                [ -z "$hms_s" ] && hms_s=$(echo "$time" | awk '{printf("%02d:%02d:%05.2f\n",$5,$6,$7)}')
+                [ -z "$hms_s" ] && hms_s=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$5,$6,$7)}')
             else
                 [ -z "$ymd_s" ] && ymd_s=$(echo "$time" | awk '{yr=$1+2000;if($1>80)yr-=100;printf("%04d-%02d-%02d\n",yr,$2,$3)}')
-                [ -z "$hms_s" ] && hms_s=$(echo "$time" | awk '{printf("%02d:%02d:%05.2f\n",$4,$5,$6)}')
+                [ -z "$hms_s" ] && hms_s=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$4,$5,$6)}')
             fi
         else
             >&2 echo -e "$MSGERR no valid start time from command or observation file"
@@ -507,10 +507,10 @@ ParseCmdArgs() { # purpose : parse command line into arguments
         if [ -n "$time" ]; then
             if [[ $time =~ ^\> ]]; then
                 [ -z "$ymd_e" ] && ymd_e=$(echo "$time" | awk '{printf("%04d-%02d-%02d\n",$2,$3,$4)}')
-                [ -z "$hms_e" ] && hms_e=$(echo "$time" | awk '{printf("%02d:%02d:%05.2f\n",$5,$6,$7)}')
+                [ -z "$hms_e" ] && hms_e=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$5,$6,$7)}')
             else
                 [ -z "$ymd_e" ] && ymd_e=$(echo "$time" | awk '{yr=$1+2000;if($1>80)yr-=100;printf("%04d-%02d-%02d\n",yr,$2,$3)}')
-                [ -z "$hms_e" ] && hms_e=$(echo "$time" | awk '{printf("%02d:%02d:%05.2f\n",$4,$5,$6)}')
+                [ -z "$hms_e" ] && hms_e=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$4,$5,$6)}')
             fi
         else
             >&2 echo -e "$MSGERR no valid end time from command or observation file"
@@ -715,9 +715,9 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     echo "$ctrl_path"
     echo "$ctrl_file"
     echo "$ymd_s"
-    echo "$hms_s"
+    echo "${hms_s:0:12}"
     echo "$ymd_e"
-    echo "$hms_e"
+    echo "${hms_e:0:12}"
     echo "$AR"
 }
 

@@ -160,6 +160,10 @@ Release of PRIDE PPP-AR v2.2
 * spp: the timestamp of the initial coordinates file are now aligned to the timestamp of observations
 * lsq: fixed some possible fatal issues caused by rounding errors
 * tedit: arguments with decimal comma now no longer causes the run to hang indefinitely
+
+2022-11-08
+
+* pdp3.sh: increase the number of decimal places in the time range from two to three
  
 ## Getting in Touch
 
