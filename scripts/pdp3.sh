@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Nov-08, 2022                                                    ##
+##  DATE   : Nov-21, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -1559,16 +1559,12 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local sp3="WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01M_ORB.SP3"
                 local sp3_cmp="${sp3}.gz"
                 local sp3_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${sp3_cmp}"
-            elif [ $mjd_s -ge 56658 ]; then
-                local sp3="COM${wkdow[0]}${wkdow[1]}.EPH"
-                local sp3_cmp="${sp3}.Z"
-                local sp3_url="ftp://ftp.aiub.unibe.ch/CODE_MGEX/CODE/${ydoy[0]}/${sp3_cmp}"
-            elif [ $mjd_s -ge 52581 ]; then
-                local sp3="COD${wkdow[0]}${wkdow[1]}.EPH"
-                local sp3_cmp="${sp3}.Z"
-                local sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${sp3_cmp}"
+            elif [ $mjd_s -ge 49718 ]; then
+                local sp3="IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3"
+                local sp3_cmp="${sp3}.gz"
+                local sp3_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${sp3_cmp}"
             else
-                echo -e "$MSGERR no available ephemeris product before MJD 52581" && return 1
+                echo -e "$MSGERR no available ephemeris product before MJD 49718" && return 1
             fi
             CopyOrDownloadProduct "$product_cmn_dir/$sp3"
             if [ $? -ne 0 ]; then
@@ -1657,16 +1653,12 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local clk="WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK"
                 local clk_cmp="${clk}.gz"
                 local clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/${clk_cmp}"
-            elif [ $mjd_s -ge 56658 ]; then
-                local clk="COM${wkdow[0]}${wkdow[1]}.CLK"
-                local clk_cmp="${clk}.Z"
-                local clk_url="ftp://ftp.aiub.unibe.ch/CODE_MGEX/CODE/${ydoy[0]}/${clk_cmp}"
-            elif [ $mjd_s -ge 51601 ]; then
-                local clk="COD${wkdow[0]}${wkdow[1]}.CLK"
-                local clk_cmp="${clk}.Z"
-                local clk_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${clk_cmp}"
+            elif [ $mjd_s -ge 49718 ]; then
+                local clk="IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK"
+                local clk_cmp="${clk}.gz"
+                local clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/${clk_cmp}"
             else
-                echo -e "$MSGERR no available clock product before MJD 51601" && return 1
+                echo -e "$MSGERR no available clock product before MJD 49718" && return 1
             fi
             CopyOrDownloadProduct "$product_cmn_dir/$clk"
             if [ $? -ne 0 ]; then
@@ -1743,27 +1735,21 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     else
         local custom_pro_erp=""
         for mjd in $(seq $mjd_s $mjd_e); do
-            local ydoy=($(mjd2ydoy $mjd))
             local wkdow=($(mjd2wkdow $mjd))
             if [ $mjd_s -ge 58849 ]; then
+                local ydoy=($(mjd2ydoy $mjd))
                 local erp="WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP"
                 local erp_cmp="${erp}.gz"
                 local erp_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${erp_cmp}"
-            elif [ $mjd_s -ge 56658 ]; then
-                local erp="COM${wkdow[0]}${wkdow[1]}.ERP"
-                local erp_cmp="${erp}.Z"
-                local erp_url="ftp://ftp.aiub.unibe.ch/CODE_MGEX/CODE/${ydoy[0]}/${erp_cmp}"
-            elif [ $mjd_s -ge 56187 ]; then
-                local erp="COD${wkdow[0]}${wkdow[1]}.ERP"
-                local erp_cmp="${erp}.Z"
-                local erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp_cmp}"
-            elif [ $mjd_s -ge 48792 ]; then
-                local erp="COD${wkdow[0]}7.ERP"
-                local erp_cmp="${erp}.Z"
-                local erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp_cmp}"
+            elif [ $mjd_s -ge 49718 ]; then
+                local ydoy=($(wkdow2ydoy ${wkdow[0]} 0))
+                local erp="IGS1R03SNX_${ydoy[0]}${ydoy[1]}0000_07D_01D_ERP.ERP"
+                local erp_cmp="${erp}.gz"
+                local erp_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${erp_cmp}"
             else
-                echo -e "$MSGERR no available ERP product before MJD 48792" && return 1
+                echo -e "$MSGERR no available ERP product before MJD 49718" && return 1
             fi
+            local ydoy=($(mjd2ydoy $mjd))
             CopyOrDownloadProduct "$product_cmn_dir/$erp"
             if [ $? -ne 0 ]; then
                 CopyOrDownloadProduct "$product_cmn_dir/$erp_cmp" "$erp_url"
@@ -1846,11 +1832,12 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local att="WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX"
                 local att_cmp="${att}.gz"
                 local att_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${att_cmp}"
+            elif [ $mjd_s -ge 49718 ]; then
+                local att="IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX"
+                local att_cmp="${att}.gz"
+                local att_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${att_cmp}"
             else
-                custom_pro_att="None"
-                local att="${custom_pro_att}"
-                sed -i "/Quaternions/s/Default/$att/g" "$config"
-                break
+                echo -e "$MSGERR no available quoternions product before MJD 49718" && return 1
             fi
             CopyOrDownloadProduct "$product_cmn_dir/$att"
             if [ $? -ne 0 ]; then
@@ -1915,12 +1902,12 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local fcb="WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ABS.BIA"
                 local fcb_cmp="${fcb}.gz"
                 local fcb_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/${fcb_cmp}"
-            elif [ $mjd_s -ge 58300 ]; then
-                local fcb="COM${wkdow[0]}${wkdow[1]}.BIA"
-                local fcb_cmp="${fcb}.Z"
-                local fcb_url="ftp://ftp.aiub.unibe.ch/CODE_MGEX/CODE/${ydoy[0]}/${fcb_cmp}"
+            elif [ $mjd_s -ge 51544 ]; then
+                local fcb="IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA"
+                local fcb_cmp="${fcb}.gz"
+                local fcb_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/${fcb_cmp}"
             else
-                [ $AR == Y ] && echo -e "$MSGERR no available phase bias product before MJD 58300" && return 1
+                [ $AR == Y ] && echo -e "$MSGERR no available phase bias product before MJD 51544" && return 1
                 custom_pro_fcb="None"
                 local fcb="$custom_pro_fcb"
                 sed -i "/Code\/phase bias/s/Default/$fcb/g" "$config"
@@ -1971,22 +1958,28 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
 
     # Check code/phase biases
     if [ -f "$fcb" ]; then
-        if [ $AR == Y ]; then
-            if ! grep -q "^ OSB " "$fcb"; then
-                echo -e "$MSGERR unsupported phase bias type (not OSB): $custom_pro_fcb"
-                return 1
-            fi
+        if ! grep -q "^ OSB " "$fcb"; then
+            echo -e "$MSGERR unsupported phase bias type (not OSB): $custom_pro_fcb"
+            [ $AR == Y ] && return 1 || rm -f "$fcb"
+        fi
+    fi
+
+    # APC model for code/phase biases
+    local apc_setting=$(get_ctrl "$ctrl_file" "PCO on wide-lane")
+    if [ "$apc_setting" == "Default" ]; then
+        local apc_keyword=$(grep "APC_MODEL" "$fcb" | head -1 | awk '{print($2)}')
+        if [ -z "$apc_keyword" ] || [[ "$apc_keyword" =~ ^NO* ]]; then
+            sed -i "/^PCO on wide-lane/s/ = .*/ = NO/"  "$ctrl_file"
         else
-            if ! grep -q "^ OSB " "$fcb"; then
-                echo -e "$MSGWAR unsupported phase bias type (not OSB): $custom_pro_fcb"
-                rm -f "$fcb"
-            fi
+            sed -i "/^PCO on wide-lane/s/ = .*/ = YES/" "$ctrl_file"
         fi
     fi
     
     # IGS ANTEX
     local abs_atx abs_url
     abs_atx="$(grep "SYS / PCVS APPLIED" $clk | head -1 | cut -c21-34 | tr 'A-Z' 'a-z' | sed 's/r3/R3/; s/ //g')"
+
+    ### CODE MGEX ANTEX
     echo "$custom_pro_clk" | grep -qE "^ *(COD0MGX|COM)"
     if [[ $? -eq 0 ]] && [[ $abs_atx == "igs14" ]]; then
         [[ "$mjd_s" -le 59336 ]] && abs_atx="M14.ATX" || abs_atx="M20.ATX"
@@ -2410,6 +2403,15 @@ mjd2ydoy() {
         doy=$(($mjd-$mjd0+1))
     done
     printf "%d %03d\n" $year $doy
+}
+
+wkdow2ydoy() {
+    local week=$((10#$1))
+    local dow=$2
+    local mjd0=44243
+    local mjd=$(($mjd0+1+$week*7+$dow))
+    local ydoy=($(mjd2ydoy $mjd))
+    printf "%d %03d\n" ${ydoy[*]}
 }
 
 ymd2wkdow() {

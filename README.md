@@ -161,9 +161,11 @@ Release of PRIDE PPP-AR v2.2
 * lsq: fixed some possible fatal issues caused by rounding errors
 * tedit: arguments with decimal comma now no longer causes the run to hang indefinitely
 
-2022-11-08
+2022-11-21
 
 * pdp3.sh: increase the number of decimal places in the time range from two to three
+* pdp3.sh: use IGS Repro3 combination products (IGS2R03FIN) between 1995 and 2020, support PPP-AR after 2000
+* table: add igsR3_2135.atx, remove M14.ATX
  
 ## Getting in Touch
 

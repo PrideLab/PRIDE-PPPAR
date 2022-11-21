@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
 !! 
 !!
 !!
@@ -87,6 +87,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
       do while (line(1:3) .eq. 'AS ')
         c = 0.d0
         read (line(4:), *, iostat=ierr) ii, iy, imon, id, ih, im, sec, j, c(1), c(2)
+        if (isnan(c(1)) .or. isnan(c(2))) goto 202
 !
 !! check time tag
         call yr2year(iy)
@@ -153,6 +154,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
     do while (line(1:3) .eq. 'AS ')
       c = 0.d0
       read (line(4:), *, iostat=ierr) ii, iy, imon, id, ih, im, sec, j, c(1), c(2)
+      if (isnan(c(1)) .or. isnan(c(2))) cycle
 !
 !! check time tag
       call yr2year(iy)
