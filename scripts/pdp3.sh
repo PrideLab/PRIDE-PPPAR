@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Nov-21, 2022                                                    ##
+##  DATE   : Dec-08, 2022                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
 ##                                                                           ##
@@ -2410,8 +2410,7 @@ wkdow2ydoy() {
     local dow=$2
     local mjd0=44243
     local mjd=$(($mjd0+1+$week*7+$dow))
-    local ydoy=($(mjd2ydoy $mjd))
-    printf "%d %03d\n" ${ydoy[*]}
+    mjd2ydoy $mjd
 }
 
 ymd2wkdow() {
