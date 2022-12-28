@@ -1,7 +1,7 @@
 !
 !! get_redig_args.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2022 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
 !! 
 !!
 !!
@@ -37,14 +37,16 @@ subroutine get_redig_args(nepo, RCF)
   type(rescfg) RCF
 !
 !! local
-  integer*4 i, j,nargs, isat, iy, imon, id, ih, im, is, iy_ses, imon_ses, id_ses, ih_ses, im_ses, is_ses, ierr
+  integer*4 i, j, nargs, isat
+  integer*4 iy, imon, id, ih, im, is, iy_ses, imon_ses, id_ses, ih_ses, im_ses, is_ses, ierr
+  integer*4 jy, jmon, jday, jdoy
   character*3 prn(MAXSAT),temprn,prn_mat(MAXSAT)
   real*8 sec, sec_ses, seslen, seslen_ses
   character*20 resfil, sttfil
   character*256 line
 !
 !! function called
-  integer*4 get_valid_unit, modified_julday,pointer_string
+  integer*4 get_valid_unit, modified_julday, pointer_string
   character*4 lower_string
 
   RCF%lfnres = 0
@@ -114,13 +116,29 @@ subroutine get_redig_args(nepo, RCF)
     endif
   enddo
 !
+!! read year/month/day from file name instead of records
+  jy = 0
+  jmon = 0
+  jday = 0
+
+  i = index(resfil, 'res_')
+  read (resfil(i:), '(4xi4i3)', err=200) jy, jdoy
+  call yeardoy2monthday(jy, jdoy, jmon, jday)  
+
+200 continue
+  if (jy .le. 0 .or. jmon .le. 0 .or. jmon .gt. 12 .or. jday .le. 0 .or. jday .gt. 31) then
+    jy = iy
+    jmon = imon
+    jday = id
+  endif
+!
 !! status file
-  call file_name(.false., 'stt', ' ', iy, imon, id, ih, sttfil)
+  call file_name(.false., 'stt', ' ', jy, jmon, jday, ih, sttfil)
   RCF%lfnstt = get_valid_unit(10)
   open (RCF%lfnstt, file=sttfil)
 !
 !! rinex health diagnose file
-  call file_name(.false., 'log', 'SNAM='//lower_string(RCF%snam), iy, imon, id, ih, RCF%flnrhd)
+  call file_name(.false., 'log', 'SNAM='//lower_string(RCF%snam), jy, jmon, jday, ih, RCF%flnrhd)
   RCF%lfnrhd = get_valid_unit(10)
   open (RCF%lfnrhd, file=RCF%flnrhd, status='old', action='read', iostat=ierr)
   if (ierr .ne. 0) then
