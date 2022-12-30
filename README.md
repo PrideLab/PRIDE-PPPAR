@@ -169,6 +169,8 @@ Release of PRIDE PPP-AR v2.2
  
 ## Getting in Touch
 
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FPrideLab%2FPRIDE-PPPAR&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=PAGE+VIEWS&edge_flat=false)](https://hits.seeyoufarm.com)
+
 * You can contact us for **bug reports** and **comments** by sending an email or leaving a message on our website:
   * Email: <pride@whu.edu.cn>
   * Website: <http://pride.whu.edu.cn>
@@ -180,3 +182,4 @@ Release of PRIDE PPP-AR v2.2
 ***Copyright (C) 2022 by Wuhan University, All rights reserved.***
 
 ---
+
