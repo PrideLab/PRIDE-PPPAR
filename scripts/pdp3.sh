@@ -8,11 +8,11 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Dec-08, 2022                                                    ##
+##  DATE   : Jan-03, 2023                                                    ##
 ##                                                                           ##
-##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
+##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
-##    Copyright (C) 2022 by Wuhan University                                 ##
+##    Copyright (C) 2023 by Wuhan University                                 ##
 ##                                                                           ##
 ##    This program is free software: you can redistribute it and/or modify   ##
 ##    it under the terms of the GNU General Public License (version 3) as    ##
@@ -1990,8 +1990,8 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         [[ "$abs_atx" =~ \.(ATX|atx)$ ]] || abs_atx="${abs_atx}.atx"
         echo -e "$MSGINF Prepare IGS ANTEX product: $abs_atx ..."
     else
-        [[ "$OFFLINE" == "NO" ]] && abs_atx=$(curl https://files.igs.org/pub/station/general/ | grep -Eo "igs14_[0-9]{4}.atx" | tail -1)
-        [[ $? -eq 0 ]] || abs_atx="igs14_2223.atx"
+        [[ "$OFFLINE" == "NO" ]] && abs_atx=$(curl https://files.igs.org/pub/station/general/ | grep -Eo "igs(14|20)_[0-9]{4}.atx" | tail -1)
+        [[ $? -eq 0 ]] || abs_atx="igs20_2239.atx"
         echo -e "$MSGINF Prepare IGS ANTEX product: $abs_atx ..."
         echo -e "$MSGWAR no PCO/PCV model defined in $clk, use default instead"
     fi
@@ -2006,7 +2006,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 echo -e "$MSGINF please download this file from $atx_url"
                 return 1
             fi
-        elif [[ $abs_atx =~ ^igs(05|08|14) ]]; then
+        elif [[ $abs_atx =~ ^igs(05|08|14|20) ]]; then
             atx_url="https://files.igs.org/pub/station/general/$abs_atx"
             WgetDownload "$atx_url"
             if [ $? -ne 0 ]; then

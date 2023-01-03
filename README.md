@@ -166,6 +166,11 @@ Release of PRIDE PPP-AR v2.2
 * pdp3.sh: increase the number of decimal places in the time range from two to three
 * pdp3.sh: use IGS Repro3 combination products (IGS2R03FIN) between 1995 and 2020, support PPP-AR after 2000
 * table: add igsR3_2135.atx, remove M14.ATX
+
+2023-01-03
+
+* pdp3.sh: support IGS20
+* table: add igs20_2239.atx
  
 ## Getting in Touch
 
@@ -182,4 +187,3 @@ Release of PRIDE PPP-AR v2.2
 ***Copyright (C) 2022 by Wuhan University, All rights reserved.***
 
 ---
-
