@@ -509,7 +509,7 @@ program lsq
   do ipar=1,NM%ipm
     if(PM(ipar)%ptype.eq.'S' .and. PM(ipar)%iobs.gt.0) then
       k=pointer_string(LCF%nprn, LCF%prn, LCF%prn(PM(ipar)%psat))
-      if(k.ne.0 .and. any(LCF%bias(k,1:9).ne.0.d0) .and. any(LCF%bias(k,10:18).ne.0.d0)) then
+      if(k.ne.0 .and. any(LCF%bias(k,1:9).ne.1.d9) .and. any(LCF%bias(k,10:18).ne.1.d9)) then
         if(pointer_string(LCF%fcbnprn,LCF%fcbprn,LCF%prn(PM(ipar)%psat)).eq.0) then
           LCF%fcbnprn=LCF%fcbnprn+1
           LCF%fcbprn(LCF%fcbnprn)=LCF%prn(PM(ipar)%psat)

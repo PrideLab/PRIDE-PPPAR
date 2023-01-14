@@ -50,9 +50,12 @@ subroutine read_bias(flnosb, nprn, prn, bias, osbjd0, osbjd1)
   open (lfn, file=flnosb, status='old', iostat=ierr)
   if (ierr .ne. 0) then
     write (*, '(2a)') '###WARNING(read_bias): open file ', trim(flnosb)
-    bias=0.d0
+    bias=1.d9
     return
   endif
+!
+!! initialize
+  bias=1.d9
 !
 !! read header
   read (lfn, '(a)') line
@@ -140,16 +143,16 @@ subroutine read_bias(flnosb, nprn, prn, bias, osbjd0, osbjd1)
     do isft = 0, 1
       !
       !! assumes all phase biases are equal then find substitute
-      val = 0.d0
+      val = 1.d9
       do ityp = 1, ntyp
         val = bias(iprn, ityp+9*isft)
-        if (val .ne. 0.d0) exit
+        if (val .ne. 1.d9) exit
       enddo
       !
       !! complete but pass over when code biases not exists
       do ityp = 1, ntyp
-        if (bias(iprn, ityp+9*isft) .eq. 0.d0) then
-          if (bias(iprn, ityp+9*(isft+2)) .eq. 0.d0) cycle
+        if (bias(iprn, ityp+9*isft) .eq. 1.d9) then
+          if (bias(iprn, ityp+9*(isft+2)) .eq. 1.d9) cycle
           bias(iprn, ityp+9*isft) = val
         endif
       enddo
