@@ -1,7 +1,7 @@
 !
 !! rdrnxoh.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2022 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng
+!! Contributor: Maorong Ge, Jianghui Geng, Jihang Lin
 !! 
 !!
 !!
@@ -36,6 +36,7 @@ subroutine rdrnxoh(lfn, HD, ierr)
 !
 !! local
   integer*4 i, ioerr, ii
+  real*8    ver
   character*80 msg, line, keyword*20
   character*1 type_sys
 
@@ -46,15 +47,16 @@ subroutine rdrnxoh(lfn, HD, ierr)
     keyword = line(61:80)
 !
 !! end of header.
-    if ((index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .eq. 2) &
-        .or. (len_trim(keyword) .eq. 0 .and. HD%ver .eq. 1) &
-        .or. (index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .eq. 3)) return
+    if ((index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 200 .and. HD%ver .lt. 300) &
+        .or. (len_trim(keyword) .eq. 0 .and. HD%ver .lt. 200) &
+        .or. (index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 300 .and. HD%ver .lt. 400)) return
 !
 !! RINEX  version
     if (index(keyword, 'RINEX VERSION') .ne. 0) then
-      read (line, '(i6)', iostat=ioerr) HD%ver
+      read (line, '(f10.2)', iostat=ioerr) ver
+      HD%ver = int(ver*100)
       if (ioerr .ne. 0) msg = 'read RINEX VERSION error.'
-      if (HD%ver .ne. 1 .and. HD%ver .ne. 2 .and. HD%ver .ne. 3) &
+      if (HD%ver .lt. 100 .or. HD%ver .ge. 400) &
         write (msg, '(a,i3)') 'invalid RINEX VERSION ', HD%ver
 !
 !! site name

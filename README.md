@@ -167,10 +167,11 @@ Release of PRIDE PPP-AR v2.2
 * pdp3.sh: use IGS Repro3 combination products (IGS2R03FIN) between 1995 and 2020, support PPP-AR after 2000
 * table: add igsR3_2135.atx, remove M14.ATX
 
-2023-01-03
+2023-02-05
 
 * pdp3.sh: support IGS20
 * table: add igs20_2239.atx
+* lib: resolved the issue in which BDS B1I observations were unable to be read from the RINEX 3.02 format
  
 ## Getting in Touch
 

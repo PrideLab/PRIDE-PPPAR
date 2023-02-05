@@ -267,7 +267,7 @@ program lsq
     k = 0
     if (SITE%iunit .eq. 0) cycle
     if (ierr .ne. 2) then
-      if (HD%ver .eq. 3) then
+      if (HD%ver .ge. 300) then
         call rdrnxoi3(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, LCF%bias, ierr)
       else
         call rdrnxoi2(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, LCF%bias, ierr)

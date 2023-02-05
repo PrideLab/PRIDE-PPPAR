@@ -382,7 +382,8 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
             prio_index = index(obs_prio_C, HD%obstyp3_C(j)(3:3))
           endif
           if(prio_index.eq.0) cycle
-          if (HD%obstyp3_C(j) (1:2) .eq. 'L2') then
+          if (HD%obstyp3_C(j) (1:2) .eq. 'L2' .or. & 
+             (HD%obstyp3_C(j) (1:2) .eq. 'L1' .and. HD%ver .eq. 302)) then
             if(bias(i0, prio_index) .eq. 1.d9) then
               if(phs_prio_index(1).lt.prio_index) then
                 l1=j
@@ -409,7 +410,8 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
                 OB%typuse(i0, 2) = HD%obstyp3_C(j)
               endif
             endif
-          elseif (HD%obstyp3_C(j) (1:2) .eq. 'C2') then
+          elseif (HD%obstyp3_C(j) (1:2) .eq. 'C2' .or. &
+                 (HD%obstyp3_C(j) (1:2) .eq. 'C1' .and. HD%ver .eq. 302)) then
             if(bias(i0, prio_index+9*2).eq.1.d9) then
               if(phs_prio_index(3) .lt. prio_index) then
                 p1=j

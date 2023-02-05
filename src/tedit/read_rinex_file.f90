@@ -219,7 +219,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
 !            OB ----------------- o_file body structure
 ! **************************************************************************************** !
     if (ierr .ne. 2) then
-      if (HD%ver .eq. 3) then
+      if (HD%ver .ge. 300) then
         call rdrnxoi3(iunit, jd0, tobs, dwnd, nprn, prn, HD, OB, bias, ierr)
       else
         call rdrnxoi2(iunit, jd0, tobs, dwnd, nprn, prn, HD, OB, bias, ierr)
