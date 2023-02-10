@@ -1968,7 +1968,8 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     local apc_setting=$(get_ctrl "$ctrl_file" "PCO on wide-lane")
     if [ "$apc_setting" == "Default" ]; then
         local apc_keyword=$(grep "APC_MODEL" "$fcb" | head -1 | awk '{print($2)}')
-        if [ -z "$apc_keyword" ] || [[ "$apc_keyword" =~ ^NO* ]]; then
+        echo "$custom_pro_clk" | grep -qE "^ *(WUM0MGXRAP)"
+        if [[ $? -ne 0 ]] && ([[ -z "$apc_keyword" ]] || [[ "$apc_keyword" =~ ^NO* ]]); then
             sed -i '' "/^PCO on wide-lane/s/ = .*/ = NO/"  "$ctrl_file"
         else
             sed -i '' "/^PCO on wide-lane/s/ = .*/ = YES/" "$ctrl_file"
