@@ -215,7 +215,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
           endif
           if(prio_index.eq.0) cycle
           if (HD%obstyp3_G(j) (1:2) .eq. 'L1') then
-            if(bias(i0, prio_index) .eq. 1.d9) then
+            if(abs(bias(i0, prio_index) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(1).lt.prio_index) then
                 l1=j
                 phs_prio_index(1)=prio_index
@@ -228,7 +228,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_G(j) (1:2) .eq. 'L2') then
-            if(bias(i0, prio_index+9) .eq. 1.d9) then
+            if(abs(bias(i0, prio_index+9) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(2).lt.prio_index) then
                 l2=j
                 phs_prio_index(2)=prio_index
@@ -241,7 +241,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_G(j) (1:2) .eq. 'C1') then
-            if(bias(i0, prio_index+9*2).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*2) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(3).lt.prio_index) then
                 p1=j
                 phs_prio_index(3)=prio_index
@@ -254,7 +254,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_G(j) (1:2) .eq. 'C2') then
-            if(bias(i0, prio_index+9*3).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*3) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(4).lt.prio_index) then
                 p2=j
                 phs_prio_index(4)=prio_index
@@ -288,7 +288,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               OB%typuse(i0, 2) = HD%obstyp3_R(j)
             endif
           elseif (HD%obstyp3_R(j) (1:2) .eq. 'C1') then
-            if(bias(i0, prio_index+9*2).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*2) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(3).lt.prio_index) then
                 p1=j
                 phs_prio_index(3)=prio_index
@@ -301,7 +301,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_R(j) (1:2) .eq. 'C2') then
-            if(bias(i0, prio_index+9*3).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*3) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(4).lt.prio_index) then
                 p2=j
                 phs_prio_index(4)=prio_index
@@ -323,7 +323,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
           endif
           if(prio_index.eq.0) cycle
           if (HD%obstyp3_E(j) (1:2) .eq. 'L1') then
-            if(bias(i0, prio_index) .eq. 1.d9) then
+            if(abs(bias(i0, prio_index) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(1).lt.prio_index) then
                 l1=j
                 phs_prio_index(1)=prio_index
@@ -336,7 +336,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_E(j) (1:2) .eq. 'L5') then
-            if(bias(i0, prio_index+9) .eq. 1.d9) then
+            if(abs(bias(i0, prio_index+9) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(2).lt.prio_index) then
                 l2=j
                 phs_prio_index(2)=prio_index
@@ -349,7 +349,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_E(j) (1:2) .eq. 'C1') then
-            if(bias(i0, prio_index+9*2).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*2) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(3) .lt. prio_index) then
                 p1=j
                 phs_prio_index(3)=prio_index
@@ -362,7 +362,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_E(j) (1:2) .eq. 'C5') then
-            if(bias(i0, prio_index+9*3).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*3) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(4) .lt. prio_index) then
                 p2=j
                 phs_prio_index(4)=prio_index
@@ -384,7 +384,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
           if(prio_index.eq.0) cycle
           if (HD%obstyp3_C(j) (1:2) .eq. 'L2' .or. & 
              (HD%obstyp3_C(j) (1:2) .eq. 'L1' .and. HD%ver .eq. 302)) then
-            if(bias(i0, prio_index) .eq. 1.d9) then
+            if(abs(bias(i0, prio_index) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(1).lt.prio_index) then
                 l1=j
                 phs_prio_index(1)=prio_index
@@ -397,8 +397,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_C(j) (1:2) .eq. 'L6') then ! BDS-2 B1I&B3I
-          !elseif (HD%obstyp3_C(j) (1:2) .eq. 'L7') then ! BDS-2 B1I&B2I
-            if(bias(i0, prio_index+9) .eq. 1.d9) then
+            if(abs(bias(i0, prio_index+9) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(2).lt.prio_index) then
                 l2=j
                 phs_prio_index(2)=prio_index
@@ -412,7 +411,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
             endif
           elseif (HD%obstyp3_C(j) (1:2) .eq. 'C2' .or. &
                  (HD%obstyp3_C(j) (1:2) .eq. 'C1' .and. HD%ver .eq. 302)) then
-            if(bias(i0, prio_index+9*2).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*2) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(3) .lt. prio_index) then
                 p1=j
                 phs_prio_index(3)=prio_index
@@ -425,8 +424,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_C(j) (1:2) .eq. 'C6') then ! BDS-2 B1I&B3I
-          !elseif (HD%obstyp3_C(j) (1:2) .eq. 'C7') then ! BDS-2 B1I&B2I
-            if(bias(i0, prio_index+9*3).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*3) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(4) .lt. prio_index) then
                 p2=j
                 phs_prio_index(4)=prio_index
@@ -447,7 +445,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
           endif
           if(prio_index.eq.0) cycle
           if (HD%obstyp3_J(j) (1:2) .eq. 'L1') then
-            if(bias(i0, prio_index) .eq. 1.d9) then
+            if(abs(bias(i0, prio_index) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(1).lt.prio_index) then
                 l1=j
                 phs_prio_index(1)=prio_index
@@ -460,7 +458,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_J(j) (1:2) .eq. 'L2') then
-            if(bias(i0, prio_index+9) .eq. 1.d9) then
+            if(abs(bias(i0, prio_index+9) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(2).lt.prio_index) then
                 l2=j
                 phs_prio_index(2)=prio_index
@@ -473,7 +471,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_J(j) (1:2) .eq. 'C1') then
-            if(bias(i0, prio_index+9*2).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*2) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(3) .lt. prio_index) then
                 p1=j
                 phs_prio_index(3)=prio_index
@@ -486,7 +484,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
               endif
             endif
           elseif (HD%obstyp3_J(j) (1:2) .eq. 'C2') then
-            if(bias(i0, prio_index+9*3).eq.1.d9) then
+            if(abs(bias(i0, prio_index+9*3) - 1.d9) .lt. 1.d-3) then
               if(phs_prio_index(4) .lt. prio_index) then
                 p2=j
                 phs_prio_index(4)=prio_index
@@ -576,7 +574,6 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
     enddo
   endif
   OB%dtrcv = dt
-
 !
 !! normal ending
   return

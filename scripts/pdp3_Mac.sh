@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Jan-03, 2023                                                    ##
+##  DATE   : Feb-14, 2023                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -49,6 +49,7 @@ readonly MSGSTA="${BLUE}===>$NC"
 ######################################################################
 
 shopt -s extglob                        # Enable Extendded Globbing
+readonly LC_NUMERIC="en_US.UTF-8"       # Specify period decimal point
 
 readonly DEBUG=NO                       # YES/NO (uppercase!)
 readonly OFFLINE=NO                     # OFFLINE=YES will overwrite USECACHE=NO
@@ -146,8 +147,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     -H | --help )
         PRIDE_PPPAR_HELP && exit 1 ;;
     -* )
-        >&2 echo -e "$MSGERR invalid argument (the last argument should be obs-file): $last_arg"
-        >&2 echo -e "$MSGINF type ‘pdp3 -H’ or ‘pdp3 --help’ for more information"
+        >&2 echo -e "$MSGERR invalid argument (the last argument should be observation file): $last_arg"
+        >&2 echo -e "$MSGINF use ‘pdp3 -H’ or ‘pdp3 --help’ for more information"
         exit 1
     esac
 
@@ -440,8 +441,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
             [ "$site" == "xxxx" ] && site=""
         fi
         if [[ ! "$site" =~ $SITE_REGEX ]]; then
-             >&2 echo -e "$MSGERR no valid site name from command or observation file"
-             >&2 echo -e "$MSGINF please input site name with option ‘-n’ or ‘--site’"
+             >&2 echo -e "$MSGERR site name not found in command-line or observation file"
+             >&2 echo -e "$MSGINF please use the option ‘-n’ or ‘--site’ to input the site name"
              exit 1
         fi
     fi
@@ -461,8 +462,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 [ -z "$hms_s" ] && hms_s=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$4,$5,$6)}')
             fi
         else
-            >&2 echo -e "$MSGERR no valid start time from command or observation file"
-            >&2 echo -e "$MSGINF please input start time with option ‘-s’ or ‘--start’"
+            >&2 echo -e "$MSGERR start time not found in command-line or observation file"
+            >&2 echo -e "$MSGINF please use the option ‘-s’ or ‘--start’ to input the start time"
             exit 1
         fi
     fi
@@ -491,8 +492,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 ;;
             * )
                 tmpfobs="$rnxo_name"
-                >&2 echo -e "$MSGWAR unrecognized naming convention of RINEX observation file: $tmpfobs"
-                >&2 echo -e "$MSGINF error may occur if not enough observation data is contained in this single file"
+                >&2 echo -e "$MSGWAR illegal naming convention: $tmpfobs"
+                >&2 echo -e "$MSGINF please make ensure the RINEX observation file contains enough observation data to be processed"
                 break
                 ;;
             esac
@@ -513,8 +514,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 [ -z "$hms_e" ] && hms_e=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$4,$5,$6)}')
             fi
         else
-            >&2 echo -e "$MSGERR no valid end time from command or observation file"
-            >&2 echo -e "$MSGINF please input end time with option ‘-e’ or ‘--end’"
+            >&2 echo -e "$MSGERR end time not found in command-line or observation file"
+            >&2 echo -e "$MSGINF please use the option ‘-e’ or ‘--end’ to input the end time"
             exit 1
         fi
     fi
@@ -554,7 +555,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
 
     if [[ -n "$interval" ]] && [[ "$interval" != "Default" ]]; then
         if [[ $(echo "$interval < $obsintvl" | bc) -eq 1 ]]; then
-            >&2 echo -e "$MSGERR input interval is short than the observation interval: $interval < $obsintvl"
+            >&2 echo -e "$MSGERR input interval is shorter than observation interval: $interval < $obsintvl"
             exit 1
         fi
     else
@@ -566,22 +567,22 @@ ParseCmdArgs() { # purpose : parse command line into arguments
             last_dif=$(echo "$obsintvl" | awk '{print("'${last_can}'"-$0)}')
             this_dif=$(echo "$obsintvl" | awk '{print($0-"'${cand[$i]}'")}')
             if [[ $(echo "$last_dif < $this_dif" | bc) -eq 1 ]]; then
-               if [[ $(echo "$obsintvl == $last_can" | bc) -ne 1 ]]; then
-                  >&2 echo -e "$MSGWAR singular observation interval, rounded to the nearest candidate: $obsintvl -> $last_can"
-               fi
-               obsintvl="$last_can" && break
+                if [[ $(echo "$obsintvl == $last_can" | bc) -ne 1 ]]; then
+                    >&2 echo -e "$MSGWAR observation interval rounded to the nearest candidate: $obsintvl -> $last_can"
+                fi
+                obsintvl="$last_can" && break
             fi
         done
         interval="$obsintvl"
     fi
 
     if [[ $(echo "0.02 > $interval" | bc) -eq 1 ]]; then
-       >&2 echo -e "$MSGWAR observation interval is too small, rounded to the nearest candidate: $interval -> 0.02"
+       >&2 echo -e "$MSGWAR observation interval too small, rounded to the minimum candidate: $interval -> 0.02"
        interval="0.02"
     fi
 
     if [[ $(echo "$interval > 300.0" | bc) -eq 1 ]]; then
-       >&2 echo -e "$MSGWAR observation interval is too large, rounded to the nearest candidate: $interval -> 300.0"
+       >&2 echo -e "$MSGWAR observation interval too large, rounded to the maximum candidate: $interval -> 300.0"
        interval="300.0"
     fi
 
@@ -592,9 +593,9 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     [ "$edt_opt" == "Default" ] && edt_opt="YES"
     sed -i '' "/^Strict editing/s/ = .*/ = $edt_opt/" "$ctrl_file"
 
-    [ "$edt_opt" == "YES" ] && min_sspan="600.0" || min_sspan="120.0"
+    [ "$edt_opt" == "YES" ] && min_sspan="600.0" || min_sspan="30.0"
     if [[ $(echo "$sspan < $min_sspan" | bc) -eq 1 ]]; then
-        >&2 echo -e "$MSGERR observation period is too short: $sspan < $min_sspan"
+        >&2 echo -e "$MSGERR observation period too short: $sspan < $min_sspan"
         exit 1
     fi
 
@@ -721,61 +722,54 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     echo "$AR"
 }
 
-check_optional_arg(){ # purpose : check if optional argument is existing
-                      # usage   : check_optional_arg this_arg last_arg
+check_optional_arg() { # purpose : check if optional argument is existing
+                       # usage   : check_optional_arg this_arg last_arg
     local this_arg=$1
     local last_arg=$2
-
     [[ -z $this_arg ]] && return 1
     [[ $this_arg =~ ^-{1,2}   ]] && return 1
     [[ $this_arg == $last_arg ]] && return 1
     return 0
 }
 
-throw_conflict_opt(){ # purpose : throw exception message and exit when option conflicts with a previous option
-                      # usage   : throw_invalid_arg opt
+throw_conflict_opt() { # purpose : throw exception message and exit when option conflicts with a previous option
+                       # usage   : throw_invalid_arg opt
     local opt=$1
-
     >&2 echo "$SCRIPT_NAME: conflicting option '$opt'"
     >&2 echo "Try '$SCRIPT_NAME --help' for more information."
     exit 1
 }
 
-throw_invalid_arg(){ # purpose : throw exception message and exit when option got an invalid argument
-                     # usage   : throw_invalid_arg optlable argument
+throw_invalid_arg() { # purpose : throw exception message and exit when option got an invalid argument
+                      # usage   : throw_invalid_arg optlable argument
     local optlable=$1
     local argument=$2
-
     >&2 echo "$SCRIPT_NAME: invalid $optlable: ‘$argument’"
     >&2 echo "Try '$SCRIPT_NAME --help' for more information."
     exit 1
 }
 
-throw_invalid_opt(){ # purpose : throw exception message and exit when an invalid option occurs
-                     # usage   : throw_invalid_opt opt
+throw_invalid_opt() { # purpose : throw exception message and exit when an invalid option occurs
+                      # usage   : throw_invalid_opt opt
     local opt=$1
-
     case $opt in
     --+([-[:alnum:]_]) ) local detail="unrecognized option '${opt}'" ;;
      -+([-[:alnum:]_]) ) local detail="invalid option -- '${opt:1}'" ;;
       * )                local detail="invalid argument -- '${opt}'" ;;
     esac
-
     >&2 echo "$SCRIPT_NAME: $detail"
     >&2 echo "Try '$SCRIPT_NAME --help' for more information."
     exit 1
 }
 
-throw_require_arg(){ # purpose : throw exception message and exit when option did not get its argument
-                     # usage   : throw_require_arg opt
+throw_require_arg() { # purpose : throw exception message and exit when option did not get its argument
+                      # usage   : throw_require_arg opt
     local opt=$1
-
     case $opt in
     --+([-[:alnum:]_]) ) local detail="option '${opt:0}' requires an argument"    ;;
      -+([-[:alnum:]_]) ) local detail="option requires an argument -- '${opt:1}'" ;;
       * )                local detail="invalid argument -- '${opt:0}'"            ;;
     esac
-
     >&2 echo "$SCRIPT_NAME: $detail"
     >&2 echo "Try '$SCRIPT_NAME --help' for more information."
     exit 1
@@ -819,7 +813,7 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
                      # usage   : PRIDE_PPPAR_HELP
     >&2 echo "Usage: $SCRIPT_NAME [options] <obs-file>"
     >&2 echo ""
-    >&2 echo "  All char type arguments could be either upper-case or lower-case"
+    >&2 echo "  All character type arguments could be upper-case or lower-case"
     >&2 echo ""
     >&2 echo "Start up:"
     >&2 echo ""
@@ -849,20 +843,20 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
     >&2 echo "                                             --------+--------------------------+--------+-----------------"
     >&2 echo "                                               date  |  yyyy/mm/dd or yyyy/doy  |  time  |  hh:mm:ss       "
     >&2 echo "                                             --------+--------------------------+--------+-----------------"
-    >&2 echo "                                               * default: the first observation epoch in obs-file"
+    >&2 echo "                                               * default: first observation epoch in the obs-file"
     >&2 echo ""
     >&2 echo "  -e <date [time]>, --end <date [time]>      end date (and time) for processing, format:"
     >&2 echo "                                             --------+--------------------------+--------+-----------------"
     >&2 echo "                                               date  |  yyyy/mm/dd or yyyy/doy  |  time  |  hh:mm:ss       "
     >&2 echo "                                             --------+--------------------------+--------+-----------------"
-    >&2 echo "                                               * default: the last observation epoch in obs-file"
+    >&2 echo "                                               * default: last observation epoch in the obs-file"
     >&2 echo ""
     >&2 echo "  -n <char>, --site <char>                   site name for processing, format: NNNN"
-    >&2 echo "                                               * default: the MARKER NAME in obs-file, or the first four"
-    >&2 echo "                                                   characters of the filename in RINEX naming convention"
+    >&2 echo "                                               * default: MARKER NAME in the obs-file, or the first four"
+    >&2 echo "                                                   characters of the RINEX filename"
     >&2 echo ""
     >&2 echo "  -i <num>,  --interval <num>                processing interval in seconds, 0.02 <= interval <= 300"
-    >&2 echo "                                               * default: the minimal observation interval in obs-file"
+    >&2 echo "                                               * default: minimal observation interval in the obs-file"
     >&2 echo ""
     >&2 echo "Advanced options:"
     >&2 echo ""
@@ -1055,17 +1049,23 @@ ProcessSingleSite() { # purpose : process data of single site
     echo -e "$MSGSTA Prepare initial position ${site} ..."
     local interval=$(get_ctrl "$config" "Interval")
     ComputeInitialPos "$rinexobs" "$rinexnav" "$mjd_s" "$hms_s" "$mjd_e" "$hms_e" "$site" "$interval" "$mode"
-    awk -v sit=$site '/^Position/{printf(" %s%16.4f%16.4f%16.4f\n",sit,$3,$4,$5)}' tmp_ComputeInitialPos > sit.xyz
     local session_time=($(awk '/^Duration/{print $3,$4,$5,$6,$7,$8,$9}' tmp_ComputeInitialPos))
-    rm -f tmp_ComputeInitialPos
     if [ ${mode} == "F" ]; then
-        local initial_pos=($(snx2sit $site $mjd_s))
-        if [ ${#initial_pos[@]} -ne 6 ]; then
-            echo -e "$MSGERR ProcessSingleDay: no position or sigma: $site"
-            return 1
+        if [ -e sit.xyz ] && grep -q "$site" sit.xyz; then
+            local initial_pos=($(awk '/'${site}'/{print($2,$3,$4,$5,$6,$7)}' sit.xyz))
+            printf " %s%16.4f%16.4f%16.4f%10.6f%10.6f%10.6f\n" ${site} ${initial_pos[*]} > sit.xyz
+        else
+            local initial_pos=($(snx2sit $site $mjd_s))
+            if [ ${#initial_pos[@]} -ne 6 ]; then
+                echo -e "$MSGERR ProcessSingleDay: no position or sigma in station coordinate product: $site snx_${year}${doy}"
+                return 1
+            fi
+            printf " %s%16.4f%16.4f%16.4f%10.6f%10.6f%10.6f\n" ${site} ${initial_pos[*]} > sit.xyz
         fi
-        printf " %s%16.4f%16.4f%16.4f%10.6f%10.6f%10.6f\n" ${site} ${initial_pos[*]} > sit.xyz
+    else
+        awk -v sit=$site '/^Position/{printf(" %s%16.4f%16.4f%16.4f\n",sit,$3,$4,$5)}' tmp_ComputeInitialPos > sit.xyz
     fi
+    rm -f tmp_ComputeInitialPos
     echo -e "$MSGSTA Prepare initial position ${site} done"
 
     # Check priori positions
@@ -1092,7 +1092,7 @@ ProcessSingleSite() { # purpose : process data of single site
     # Editing mode
     local editing_mode=$(get_ctrl "$config" "Strict editing")
     if [[ "$editing_mode" != "YES" ]] && [[ "$editing_mode" != "NO" ]]; then
-        echo -e "$MSGERR ProcessSingleSite: unknown editing mode: $editing"
+        echo -e "$MSGERR ProcessSingleSite: illegal editing mode: $editing"
         return 1
     fi
 
@@ -1123,7 +1123,7 @@ ProcessSingleSite() { # purpose : process data of single site
                  -pc_check 0 -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\""
         fi
     else
-        echo -e "$MSGERR ProcessSingleSite: unknown positioning mode: $site $positioning_mode"
+        echo -e "$MSGERR ProcessSingleSite: illegal positioning mode: $positioning_mode"
         return 1
     fi
     cmd=$(tr -s " " <<< "$cmd")
@@ -1141,7 +1141,7 @@ ProcessSingleSite() { # purpose : process data of single site
         local jumps=(400 200 100 50)
         local jump_end=50
     else
-        local short=$(echo $interval | awk '{printf("%.0f\n", 120/$1)}')
+        local short=0
         local jumps=(400 200 100)
         local jump_end=100
     fi
@@ -1258,7 +1258,7 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
 
     if ! ls $table_dir &>/dev/null; then
         echo -e "$MSGERR PrepareTables: table directory doesn't exist: $table_dir"
-        [ "$table_dir" == "Default" ] && echo -e "$MSGINF please define your table directory in configuration file"
+        [ "$table_dir" == "Default" ] && echo -e "$MSGINF please specify the table directory in the configuration file"
         return 1
     fi
 
@@ -1297,8 +1297,8 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
         fi
     fi
     if ! grep -q "\-leap sec" "$leapsec"; then
-        echo -e "$MSGERR PrepareTables: no available $leapsec"
-        echo -e "$MSGINF please download this file from $leapsrc_url"
+        echo -e "$MSGERR PrepareTables: $leapsec invalid or not found"
+        echo -e "$MSGINF please download it from $leapsec_url and place it in the table directory for processing"
         return 1
     fi
 
@@ -1330,15 +1330,15 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
         fi
     fi
     if ! grep -q "\-prn_indexed" "$satpara"; then
-        echo -e "$MSGERR PrepareTables: no available $satpara"
-        echo -e "$MSGINF please download this file from $satpara_url"
+        echo -e "$MSGERR PrepareTables: $satpara invalid or not found"
+        echo -e "$MSGINF please download it from $satpara_url and place it in the table directory for processing"
         return 1
     else
         local tmpymd=($(sed -n "1p;q" "$satpara" | awk '{print(substr($0,56,4),substr($0,61,2),substr($0,64,2))}'))
         local tmpmjd=$(ymd2mjd ${tmpymd[@]})
         if [ $? -ne 0 -o "$tmpmjd" -lt "$mjd_e" ]; then
             echo -e "$MSGWAR PrepareTables: outdated $satpara"
-            echo -e "$MSGINF please update this file from $satpara_url"
+            echo -e "$MSGINF please update it from $satpara_url and place it in the table directory for processing"
         fi
     fi
 
@@ -1368,7 +1368,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
             if [ $? -eq 0 ]; then
                 gunzip -f ${navgps}.gz
             else
-                echo -e "$MSGWAR download hourly rinexnav failed: $navgps"
+                echo -e "$MSGWAR failed to download hourly GPS navigation file: $navgps"
             fi
             local navglo="hour${doy}0.${year:2:2}g" && rm -f "$navglo"
             local urlnav="ftp://igs.gnsswhu.cn/pub/gps/data/hourly/${year}/${doy}/${navglo}.gz"
@@ -1376,20 +1376,20 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
             if [ $? -eq 0 ]; then
                 gunzip -f ${navglo}.gz
             else
-                echo -e "$MSGWAR download hourly rinexnav failed: $navglo"
+                echo -e "$MSGWAR failed to download hourly GLONASS navigation file: $navglo"
             fi
             if [ -f "$navgps" -a -f "$navglo" ]; then
                 echo -e "$MSGSTA Merging $rinexnav ..."
                 merge2brdm.py "$navgps" "$navglo" && mv -f "$rinexnav" "$rinex_dir"
                 if [ $? -ne 0 -o ! -f "$rinex_dir/$rinexnav" ]; then
-                    echo -e "$MSGERR merging hourly rinexnav failed: $navgps $navglo -> $rinexnav"
+                    echo -e "$MSGERR failed to merge hourly RINEX navigation files: $navgps $navglo -> $rinexnav"
                     return 1
                 fi
             else
                 [ -f "$navglo" ] && mv -f "$navglo" "$rinex_dir/$rinexnav"
                 [ -f "$navgps" ] && mv -f "$navgps" "$rinex_dir/$rinexnav"
                 if [ ! -f "$rinex_dir/$rinexnav" ]; then
-                    echo -e "$MSGERR download hourly rinexnav failed: $rinex_dir/$rinexnav"
+                    echo -e "$MSGERR failed to download hourly RINEX navigation file: $rinex_dir/$rinexnav"
                     return 1
                 fi
             fi
@@ -1420,7 +1420,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
                     if [ $? -eq 0 ]; then
                         gunzip -f ${tmpnav}.gz && mv -f "$tmpnav" "$rinex_dir/$rinexnav"
                     else
-                        echo -e "$MSGWAR download rinexnav failed: $tmpnav"
+                        echo -e "$MSGWAR failed to download RINEX navigation file: $tmpnav"
                     fi
                 fi
             fi
@@ -1435,7 +1435,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
                 if [ $? -ne 0 ]; then
                     WgetDownload "$urlnav" && gunzip -f "${navgps}.Z"
                     if [ $? -ne 0 ]; then
-                        echo -e "$MSGWAR download rinexnav failed: $navgps"
+                        echo -e "$MSGWAR failed to download GPS navigation file: $navgps"
                     fi
                 fi
             fi
@@ -1446,21 +1446,21 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
                 if [ $? -ne 0 ]; then
                     WgetDownload "$urlnav" && gunzip -f "${navglo}.Z"
                     if [ $? -ne 0 ]; then
-                        echo -e "$MSGWAR download rinexnav failed: $navglo"
+                        echo -e "$MSGWAR failed to download GLONASS navigation file: $navglo"
                     fi
                 fi
             fi
             if [ -f "$navgps" -a -f "$navglo" ]; then
                 merge2brdm.py "$navgps" "$navglo" && mv -f "$rinexnav" "$rinex_dir"
                 if [ $? -ne 0 -o ! -f "$rinex_dir/$rinexnav" ]; then
-                    echo -e "$MSGERR merging rinexnav failed: $navgps $navglo -> $rinexnav"
+                    echo -e "$MSGERR failed to merge RINEX navigation files: $navgps $navglo -> $rinexnav"
                     return 1
                 fi
             else
                 [ -f "$navglo" ] && mv -f "$navglo" "$rinex_dir/$rinexnav"
                 [ -f "$navgps" ] && mv -f "$navgps" "$rinex_dir/$rinexnav"
                 if [ ! -f "$rinex_dir/$rinexnav" ]; then
-                    echo -e "$MSGERR download rinexnav failed: $rinex_dir/$rinexnav"
+                    echo -e "$MSGERR failed to download RINEX navigation file: $rinex_dir/$rinexnav"
                     return 1
                 fi
             fi
@@ -1484,13 +1484,13 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
                grep -Eq "^ $sys[0-9][0-9] " "$config" || continue
                grep -Eq "^$sys[ 0-9][0-9] " "$rinex_dir/$rinexnav" && nsys=$[$nsys+1]
                if [ $? -ne 0 ]; then
-                   echo -e "$MSGWAR no $sys satellites in RINEX navigation file: $rinexnav"
+                   echo -e "$MSGWAR no $sys satellites found in RINEX navigation file: $rinexnav"
                fi
             done
             ;;
         esac
         if [ "$nsys" -eq 0 ]; then
-            echo -e "$MSGERR all GNSS in RINEX navigation file have been disabled: $rinexnav"
+            echo -e "$MSGERR all satellites in RINEX navigation file have been disabled: $rinexnav"
             exit 1
         fi
     done
@@ -1543,7 +1543,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             sp3="mersp3_${ymd_s}${doy_s}"
             MergeFiles "$(pwd)" "$custom_pro_sp3" "$sp3"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $sp3 merge failed"
+                echo -e "$MSGERR PrepareProducts: failed to merge ephemeris product: $custom_pro_sp3 -> $sp3"
                 return 1
             fi
             for tmp in $(echo "$custom_pro_sp3"); do
@@ -1564,13 +1564,13 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local sp3_cmp="${sp3}.gz"
                 local sp3_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${sp3_cmp}"
             else
-                echo -e "$MSGERR no available ephemeris product before MJD 49718" && return 1
+                echo -e "$MSGERR no available ephemeris product for dates before MJD 49718" && return 1
             fi
             CopyOrDownloadProduct "$product_cmn_dir/$sp3"
             if [ $? -ne 0 ]; then
                 CopyOrDownloadProduct "$product_cmn_dir/$sp3_cmp" "$sp3_url"
                 if [ $? -ne 0 ] && [[ "$sp3" == WUM0MGXRAP* ]]; then
-                    echo -e "$MSGWAR PrepareProducts: $sp3_cmp download failed, try using RTS product"
+                    echo -e "$MSGWAR PrepareProducts: failed to download RAP product $sp3_cmp, try downloading RTS product"
                     sp3="WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_01M_ORB.SP3"
                     sp3_cmp="${sp3}.gz"
                     sp3_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${sp3_cmp}"
@@ -1587,7 +1587,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     if [ $? -ne 0 ]; then
                         CopyOrDownloadProduct "$product_cmn_dir/$sp3_cmp" "$sp3_url"
                         if [ $? -ne 0 ]; then
-                            echo -e "$MSGERR PrepareProducts: $sp3_cmp download failed"
+                            echo -e "$MSGERR PrepareProducts: failed to download ephemeris product: $sp3_cmp"
                             return 1
                         fi
                     fi
@@ -1609,7 +1609,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             sp3="mersp3_${ymd_s}${doy_s}"
             MergeFiles "$(pwd)" "$custom_pro_sp3" "$sp3"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $sp3 merge failed"
+                echo -e "$MSGERR PrepareProducts: failed to merge ephemeris product: $custom_pro_sp3 -> $sp3"
                 return 1
             fi
             for tmp in $(echo "$custom_pro_sp3"); do
@@ -1637,7 +1637,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             clk="mersck_${ymd_s}${doy_s}"
             MergeFiles "$(pwd)" "$custom_pro_clk" "$clk"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $clk merge failed"
+                echo -e "$MSGERR PrepareProducts: failed to merge clock products: $custom_pro_clk -> $clk"
                 return 1
             fi
             for tmp in $(echo "$custom_pro_clk"); do
@@ -1658,13 +1658,13 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local clk_cmp="${clk}.gz"
                 local clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/${clk_cmp}"
             else
-                echo -e "$MSGERR no available clock product before MJD 49718" && return 1
+                echo -e "$MSGERR no available clock product for dates before MJD 49718" && return 1
             fi
             CopyOrDownloadProduct "$product_cmn_dir/$clk"
             if [ $? -ne 0 ]; then
                 CopyOrDownloadProduct "$product_cmn_dir/$clk_cmp" "$clk_url"
                 if [ $? -ne 0 ] && [[ $clk == WUM0MGXRAP* ]]; then
-                    echo -e "$MSGWAR PrepareProducts: $clk_cmp download failed, try using RTS product"
+                    echo -e "$MSGWAR PrepareProducts: failed to download RAP product $clk_cmp, try downloading RTS product"
                     clk="WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_05S_CLK.CLK"
                     clk_cmp="${clk}.gz"
                     clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/${clk_cmp}"
@@ -1681,7 +1681,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     if [ $? -ne 0 ]; then
                         CopyOrDownloadProduct "$product_cmn_dir/$clk_cmp" "$clk_url"
                         if [ $? -ne 0 ]; then
-                            echo -e "$MSGERR PrepareProducts: $clk_cmp download failed"
+                            echo -e "$MSGERR PrepareProducts: failed to download clock product: $clk_cmp"
                             return 1
                         fi
                     fi
@@ -1697,7 +1697,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             clk="mersck_${ymd_s}${doy_s}"
             MergeFiles "$(pwd)" "$custom_pro_clk" "$clk"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $clk merge failed"
+                echo -e "$MSGERR PrepareProducts: failed to merge clock product: $custom_pro_clk -> $clk"
                 return 1
             fi
             for tmp in $(echo "$custom_pro_clk"); do
@@ -1725,7 +1725,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             erp="mererp_${ymd_s}${doy_s}"
             MergeFiles "$(pwd)" "$custom_pro_erp" "$erp"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $erp merge failed"
+                echo -e "$MSGERR PrepareProducts: failed to merge ERP product: $custom_pro_erp -> $erp"
                 return 1
             fi
             for tmp in $(echo "$custom_pro_erp"); do
@@ -1747,14 +1747,14 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local erp_cmp="${erp}.gz"
                 local erp_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${erp_cmp}"
             else
-                echo -e "$MSGERR no available ERP product before MJD 49718" && return 1
+                echo -e "$MSGERR no available ERP product for dates before MJD 49718" && return 1
             fi
             local ydoy=($(mjd2ydoy $mjd))
             CopyOrDownloadProduct "$product_cmn_dir/$erp"
             if [ $? -ne 0 ]; then
                 CopyOrDownloadProduct "$product_cmn_dir/$erp_cmp" "$erp_url"
                 if [ $? -ne 0 ] && [[ $erp == WUM0MGXRAP* ]]; then
-                    echo -e "$MSGWAR PrepareProducts: $erp_cmp download failed, try using RTS product"
+                    echo -e "$MSGWAR PrepareProducts: failed to download RAP product $erp_cmp, try downloading RTS product"
                     erp="WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP"
                     erp_cmp="${erp}.gz"
                     erp_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${erp_cmp}"
@@ -1771,7 +1771,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     if [ $? -ne 0 ]; then
                         CopyOrDownloadProduct "$product_cmn_dir/$erp_cmp" "$erp_url"
                         if [ $? -ne 0 ]; then
-                            echo -e "$MSGERR PrepareProducts: $erp_cmp download failed"
+                            echo -e "$MSGERR PrepareProducts: failed to download ERP product: $erp_cmp"
                             return 1
                         fi
                     fi
@@ -1787,7 +1787,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             erp="mererp_${ymd_s}${doy_s}"
             MergeFiles "$(pwd)" "$custom_pro_erp" "$erp"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $erp merge failed"
+                echo -e "$MSGERR PrepareProducts: failed to merge ERP product: $custom_pro_erp -> $erp"
                 return 1
             fi
             for tmp in $(echo "$custom_pro_erp"); do
@@ -1816,7 +1816,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 att="meratt_${ymd_s}${doy_s}"
                 MergeFiles "$(pwd)" "$custom_pro_att" "$att"
                 if [ $? -ne 0 ]; then
-                    echo -e "$MSGERR PrepareProducts: $att merge failed"
+                    echo -e "$MSGERR PrepareProducts: failed to merge quoternions product: $custom_pro_att -> $att"
                     return 1
                 fi
                 for tmp in $(echo "$custom_pro_att"); do
@@ -1837,13 +1837,13 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local att_cmp="${att}.gz"
                 local att_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${att_cmp}"
             else
-                echo -e "$MSGERR no available quoternions product before MJD 49718" && return 1
+                echo -e "$MSGERR no available quoternions product for dates before MJD 49718" && return 1
             fi
             CopyOrDownloadProduct "$product_cmn_dir/$att"
             if [ $? -ne 0 ]; then
                 CopyOrDownloadProduct "$product_cmn_dir/$att_cmp" "$att_url"
                 if [ $? -ne 0 ]; then
-                    echo -e "$MSGWAR PrepareProducts: $att_cmp download failed"
+                    echo -e "$MSGWAR PrepareProducts: failed to download quoternions product: $att_cmp"
                 fi
             fi
             [ -f "$att_cmp" ] && gunzip -f "$att_cmp"
@@ -1856,7 +1856,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             att="meratt_${ymd_s}${doy_s}"
             MergeFiles "$(pwd)" "$custom_pro_att" "$att"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $att merge failed"
+                echo -e "$MSGERR PrepareProducts: failed to merge quoternions product: $custom_pro_att -> $att"
                 return 1
             fi
             for tmp in $(echo "$custom_pro_att"); do
@@ -1876,7 +1876,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     CopyOrDownloadProduct "$product_dir/$fcb"
                     if [ $? -ne 0 ]; then
                         echo -e "$MSGWAR PrepareProducts: no such file: $fcb"
-                        [ $AR == Y ] && echo -e "$MSGERR no phase bias product: $fcb" && return 1
+                        [ $AR == Y ] && echo -e "$MSGERR no bias product: $fcb" && return 1
                     fi
                 fi
             done
@@ -1885,7 +1885,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 fcb="merfcb_${ymd_s}${doy_s}"
                 MergeFiles "$(pwd)" "$custom_pro_fcb" "$fcb"
                 if [ $? -ne 0 ]; then
-                    echo -e "$MSGERR PrepareProducts: $fcb merge failed"
+                    echo -e "$MSGERR PrepareProducts: failed to merge bias product: $custom_pro_fcb -> $fcb"
                     return 1
                 fi
                 for tmp in $(echo "$custom_pro_fcb"); do
@@ -1907,7 +1907,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local fcb_cmp="${fcb}.gz"
                 local fcb_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/${fcb_cmp}"
             else
-                [ $AR == Y ] && echo -e "$MSGERR no available phase bias product before MJD 51544" && return 1
+                [ $AR == Y ] && echo -e "$MSGERR no available phase bias product for dates before MJD 51544" && return 1
                 custom_pro_fcb="None"
                 local fcb="$custom_pro_fcb"
                 sed -i '' "/Code\/phase bias/s/Default/$fcb/g" "$config"
@@ -1917,8 +1917,8 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             if [ $? -ne 0 ]; then
                 CopyOrDownloadProduct "$product_cmn_dir/$fcb_cmp" "$fcb_url"
                 if [ $? -ne 0 ]; then
-                    echo -e "$MSGWAR PrepareProducts: $fcb_cmp download failed"
-                    [ $AR == Y ] && echo -e "$MSGERR no phase bias product: $fcb" && return 1
+                    echo -e "$MSGWAR PrepareProducts: failed to download bias product: $fcb_cmp"
+                    [ $AR == Y ] && echo -e "$MSGERR no bias product: $fcb" && return 1
                 fi
             fi
             [ -f "$fcb_cmp" ] && gunzip -f "$fcb_cmp"
@@ -1931,7 +1931,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             fcb="merfcb_${ymd_s}${doy_s}"
             MergeFiles "$(pwd)" "$custom_pro_fcb" "$fcb"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $fcb merge failed"
+                echo -e "$MSGERR PrepareProducts: failed to merge bias product: $custom_pro_fcb -> $fcb"
                 return 1
             fi
             for tmp in $(echo "$custom_pro_fcb"); do
@@ -1959,7 +1959,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     # Check code/phase biases
     if [ -f "$fcb" ]; then
         if ! grep -q "^ OSB " "$fcb"; then
-            echo -e "$MSGERR unsupported phase bias type (not OSB): $custom_pro_fcb"
+            echo -e "$MSGERR unsupported bias type (not OSB): $custom_pro_fcb"
             [ $AR == Y ] && return 1 || rm -f "$fcb"
         fi
     fi
@@ -1968,8 +1968,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     local apc_setting=$(get_ctrl "$ctrl_file" "PCO on wide-lane")
     if [ "$apc_setting" == "Default" ]; then
         local apc_keyword=$(grep "APC_MODEL" "$fcb" | head -1 | awk '{print($2)}')
-        echo "$custom_pro_clk" | grep -qE "^ *(WUM0MGXRAP)"
-        if [[ $? -ne 0 ]] && ([[ -z "$apc_keyword" ]] || [[ "$apc_keyword" =~ ^NO* ]]); then
+        if [[ -n "$apc_keyword" ]] && [[ "$apc_keyword" =~ ^NO* ]]; then
             sed -i '' "/^PCO on wide-lane/s/ = .*/ = NO/"  "$ctrl_file"
         else
             sed -i '' "/^PCO on wide-lane/s/ = .*/ = YES/" "$ctrl_file"
@@ -1991,10 +1990,10 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         [[ "$abs_atx" =~ \.(ATX|atx)$ ]] || abs_atx="${abs_atx}.atx"
         echo -e "$MSGINF Prepare IGS ANTEX product: $abs_atx ..."
     else
-        [[ "$OFFLINE" == "NO" ]] && abs_atx=$(curl https://files.igs.org/pub/station/general/ | grep -Eo "igs(14|20)_[0-9]{4}.atx" | tail -1)
-        [[ $? -eq 0 ]] || abs_atx="igs20_2239.atx"
+        [[ "$OFFLINE" == "NO" ]] && abs_atx=$(curl https://files.igs.org/pub/station/general/ | grep -Eo "igs[0-9]{2}_[0-9]{4}.atx" | tail -1)
+        [[ $? -eq 0 ]] || abs_atx=$(ls "$table_dir/igs[0-9]{2}_[0-9]{4}.atx" | tail -1)
         echo -e "$MSGINF Prepare IGS ANTEX product: $abs_atx ..."
-        echo -e "$MSGWAR no PCO/PCV model defined in $clk, use default instead"
+        echo -e "$MSGWAR no PCO/PCV model specified in clock product $clk, use default instead"
     fi
 
     if [ -f "$table_dir/$abs_atx" ]; then
@@ -2004,10 +2003,10 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             WgetDownload "$atx_url"
             if [ $? -ne 0 ]; then
                 echo -e "$MSGERR PrepareProducts: failed to download $abs_atx"
-                echo -e "$MSGINF please download this file from $atx_url"
+                echo -e "$MSGINF please download it from $atx_url and place it in the table directory for processing"
                 return 1
             fi
-        elif [[ $abs_atx =~ ^igs(05|08|14|20) ]]; then
+        elif [[ $abs_atx =~ ^igs[0-9]{2} ]]; then
             atx_url="https://files.igs.org/pub/station/general/$abs_atx"
             WgetDownload "$atx_url"
             if [ $? -ne 0 ]; then
@@ -2015,6 +2014,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 WgetDownload "$atx_url"
                 if [ $? -ne 0 ]; then
                     echo -e "$MSGERR PrepareProducts: failed to download $abs_atx"
+                    echo -e "$MSGINF please download it from $atx_url and place it in the table directory for processing"
                     return 1
                 fi
             fi
@@ -2026,6 +2026,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 WgetDownload "$atx_url"
                 if [ $? -ne 0 ]; then
                     echo -e "$MSGERR PrepareProducts: failed to download $abs_atx"
+                    echo -e "$MSGINF please download it from $atx_url and place it in the table directory for processing"
                     return 1
                 fi
             fi
@@ -2046,8 +2047,13 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     if [ "$mode" == "F" ]; then
         [ "$OFFLINE" == "NO" ] && mkdir -p "$product_ssc_dir"
         local wkdow=($(mjd2wkdow $mjd_s))
-        local ssc="igs${ymd_s:2:2}P${wkdow[0]}${wkdow[1]}.ssc"
-        local ssc_cmp="${ssc}.Z"
+        if [ ${wkdow[0]} -lt 2238 ]; then
+            local ssc="igs${ymd_s:2:2}P${wkdow[0]}${wkdow[1]}.ssc"
+            local ssc_cmp="${ssc}.Z"
+        else
+            local ssc="IGS0OPSSNX_${ymd_s}${doy_s}0000_01D_01D_CRD.SNX"
+            local ssc_cmp="${ssc}.gz"
+        fi
         CopyOrDownloadProduct "$product_ssc_dir/$ssc"
         if [ $? -ne 0 ]; then
             for ssc_url in "ftp://igs.gnsswhu.cn/pub/gps/products/$wkdow" \
@@ -2057,9 +2063,11 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 [ $? -eq 0 ] && break
             done
             if [ ! -f "$ssc_cmp" ]; then
-                echo -e "$MSGWAR PrepareProducts: $ssc_cmp download failed"
-                echo -e "$MSGERR no station coordinate product: $ssc"
-                return 1
+                echo -e "$MSGWAR PrepareProducts: failed to download station coordinate product: $ssc_cmp"
+                if [ ! -f sit.xyz ]; then
+                    echo -e "$MSGERR no station coordinate product: $ssc"
+                    return 1
+                fi
             fi
         fi
         [ -f "$ssc_cmp" ] && gunzip -f "$ssc_cmp"
@@ -2079,7 +2087,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             if [ $? -ne 0 ]; then
                 CopyOrDownloadProduct "$product_ion_dir/$ion_cmp" "$ion_url"
                 if [ $? -ne 0 ]; then
-                    echo -e "$MSGERR PrepareProducts: $ion_cmp download failed"
+                    echo -e "$MSGERR PrepareProducts: failed to download high-order ionosphere grid: $ion_cmp"
                     return 1
                 fi
             fi
@@ -2092,14 +2100,14 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         if [ $num -gt 1 ]; then    
             MergeFiles "$(pwd)" "$ion" "$tec"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $tec merge failed"
+                echo -e "$MSGERR PrepareProducts: failed to merge TEC files: $ion -> $tec"
                 return 1
             fi
             rm -f "$ion"
         else
             mv -f "$ion_tmp" "$tec"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $tec rename failed"
+                echo -e "$MSGERR PrepareProducts: failed to rename TEC file: $ion_tmp -> $tec"
                 return 1
             fi
         fi
@@ -2122,7 +2130,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         if [ $? -ne 0 ]; then
             CopyOrDownloadProduct "$product_vmf_dir/$vmf" "$vmf_url"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $vmf download failed"
+                echo -e "$MSGERR PrepareProducts: failed to download VMF1 grid: $vmf"
                 return 1
             fi
         fi
@@ -2138,7 +2146,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 if [ $? -ne 0 ]; then
                     CopyOrDownloadProduct "$product_vmf_dir/$vmf" "$vmf_url"
                     if [ $? -ne 0 ]; then
-                        echo -e "$MSGERR PrepareProducts: $vmf download failed"
+                        echo -e "$MSGERR PrepareProducts: failed to download VMF1 grid: $vmf"
                         return 1
                     fi
                 fi
@@ -2154,7 +2162,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         if [ $? -ne 0 ]; then
             CopyOrDownloadProduct "$product_vmf_dir/$vmf" "$vmf_url"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $vmf download failed"
+                echo -e "$MSGERR PrepareProducts: failed to download VMF1 grid: $vmf" 
                 return 1
             fi
         fi
@@ -2177,7 +2185,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         if [ $? -ne 0 ]; then
             CopyOrDownloadProduct "$product_vmf_dir/$vmf" "$vmf_url"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $vmf download failed"
+                echo -e "$MSGERR PrepareProducts: failed to download VMF3 grid: $vmf"
                 return 1
             fi
         fi
@@ -2193,7 +2201,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 if [ $? -ne 0 ]; then
                     CopyOrDownloadProduct "$product_vmf_dir/$vmf" "$vmf_url"
                     if [ $? -ne 0 ]; then
-                        echo -e "$MSGERR PrepareProducts: $vmf download failed"
+                        echo -e "$MSGERR PrepareProducts: failed to download VMF3 grid: $vmf"
                         return 1
                     fi
                 fi
@@ -2209,7 +2217,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         if [ $? -ne 0 ]; then
             CopyOrDownloadProduct "$product_vmf_dir/$vmf" "$vmf_url"
             if [ $? -ne 0 ]; then
-                echo -e "$MSGERR PrepareProducts: $vmf download failed"
+                echo -e "$MSGERR PrepareProducts: failed to download VMF3 grid: $vmf"
                 return 1
             fi
         fi
@@ -2219,12 +2227,11 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     fi
 
     # Rename products
-    mv -f ${clk} sck_${ymd_s}${doy_s} || return 1
-    [ -e ${fcb} ] && mv -f ${fcb} fcb_${ymd_s}${doy_s}
-    [ -e ${att} ] && mv -f ${att} att_${ymd_s}${doy_s}
-
-    # Generate igserp
-    mv -f ${erp} igserp || return 1
+    mv -f "${clk}" sck_${ymd_s}${doy_s} || return 1
+    mv -f "${erp}" igserp               || return 1
+    [ -e  "${fcb}" ] && mv -f "${fcb}" fcb_${ymd_s}${doy_s}
+    [ -e  "${att}" ] && mv -f "${att}" att_${ymd_s}${doy_s}
+    [ -e  "${ssc}" ] && mv -f "${ssc}" snx_${ymd_s}${doy_s}
 
     echo -e "$MSGSTA PrepareProducts done"
 }
@@ -2295,8 +2302,8 @@ CleanAll() { # purpose : clean all files generated by PRIDE-PPPAR in the work di
     local year=$1
     local doy=$2
     local types typ
-    rm -f sit.xyz igserp config\.*
-    types=(rck ztd htg amb res stt cst neq att fcb orb sck)
+    rm -f igserp config\.*
+    types=(rck ztd htg amb res stt cst neq att fcb orb sck snx)
     for typ in ${types[*]}; do
         rm -f ${typ}_${year}${doy}
     done
@@ -2361,7 +2368,6 @@ snx2sit() {
     local mjd="$2"
     local wkdow=($(mjd2wkdow $mjd))
     local ydoy=($(mjd2ydoy $mjd))
-    local igsssc="igs${ydoy:2:2}P${wkdow[0]}${wkdow[1]}.ssc"
     local site_u=$(echo $site | tr 'a-z' 'A-Z')
     awk -v sit=${site_u} 'BEGIN{fg=0;x=0.0;y=0.0;z=0.0;sigx=0.0;sigy=0.0;sigz=0.0;snam=" "}\
          {\
@@ -2376,7 +2382,7 @@ snx2sit() {
                snam=" ";x=0.0;y=0.0;z=0.0;sigx=0.0;sigy=0.0;sigz=0.0;\
              };\
            }\
-         }' $igsssc
+         }' "snx_${ydoy[0]}${ydoy[1]}"
 }
 
 ymd2mjd() {
@@ -2463,7 +2469,7 @@ ydoy2ymd() {
     printf "%d %02d %02d\n" $iyear $imon $iday
 }
 
-xyz2blh(){
+xyz2blh() {
     local x=$1
     local y=$2
     local z=$3

@@ -421,10 +421,10 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
       endif
       write(lfn,'(a15,45x,a)') LCF%htgmod, 'TROP GRADIENT'
       write(lfn,'(a15,45x,a)') LCF%ztdmod, 'TROP ZENITH'
+      write(lfn,'(a60,a)') LCF%flnatx_real, 'TABLE ANTEX'
       write(lfn,'(3f14.4,18x,a)') SITE%enu0, 'SITE ANTENNA E/N/H (meter)'
       write(lfn,'(a20,40x,a)') SITE%anttyp, 'SITE ANTENNA TYPE'
       write(lfn,'(a20,40x,a)') SITE%rectyp, 'SITE RECEIVER TYPE'
-      write(lfn,'(a60,a)') LCF%flnatx_real, 'TABLE ANTEX'
       if (LCF%fcbuse) then
         write(lfn,'(a60,a)') LCF%flnfcb_real, 'SAT BIAS'
       else

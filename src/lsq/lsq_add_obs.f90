@@ -160,23 +160,27 @@ subroutine lsq_add_obs(lfncid, lfnobs, lfnrem, jd, sod, LCF, OB, PM, NM, SAT, SI
       if (OB%pname(ipar) (1:4) .eq. 'AMBC') then
         if(LCF%prn(isat)(1:1).eq.'G')then
           if(LCF%pcowl) then
-            pco_sit_obs(1)=SITE%enu_G(3,1)*dsin(OB%elev(isat)) !f1 on meter
-            pco_sit_obs(2)=SITE%enu_G(3,2)*dsin(OB%elev(isat)) !f2 on meter
-            pco_sat_obs(1)=SAT(isat)%xyz(3,1)*dcos(SAT(isat)%nadir) !f1 on meter
-            pco_sat_obs(2)=SAT(isat)%xyz(3,2)*dcos(SAT(isat)%nadir) !f2 on meter
-            pco_f1=pco_sat_obs(1)+pco_sit_obs(1)
-            pco_f2=pco_sat_obs(2)+pco_sit_obs(2)
+            pco_sit_obs(1)=SITE%enu_G(3,1)*dsin(OB%elev(isat))+ &
+                           SITE%enu_G(1,1)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_G(2,1)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_sit_obs(2)=SITE%enu_G(3,2)*dsin(OB%elev(isat))+ &
+                           SITE%enu_G(1,2)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_G(2,2)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_f1=SAT(isat)%pcc(1)+pco_sit_obs(1)
+            pco_f2=SAT(isat)%pcc(2)+pco_sit_obs(2)
           endif
           rwl=(OB%obs(isat,1)+pco_f1*FREQ1_G/VLIGHT) - (OB%obs(isat,2)+pco_f2*FREQ2_G/VLIGHT) &
               -(g_G*(OB%obs(isat,3)+pco_f1) + (OB%obs(isat,4)+pco_f2))/(1.d0+g_G)/lamdw_G
         elseif(LCF%prn(isat)(1:1).eq.'R')then
           if(LCF%pcowl) then
-            pco_sit_obs(1)=SITE%enu_R(3,1)*dsin(OB%elev(isat)) !f1 on meter
-            pco_sit_obs(2)=SITE%enu_R(3,2)*dsin(OB%elev(isat)) !f2 on meter
-            pco_sat_obs(1)=SAT(isat)%xyz(3,1)*dcos(SAT(isat)%nadir) !f1 on meter
-            pco_sat_obs(2)=SAT(isat)%xyz(3,2)*dcos(SAT(isat)%nadir) !f2 on meter
-            pco_f1=pco_sat_obs(1)+pco_sit_obs(1)
-            pco_f2=pco_sat_obs(2)+pco_sit_obs(2)
+            pco_sit_obs(1)=SITE%enu_R(3,1)*dsin(OB%elev(isat))+ &
+                           SITE%enu_R(1,1)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_R(2,1)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_sit_obs(2)=SITE%enu_R(3,2)*dsin(OB%elev(isat))+ &
+                           SITE%enu_R(1,2)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_R(2,2)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_f1=SAT(isat)%pcc(1)+pco_sit_obs(1)
+            pco_f2=SAT(isat)%pcc(2)+pco_sit_obs(2)
           endif
           read(LCF%prn(isat),'(1x,i2)') prn_int
           frequency_glo_nu=OB%glschn(prn_int)
@@ -186,34 +190,40 @@ subroutine lsq_add_obs(lfncid, lfnobs, lfnrem, jd, sod, LCF, OB, PM, NM, SAT, SI
               - (g_R*(OB%obs(isat,3)+pco_f1) + (OB%obs(isat,4)+pco_f2))/(1.d0+g_R)/lamdw_R(frequency_glo_nu)
         elseif(LCF%prn(isat)(1:1).eq.'E')then
           if(LCF%pcowl) then
-            pco_sit_obs(1)=SITE%enu_E(3,1)*dsin(OB%elev(isat)) !f1 on meter
-            pco_sit_obs(2)=SITE%enu_E(3,2)*dsin(OB%elev(isat)) !f2 on meter
-            pco_sat_obs(1)=SAT(isat)%xyz(3,1)*dcos(SAT(isat)%nadir) !f1 on meter
-            pco_sat_obs(2)=SAT(isat)%xyz(3,2)*dcos(SAT(isat)%nadir) !f2 on meter
-            pco_f1=pco_sat_obs(1)+pco_sit_obs(1)
-            pco_f2=pco_sat_obs(2)+pco_sit_obs(2)
+            pco_sit_obs(1)=SITE%enu_E(3,1)*dsin(OB%elev(isat))+ &
+                           SITE%enu_E(1,1)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_E(2,1)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_sit_obs(2)=SITE%enu_E(3,2)*dsin(OB%elev(isat))+ &
+                           SITE%enu_E(1,2)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_E(2,2)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_f1=SAT(isat)%pcc(1)+pco_sit_obs(1)
+            pco_f2=SAT(isat)%pcc(2)+pco_sit_obs(2)
           endif
           rwl=(OB%obs(isat,1)+pco_f1*FREQ1_E/VLIGHT) - (OB%obs(isat,2)+pco_f2*FREQ2_E/VLIGHT) &
               -(g_E*(OB%obs(isat,3)+pco_f1) + (OB%obs(isat,4)+pco_f2))/(1.d0+g_E)/lamdw_E
         elseif(LCF%prn(isat)(1:1).eq.'C')then
           if(LCF%pcowl) then
-            pco_sit_obs(1)=SITE%enu_C(3,1)*dsin(OB%elev(isat)) !f1 on meter
-            pco_sit_obs(2)=SITE%enu_C(3,2)*dsin(OB%elev(isat)) !f2 on meter
-            pco_sat_obs(1)=SAT(isat)%xyz(3,1)*dcos(SAT(isat)%nadir) !f1 on meter
-            pco_sat_obs(2)=SAT(isat)%xyz(3,2)*dcos(SAT(isat)%nadir) !f2 on meter
-            pco_f1=pco_sat_obs(1)+pco_sit_obs(1)
-            pco_f2=pco_sat_obs(2)+pco_sit_obs(2)
+            pco_sit_obs(1)=SITE%enu_C(3,1)*dsin(OB%elev(isat))+ &
+                           SITE%enu_C(1,1)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_C(2,1)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_sit_obs(2)=SITE%enu_C(3,2)*dsin(OB%elev(isat))+ &
+                           SITE%enu_C(1,2)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_C(2,2)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_f1=SAT(isat)%pcc(1)+pco_sit_obs(1)
+            pco_f2=SAT(isat)%pcc(2)+pco_sit_obs(2)
           endif
           rwl=(OB%obs(isat,1)+pco_f1*FREQ1_C/VLIGHT) - (OB%obs(isat,2)+pco_f2*FREQ2_C/VLIGHT) &
               -(g_C*(OB%obs(isat,3)+pco_f1) + (OB%obs(isat,4)+pco_f2))/(1.d0+g_C)/lamdw_C
         elseif(LCF%prn(isat)(1:1).eq.'J')then
           if(LCF%pcowl) then
-            pco_sit_obs(1)=SITE%enu_J(3,1)*dsin(OB%elev(isat)) !f1 on meter
-            pco_sit_obs(2)=SITE%enu_J(3,2)*dsin(OB%elev(isat)) !f2 on meter
-            pco_sat_obs(1)=SAT(isat)%xyz(3,1)*dcos(SAT(isat)%nadir) !f1 on meter
-            pco_sat_obs(2)=SAT(isat)%xyz(3,2)*dcos(SAT(isat)%nadir) !f2 on meter
-            pco_f1=pco_sat_obs(1)+pco_sit_obs(1)
-            pco_f2=pco_sat_obs(2)+pco_sit_obs(2)
+            pco_sit_obs(1)=SITE%enu_J(3,1)*dsin(OB%elev(isat))+ &
+                           SITE%enu_J(1,1)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_J(2,1)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_sit_obs(2)=SITE%enu_J(3,2)*dsin(OB%elev(isat))+ &
+                           SITE%enu_J(1,2)*dcos(OB%elev(isat))*dsin(OB%azim(isat))+ &
+                           SITE%enu_J(2,2)*dcos(OB%elev(isat))*dcos(OB%azim(isat))
+            pco_f1=SAT(isat)%pcc(1)+pco_sit_obs(1)
+            pco_f2=SAT(isat)%pcc(2)+pco_sit_obs(2)
           endif
           rwl=(OB%obs(isat,1)+pco_f1*FREQ1_J/VLIGHT) - (OB%obs(isat,2)+pco_f2*FREQ2_J/VLIGHT) &
               -(g_J*(OB%obs(isat,3)+pco_f1) + (OB%obs(isat,4)+pco_f2))/(1.d0+g_J)/lamdw_J

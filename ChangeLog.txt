@@ -48,43 +48,47 @@
 
 12. 2022-04-07 (v2.2)
  Release of PRIDE PPP-AR v2.2
- - Batch script name changed from “pride_pppar” to “pdp3”, corresponding command line input parameters also changed
- - Support multi-day processing
- - No more DCB products required
- - The default products after 2020 changed to the multi-GNSS satellite orbit, clock, bias, quaternion and ERP products, which are computed and released by Wuhan University
- - The table file “leap.sec” needs to be downloaded now, and the “glonass_chn” table file is removed and replaced by the “sat_parameters” table filex
- - GUI version of PRIDE PPP-AR with additional plotting functions
- - Fix known bugs
+ - New batch script name “pdp3”, updated command-line parameters
+ - Multi-day processing capability up to 5 days
+ - No longer requires DCB products
+ - New default products after 2020: Multi-GNSS satellite orbit, clock, bias, quaternion, and ERP products from Wuhan University (WUM0MGXRAP)
+ - “leap.sec” now required, “glonass_chn” replaced by “sat_parameters”
+ - GUI version with additional plotting functions
+ - Known bugs have been fixed
 
 13. 2022-05-07 (v2.2)
- - install.sh: default table directory can be set outside /home directory
- - pdp3.sh: adjust PCO/PCV models used for different CODE products
- - pdp3.sh: naming patterns for RINEX observation file are more compatible 
- - pdp3.sh: support file paths with spaces
- - pdp3.sh: support old versions of wget
- - table: add M14.ATX
+ - install.sh: default table directory can be set outside /home
+ - pdp3.sh: adjusted PCO/PCV models for CODE products
+ - pdp3.sh: improved compatibility of RINEX observation file naming
+ - pdp3.sh: added support for file paths with spaces
+ - pdp3.sh: added support for older versions of wget
+ - table: added M14.ATX
 
 14. 2022-06-20 (v2.2)
- - pdp3.sh: add alerts to some improper operations
- - pdp3.sh: add OFFLINE mode that can save the time from calling wget
- - pdp3.sh: add SA mode for SPP processing
- - pdp3.sh: bug fixes in creating linkage to ANTEX file which may damage this file in batch processing
- - pdp3.sh: bug fixes in unexpected break off in multi-day processing when the first observation file is truncated
- - pdp3.sh: increase the maximum number of days for multi-day processing from 5 to 32
+ - pdp3.sh: added alerts for improper installation operations
+ - pdp3.sh: added OFFLINE mode to save time from wget calls
+ - pdp3.sh: added SA mode for SPP processing
+ - pdp3.sh: bug fixes for ANTEX file damage in batch processing
+ - pdp3.sh: bug fixes for unexpected break off in multi-day processing
+ - pdp3.sh: increased maximum number of days for multi-day processing to 32
 
 15. 2022-10-28 (v2.2)
- - pdp3.sh: increase the maximum processing interval from 30.0 to 300.0 seconds
- - pdp3.sh: fix syntax errors in some of the output
- - spp: the timestamp of the initial coordinates file are now aligned to the timestamp of observations
- - lsq: fixed some possible fatal issues caused by rounding errors
- - tedit: arguments with decimal comma now no longer causes the run to hang indefinitely
+ - pdp3.sh: increased maximum processing interval to 300.0 secs
+ - pdp3.sh: fixed syntax errors in output
+ - spp: aligned initial coordinates file timestamp with observations
+ - lsq: fixed potential fatal issues caused by rounding errors
 
 16. 2022-11-21 (v2.2)
- - pdp3.sh: increase the number of decimal places in the time range from two to three
- - pdp3.sh: use IGS Repro3 combination products (IGS2R03FIN) between 1995 and 2020, support PPP-AR after 2000
- - table: add igsR3_2135.atx, remove M14.ATX
+ - New default products for dates between 1995 and 2020: IGS Repro3 combination products (IGS2R03FIN) that supprot PPP-AR after 2020
+ - pdp3.sh: increased decimal places in time range from two to three
+ - table: added igsR3_2135.atx, removed M14.ATX
 
-17. 2023-02-05 (v2.2)
- - pdp3.sh: support IGS20
- - table: add igs20_2239.atx
- - lib: resolved the issue in which BDS B1I observations were unable to be read from the RINEX 3.02 format
+17. 2023-02-14 (v2.2)
+ - Added IGS20 compatilibility with new ANTEX file, SINEX file, and "APC_MODEL" keyword
+ - pdp3.sh: decreased the minimum processing time range for loose editing to 30.0 secs
+ - pdp3.sh: priori station coordinates can now be specified in the sit.xyz manually
+ - lib: adopted complete phase center correction on the Melbourn-Wubbena combination
+ - lib: fixed the issue of unable to read BDS B1I observations from RINEX 3.02 format
+ - lib: fixed the issue of unable to read zero biases from bias product
+ - lsq: untrusted coordinates (that previously marked with “*”) are no longer exproted to the kin file
+ - table: added igs20_2247.atx

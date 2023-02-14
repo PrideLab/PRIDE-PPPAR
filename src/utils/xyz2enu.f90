@@ -47,9 +47,9 @@ if (narg .eq. 5) then
   call getarg(3,x_ref(1))
   call getarg(4,x_ref(2))
   call getarg(5,x_ref(3))
-  read(x_ref(1),'(f20.4)') xf(1)
-  read(x_ref(2),'(f20.4)') xf(2)
-  read(x_ref(3),'(f20.4)') xf(3)
+  read(x_ref(1),*) xf(1)
+  read(x_ref(2),*) xf(2)
+  read(x_ref(3),*) xf(3)
 endif
 
 open(15,file= difkin)

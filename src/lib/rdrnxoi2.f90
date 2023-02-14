@@ -223,27 +223,51 @@ subroutine rdrnxoi2(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
       do j = 1, HD%nobstyp
         if (sysid(i).eq.'G') then
           if (HD%obstyp(j) .eq. 'L1') then
-            OB%obs(i0, 1) = obs(j) - bias(i0, biasW_index_G)*FREQ1_G/VLIGHT
+            if (abs(bias(i0, biasW_index_G) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 1) = obs(j) - bias(i0, biasW_index_G)*FREQ1_G/VLIGHT
+            else
+              OB%obs(i0, 1) = obs(j)
+            endif
             OB%typuse(i0, 1) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'L2') then
-            OB%obs(i0, 2) = obs(j) - bias(i0, biasW_index_G+9)*FREQ2_G/VLIGHT
+            if (abs(bias(i0, biasW_index_G+9) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 2) = obs(j) - bias(i0, biasW_index_G+9)*FREQ2_G/VLIGHT
+            else
+              OB%obs(i0, 2) = obs(j)
+            endif
             OB%typuse(i0, 2) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'P1' .and. dabs(obs(j)) .gt. 1.d7) then
-            OB%obs(i0, 3) = obs(j) - bias(i0, biasW_index_G+9*2)
-            prior_gp1 = .true.
+            if (abs(bias(i0, biasW_index_G+9*2) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 3) = obs(j) - bias(i0, biasW_index_G+9*2)
+              prior_gp1 = .true.
+            else
+              OB%obs(i0, 3) = obs(j)
+            endif
             OB%typuse(i0, 3) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C1' .and. dabs(obs(j)) .gt. 1.d7) then
             if (.not. prior_gp1) then
-              OB%obs(i0, 3) = obs(j) - bias(i0, biasC_index_G+9*2)
+              if (abs(bias(i0, biasC_index_G+9*2) - 1.d9) .gt. 1.d-3) then
+                OB%obs(i0, 3) = obs(j) - bias(i0, biasC_index_G+9*2)
+              else
+                OB%obs(i0, 3) = obs(j)
+              endif
               OB%typuse(i0, 3) = HD%obstyp(j)
             endif
           else if (HD%obstyp(j) .eq. 'P2' .and. dabs(obs(j)) .gt. 1.d7) then
-            OB%obs(i0, 4) = obs(j) - bias(i0, biasW_index_G+9*3)
-            prior_gp2 = .true.
+            if (abs(bias(i0, biasW_index_G+9*3) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 4) = obs(j) - bias(i0, biasW_index_G+9*3)
+              prior_gp2 = .true.
+            else
+              OB%obs(i0, 4) = obs(j)
+            endif
             OB%typuse(i0, 4) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C2' .and. dabs(obs(j)) .gt. 1.d7) then
             if (.not. prior_gp2) then
-              OB%obs(i0, 4) = obs(j) - bias(i0, biasL_index_G+9*3)
+              if (abs(bias(i0, biasL_index_G+9*3) - 1.d9) .gt. 1.d-3) then
+                OB%obs(i0, 4) = obs(j) - bias(i0, biasL_index_G+9*3)
+              else
+                OB%obs(i0, 4) = obs(j)
+              endif
               OB%typuse(i0, 4) = HD%obstyp(j)
             endif
           endif
@@ -256,66 +280,128 @@ subroutine rdrnxoi2(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, ierr)
             OB%obs(i0, 2) = obs(j)
             OB%typuse(i0, 2) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'P1' .and. dabs(obs(j)) .gt. 1.d7) then
-            OB%obs(i0, 3) = obs(j) - bias(i0, biasP_index_R+9*2)
-            prior_rp1 = .true.
+            if (abs(bias(i0, biasP_index_R+9*2) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 3) = obs(j) - bias(i0, biasP_index_R+9*2)
+              prior_rp1 = .true.
+            else
+              OB%obs(i0, 3) = obs(j)
+            endif
             OB%typuse(i0, 3) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C1' .and. dabs(obs(j)) .gt. 1.d7) then
             if (.not. prior_rp1) then
-              OB%obs(i0, 3) = obs(j) - bias(i0, biasC_index_R+9*2)
+              if (abs(bias(i0, biasC_index_R+9*2) - 1.d9) .gt. 1.d-3) then
+                OB%obs(i0, 3) = obs(j) - bias(i0, biasC_index_R+9*2)
+              else
+                OB%obs(i0, 3) = obs(j)
+              endif
               OB%typuse(i0, 3) = HD%obstyp(j)
             endif
           else if (HD%obstyp(j) .eq. 'P2' .and. dabs(obs(j)) .gt. 1.d7) then
-            OB%obs(i0, 4) = obs(j) - bias(i0, biasP_index_R+9*3)
-            prior_rp2 = .true.
+            if (abs(bias(i0, biasP_index_R+9*3) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 4) = obs(j) - bias(i0, biasP_index_R+9*3)
+              prior_rp2 = .true.
+            else
+              OB%obs(i0, 4) = obs(j)
+            endif
             OB%typuse(i0, 4) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C2' .and. dabs(obs(j)) .gt. 1.d7) then
             if (.not. prior_rp2) then
-              OB%obs(i0, 4) = obs(j) - bias(i0, biasC_index_R+9*3)
+              if (abs(bias(i0, biasC_index_R+9*3) - 1.d9) .gt. 1.d-3) then
+                OB%obs(i0, 4) = obs(j) - bias(i0, biasC_index_R+9*3)
+              else
+                OB%obs(i0, 4) = obs(j)
+              endif
               OB%typuse(i0, 4) = HD%obstyp(j)
             endif
           endif
         elseif (sysid(i).eq.'E') then
           if (HD%obstyp(j) .eq. 'L1') then
-            OB%obs(i0, 1) = obs(j) - bias(i0, biasX_index_E)*FREQ1_E/VLIGHT
+            if (abs(bias(i0, biasX_index_E) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 1) = obs(j) - bias(i0, biasX_index_E)*FREQ1_E/VLIGHT
+            else
+              OB%obs(i0, 1) = obs(j)
+            endif
             OB%typuse(i0, 1) = HD%obstyp(j)
           else if (HD%obstyp(j).eq.'L5') then
-            OB%obs(i0, 2) = obs(j) - bias(i0, biasX_index_E+9)*FREQ2_E/VLIGHT
+            if (abs(bias(i0, biasX_index_E+9) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 2) = obs(j) - bias(i0, biasX_index_E+9)*FREQ2_E/VLIGHT
+            else
+              OB%obs(i0, 2) = obs(j)
+            endif
             OB%typuse(i0, 2) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C1' .and. dabs(obs(j)) .gt. 1.d7) then
-            OB%obs(i0, 3) = obs(j) - bias(i0, biasX_index_E+9*2)
+            if (abs(bias(i0, biasX_index_E+9*2) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 3) = obs(j) - bias(i0, biasX_index_E+9*2)
+            else
+              OB%obs(i0, 3) = obs(j)
+            endif
             OB%typuse(i0, 3) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C5' .and. dabs(obs(j)) .gt. 1.d7) then
-            OB%obs(i0, 4) = obs(j) - bias(i0, biasX_index_E+9*3)
+            if (abs(bias(i0, biasX_index_E+9*3) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 4) = obs(j) - bias(i0, biasX_index_E+9*3)
+            else
+              OB%obs(i0, 4) = obs(j)
+            endif
             OB%typuse(i0, 4) = HD%obstyp(j)
           endif
         elseif (sysid(i).eq.'C') then
           if (HD%obstyp(j) .eq. 'L2') then
-            OB%obs(i0, 1) = obs(j) - bias(i0, biasI_index_C)*FREQ1_C/VLIGHT
+            if (abs(bias(i0, biasI_index_C) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 1) = obs(j) - bias(i0, biasI_index_C)*FREQ1_C/VLIGHT
+            else
+              OB%obs(i0, 1) = obs(j)
+            endif
             OB%typuse(i0, 1) = HD%obstyp(j)
           else if (HD%obstyp(j).eq.'L6') then ! BDS-2 B1I&B3I
-          !else if (HD%obstyp(j).eq.'L7') then ! BDS-2 B1I&B2I
-            OB%obs(i0, 2) = obs(j) - bias(i0, biasI_index_C+9)*FREQ2_C/VLIGHT
+            if (abs(bias(i0, biasI_index_C+9) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 2) = obs(j) - bias(i0, biasI_index_C+9)*FREQ2_C/VLIGHT
+            else
+              OB%obs(i0, 2) = obs(j)
+            endif
             OB%typuse(i0, 2) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C2' .and. dabs(obs(j)) .gt. 1.d7) then
-            OB%obs(i0, 3) = obs(j) - bias(i0, biasI_index_C+9*2)
+            if (abs(bias(i0, biasI_index_C+9*2) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 3) = obs(j) - bias(i0, biasI_index_C+9*2)
+            else
+              OB%obs(i0, 3) = obs(j)
+            endif
             OB%typuse(i0, 3) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C6' .and. dabs(obs(j)) .gt. 1.d7) then ! BDS-2 B1I&B3I
-          !else if (HD%obstyp(j) .eq. 'C7' .and. dabs(obs(j)) .gt. 1.d7) then ! BDS-2 B1I&B2I
-            OB%obs(i0, 4) = obs(j) - bias(i0, biasI_index_C+9*3)
+            if (abs(bias(i0, biasI_index_C+9*3) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 4) = obs(j) - bias(i0, biasI_index_C+9*3)
+            else
+              OB%obs(i0, 4) = obs(j)
+            endif
             OB%typuse(i0, 4) = HD%obstyp(j)
           endif
         elseif (sysid(i).eq.'J') then
           if (HD%obstyp(j) .eq. 'L1') then
-            OB%obs(i0, 1) = obs(j) - bias(i0, biasL_index_J)*FREQ1_J/VLIGHT
+            if (abs(bias(i0, biasL_index_J) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 1) = obs(j) - bias(i0, biasL_index_J)*FREQ1_J/VLIGHT
+            else
+              OB%obs(i0, 1) = obs(j)
+            endif
             OB%typuse(i0, 1) = HD%obstyp(j)
           else if (HD%obstyp(j).eq.'L2') then
-            OB%obs(i0, 2) = obs(j) - bias(i0, biasL_index_J+9)*FREQ2_J/VLIGHT
+            if (abs(bias(i0, biasL_index_J+9) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 2) = obs(j) - bias(i0, biasL_index_J+9)*FREQ2_J/VLIGHT
+            else
+              OB%obs(i0, 2) = obs(j)
+            endif
             OB%typuse(i0, 2) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C1' .and. dabs(obs(j)) .gt. 1.d7) then
-            OB%obs(i0, 3) = obs(j) - bias(i0, biasL_index_J+9*2)
+            if (abs(bias(i0, biasL_index_J+9*2) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 3) = obs(j) - bias(i0, biasL_index_J+9*2)
+            else
+              OB%obs(i0, 3) = obs(j)
+            endif
             OB%typuse(i0, 3) = HD%obstyp(j)
           else if (HD%obstyp(j) .eq. 'C2' .and. dabs(obs(j)) .gt. 1.d7) then
-            OB%obs(i0, 4) = obs(j) - bias(i0, biasL_index_J+9*3)
+            if (abs(bias(i0, biasL_index_J+9*3) - 1.d9) .gt. 1.d-3) then
+              OB%obs(i0, 4) = obs(j) - bias(i0, biasL_index_J+9*3)
+            else
+              OB%obs(i0, 4) = obs(j)
+            endif
             OB%typuse(i0, 4) = HD%obstyp(j)
           endif
         endif

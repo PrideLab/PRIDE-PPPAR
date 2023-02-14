@@ -1,7 +1,7 @@
 !
 !! bd3mod.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2022 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Jianghui Geng, Songfeng Yang
+!! Contributor: Jianghui Geng, Songfeng Yang, Jihang Lin
 !! 
 !!
 !!
@@ -54,7 +54,7 @@ subroutine bd3mod(jd, sod, LCF, SITE, OB, SAT, IM)
     fjd, xsun(6), xlun(6), dx(3)
   real*8 gast, xpole, ypole, trpdel, trpart(3), dphwp, enu(6), pcv(2), sitrad, satrad, reldel, nadir
   real*8 xant_f(6, 2), xant_j(6, 2), xsat_j(6, 2), dloudx(3), dump(3), &
-    rot_f2j(3, 3), rot_rat(3, 3)
+    rot_f2j(3, 3), rot_rat(3, 3), xpco_j(3, 2)
   real*8 rf(3), date, stec(4)
   integer*4 iy, doy
   real*8 xsat_f(3),drecclk_tmp
@@ -175,13 +175,15 @@ subroutine bd3mod(jd, sod, LCF, SITE, OB, SAT, IM)
       if(all(SAT(isat)%xscf(1:3).eq.0.d0)) then
         call rot_scfix2j2000(SAT(isat)%typ, xsat_j(1,1), xsun, SAT(isat)%xscf, SAT(isat)%yscf, SAT(isat)%zscf)
       endif
-      do j=1,2
-        do i=1,3
-          xsat_j(i,j)=xsat_j(i,j)+(SAT(isat)%xyz(1, j)*SAT(isat)%xscf(i) + &
-                                   SAT(isat)%xyz(2, j)*SAT(isat)%yscf(i) + &
-                                   SAT(isat)%xyz(3, j)*SAT(isat)%zscf(i))*1.d-3
+      xpco_j = 0.d0
+      do j = 1, 2
+        do i = 1, 3
+          xpco_j(i, j) = xpco_j(i, j) + (SAT(isat)%xyz(1, j)*SAT(isat)%xscf(i) + &
+                                         SAT(isat)%xyz(2, j)*SAT(isat)%yscf(i) + &
+                                         SAT(isat)%xyz(3, j)*SAT(isat)%zscf(i))*1.d-3
         enddo
-      enddo
+        xsat_j(1:3, j) = xsat_j(1:3, j) + xpco_j(1:3, j)
+      end do
 !
 !! geometric distance
       do i = 1, 3
@@ -274,20 +276,23 @@ subroutine bd3mod(jd, sod, LCF, SITE, OB, SAT, IM)
 !
 !! pcv correction for satellite and receiver antenna
     call get_ant_pcv(SITE%iptatx, SAT(isat)%iptatx, PI/2.d0 - OB%elev(isat), OB%azim(isat), nadir, pcv, LCF%prn(isat)(1:1))
-    pcv(1) = pcv(1)/VLIGHT
-    pcv(2) = pcv(2)/VLIGHT
+!
+!! antenna phase center correction (PCO + PCV) 
+    do j = 1, 2
+      SAT(isat)%pcc(j) = -dot(3, xpco_j(1, j), r1)/sqrt(dot(3, r1, r1))*1.d3 - pcv(j)
+    end do
 !
 !! delay
-    delay(1) = delay(1) + trpdel + pcv(1) + reldel + dphwp/FREQ1_C
-    delay(2) = delay(2) + trpdel + pcv(2) + reldel + dphwp/FREQ2_C
+    delay(1) = delay(1) + trpdel + pcv(1)/VLIGHT + reldel + dphwp/FREQ1_C
+    delay(2) = delay(2) + trpdel + pcv(2)/VLIGHT + reldel + dphwp/FREQ2_C
 !
 !! satellite clock correction, and save it for output clock estimates
     dsatclk = (jd - jdc)*86400.d0 + (sod - sodc)
     dsatclk = dsatclk0 + dsatclkrat*dsatclk
     phase1 = -VLIGHT*(dsatclk - drecclk - delay(1))
     phase2 = -VLIGHT*(dsatclk - drecclk - delay(2))
-    range1 = phase1 - dphwp/FREQ1_C*VLIGHT - pcv(1)*VLIGHT
-    range2 = phase2 - dphwp/FREQ2_C*VLIGHT - pcv(2)*VLIGHT
+    range1 = phase1 - dphwp/FREQ1_C*VLIGHT - pcv(1)
+    range2 = phase2 - dphwp/FREQ2_C*VLIGHT - pcv(2)
 !
 !! Finally, form observed minus calculated, in meters.
     OB%omc(isat, 1) = OB%obs(isat, 1)/FREQ1_C*VLIGHT - phase1 + stec(1)

@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin, Wenyi Li
 !! 
 !!
 !!
@@ -44,12 +44,11 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
 !! local
   character*2 cid
   integer*2 iflg
-  integer*4 i, j, k, ig, ik, ip(2), ipar, isat, ntot, nprn, ipt(0:MAXPAR), jd, jdw, jdx, ierr
+  integer*4 i, j, k, ig, ik, ip(2), ipar, isat, ntot, nprn, ipt(0:MAXPAR), jd, jdw, jdx, iunit, ierr
   integer*4 lfnrck, lfnztd, lfnhtg, jdr, iy, imon, id, ih, im, idoy
   real*8 cof(MAXPAR), x(3), xc(6), sodr, phase, range, wphs, wrng, mw, elev, azim, dmap, wmap, pdop
   real*8 zdd, zwd, xini, xcor, dummy, rckref, sodw, sodx
 !
-  character*256 cflip
   character*60 line
   character*3 temprn,prn(MAXSAT),typuse(4)
   real*8 rck(1:6)
@@ -58,8 +57,6 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
   integer*4 get_valid_unit,pointer_string
   real*8 timdif
 
-  cflip='newtac() { out=`uname`; if [ "$out" = "Darwin" ]; then tail -r $1 > tmp_scratch; &
-                    else tac $1 > tmp_scratch; fi; mv -f tmp_scratch $1; }; newtac '
   lfnres = get_valid_unit(10)
   open (lfnres, file=LCF%flnres)
   lfnrck = get_valid_unit(10)
@@ -90,7 +87,7 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
     if (cid .eq. 'ob') then
       backspace lfnobs
       read (lfnobs) jd, mw, isat, ntot, ipt(0), (ipt(k), cof(k), k=1, ntot), &
-                    phase, range, wphs, wrng, iflg, elev, azim, dmap, wmap,typuse(1:4)
+                    phase, range, wphs, wrng, iflg, elev, azim, dmap, wmap, typuse(1:4)
       dummy = 0.d0
       do i = 1, ntot
         dummy = dummy + PM(ipt(i))%xcor*cof(i)
@@ -208,12 +205,14 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
           endif
         else if (PM(ipar)%pname(1:5) .eq. 'STAPX') then
           cid = ' '
-          if (PM(ipar)%iobs .lt. 5) cid = ' *'
-          call xyzblh(PM(ipar : ipar+2)%xini + PM(ipar : ipar+2)%xcor, 1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, SITE%geod)
-          write (SITE%ikin, '(i5,f10.2,a2,3f13.3,2f16.10,f13.3,i7,6(1x,i2.2),f7.2)') int(mw), (mw - int(mw))*864.d2, cid, &
-                 (PM(ipar + i)%xini + PM(ipar + i)%xcor, i=0, 2), &
-                 SITE%geod(1)/PI*180.d0, SITE%geod(2)/PI*180.d0, SITE%geod(3), PM(ipar)%iobs, PM(ipar)%iobs_G, &
-                 PM(ipar)%iobs_R, PM(ipar)%iobs_E, PM(ipar)%iobs_C, PM(ipar)%iobs_3, PM(ipar)%iobs_J, pdop
+!         if (PM(ipar)%iobs .lt. 5) cid = ' *'
+          if (PM(ipar)%iobs .ge. 5) then
+            call xyzblh(PM(ipar : ipar+2)%xini + PM(ipar : ipar+2)%xcor, 1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, SITE%geod)
+            write (SITE%ikin, '(i5,f10.2,a2,3f13.3,2f16.10,f13.3,i7,6(1x,i2.2),f7.2)') int(mw), (mw - int(mw))*864.d2, cid, &
+                   (PM(ipar + i)%xini + PM(ipar + i)%xcor, i=0, 2), &
+                   SITE%geod(1)/PI*180.d0, SITE%geod(2)/PI*180.d0, SITE%geod(3), PM(ipar)%iobs, PM(ipar)%iobs_G, &
+                   PM(ipar)%iobs_R, PM(ipar)%iobs_E, PM(ipar)%iobs_C, PM(ipar)%iobs_3, PM(ipar)%iobs_J, pdop
+          endif
         endif
       endif
       backspace lfnrem
@@ -295,8 +294,9 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
   write (lfnres, '(i10,50x,a)') nprn, '# OF SAT'
   write (lfnres, '(a4,56x,a)') SITE%name, 'STATION'
   write (lfnres, '(a9,51x,a)') 'Residuals', 'COMMENT'
-  call system(cflip//LCF%flnres)
   close (lfnres)
+  iunit = get_valid_unit(10)
+  call reverse_file(LCF%flnres, iunit)
 !
 !! write receiver clock file
   if(rckref.ne.0.d0) then
@@ -307,27 +307,31 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
     write (lfnrck, '(5i6,f10.6,6f17.6)') iy, imon, id, ih, im, dummy, (rck(j), j=1, 6)
   endif
   call lsq_wrt_header(lfnrck, LCF, SITE, OB, 'rck', .false., .true., .true., .true.)
-  call system(cflip//LCF%flnrck)
   close (lfnrck)
+  iunit = get_valid_unit(10)
+  call reverse_file(LCF%flnrck, iunit)
 !
 !! write atm zenith delay file
   call lsq_wrt_header(lfnztd, LCF, SITE, OB, 'ztd', .false., .true., .true., .true.)
-  call system(cflip//LCF%flnztd)
   close (lfnztd)
+  iunit = get_valid_unit(10)
+  call reverse_file(LCF%flnztd, iunit)
 !
 !! write horizontal troposphere gradient
   if (LCF%htgmod(1:3) .ne. 'NON') then
     call lsq_wrt_header(lfnhtg, LCF, SITE, OB, 'htg', .false., .true., .true., .true.)
-    call system(cflip//LCF%flnhtg)
     close (lfnhtg)
+    iunit = get_valid_unit(10)
+    call reverse_file(LCF%flnhtg, iunit)
   endif
 !
 !! write kinematic files
   if (index(SITE%skd, 'K') .ne. 0) then
     call lsq_wrt_header(SITE%ikin, LCF, SITE, OB, 'kin', .false., .true., .true., .true.)
-    call system(cflip//SITE%kinfil)
+    close (SITE%ikin)
+    iunit = get_valid_unit(10)
+    call reverse_file(SITE%kinfil, iunit)
   endif
-  if (index(SITE%skd, 'K') .ne. 0) close (SITE%ikin)
 
   return
 100 write (*, '(a)') '***ERROR(lsq_rcv_prmt): back space or read file'

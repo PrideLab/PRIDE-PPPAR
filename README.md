@@ -17,33 +17,33 @@ Relevant publications are
 * Geng J, Yang S, Guo J (2021). Assessing IGS GPS/Galileo/BDS-2/BDS-3 phase bias products with PRIDE PPP-AR. Satellite Navigation, 2(1):1-15. doi:10.1186/s43020-021-00049-9
 * Geng J, Mao S. Massive GNSS network analysis without baselines: Undifferenced ambiguity resolution. J. Geophys. Res. 2021, 126(10), e2020JB021558. doi:10.1029/2020JB021558
 
-PRIDE PPP-AR ver. 2.2 are available for:  
+PRIDE PPP-AR ver. 2.2 is available for:
 
-1) GPS, GLONASS, Galileo, BDS-2/3 and QZSS capable;  
-2) High-rate GNSS data processing of up to 50 Hz;
-3) Vienna Mapping Function 1/3 (VMF3) for troposphere modeling;  
-4) Second-order ionospheric correction;  
-5) High-dynamic mobile platforms applicable for aerial photogrammetry, ship-borne gravimetry, etc;  
-6) Receiver clock jump mitigation;  
-7) Multi-day processing;  
-8) Satellite attitude quaternions;  
-9) A GUI lite-version provided for very early career researchers;  
-10) Ambiguity-float PPP using data dating back to 1994 when SA was on;  
-11) GPS/Galileo/BDS-2/3 PPP-AR in the case of the bias-SINEX format phase biases (ftp://igs.gnsswhu.cn);
-12) Adopt both rapid products (RAP) and real-time products (RTS) for more timeliness.
+1) Support for GPS, GLONASS, Galileo, BDS-2/3 and QZSS;
+2) High-rate GNSS data processing at rates up to 50 Hz;
+3) Vienna Mapping Function 1/3 (VMF1/VMF3) for troposphere modeling;
+4) Second-order ionospheric correction;
+5) High-dynamic mobile platforms applicable for aerial photogrammetry, ship-borne gravimetry, etc;
+6) Mitigation of receiver clock jumps;
+7) Processing of multi-day GNSS data, supporting continuous observations up to 32 days;
+8) Satellite attitude quaternions;
+9) A GUI lite-version specifically designed for early career researchers;
+10) Ambiguity-float PPP with support for data dating back to 1994 when selective availablity (SA) was on;
+11) GPS/Galileo/BDS-2/3 PPP-AR with Bias-SINEX format phase biases (ftp://igs.gnsswhu.cn);
+12) Adoption of both rapid products (RAP) and real-time archived products (RTS) for more timeliness.
 
-The modifications leading to Version 2.2 include:
+The improvements made in PRIDE PPP-AR version 2.2 include:
 
-1. Batch script name changed from “*pride_pppar*” to “*pdp3*”, corresponding command line input parameters also changed;
-2. Support multi-day processing;
-3. Support for quaternion products;
-4. No more DCB products required;
-5. The default products after 2020 changed to the multi-GNSS satellite orbit, clock, bias, quaternion and ERP products, which are computed and released by Wuhan University;
-6. The table file “leap.sec” needs to be downloaded now, and the “glonass\_chn” table file is removed and replaced by the “sat\_parameters” table file;
-7. GUI version of PRIDE PPP-AR with additional plotting functions;
-8. Fix known bugs.
+1. New batch script name “*pdp3*”, updated command-line parameters;
+2. Multi-day processing capability up to 32 days;
+3. Quaternion products support;
+4. No longer requires DCB products;
+5. New default products after 2020: Multi-GNSS satellite orbit, clock, bias, quaternion, and ERP products from Wuhan University;
+6. “leap.sec” now required, “glonass\_chn” replaced by “sat\_parameters”;
+7. GUI version with additional plotting functions;
+8. Known bugs have been fixed.
 
-`Notes: The multi-GNSS multi-GNSS satellite orbit/clock/bias/quaternion products, which are computed and released by Wuhan University, are required by PRIDE PPP-AR ver. 2.2`
+`Notes: The multi-GNSS satellite orbit/clock/bias/quaternion products from Wuhan University are required by PRIDE PPP-AR version 2.2`
 
 ## Version History
 
@@ -89,23 +89,23 @@ Release of PRIDE PPP-AR v1.0
 2019-07-16
 
 * Add function: receiver clock jump check & recover
-* Print table valid time by pride_pppar
-* Compatibility fixing for pride_pppar.sh
+* Print table valid time by pride\_pppar
+* Compatibility fixing for pride\_pppar.sh
 * If 'rnx2rtkp' doesn't work, please download the source code through
-   'https://github.com/tomojitakasu/RTKLIB/tree/rtklib_2.4.3' and compile it by yourself.
+   'https://github.com/tomojitakasu/RTKLIB/tree/rtklib\_2.4.3' and compile it by yourself.
    The binary we provided is a 32-bit version.
 
 2019-09-05
 
-* pride_pppar.sh: small bugs fixed
+* pride\_pppar.sh: small bugs fixed
 * table: igs14.atx updated
 
 2019-12-15
 
 * install.sh: add install tips for src/lib/libpridepppar.so
-* pride_pppar.sh: fix known bugs & add error replay for debug
-* table: jpleph_de405 updated (valid until 2040-007)
-* table: update IGS14.atx (igs14_2082.atx)
+* pride\_pppar.sh: fix known bugs & add error replay for debug
+* table: jpleph\_de405 updated (valid until 2040-007)
+* table: update IGS14.atx (igs14\_2082.atx)
 
 ### v2.0
 
@@ -126,52 +126,56 @@ Release of PRIDE PPP-AR v2.1
 2022-04-07
 
 Release of PRIDE PPP-AR v2.2
- 
-* Batch script name changed from “*pride_pppar*” to “*pdp3*”, corresponding command line input parameters also changed
-* Support multi-day processing
-* No more DCB products required
-* The default products after 2020 changed to the multi-GNSS satellite orbit, clock, bias, quaternion and ERP products, which are computed and released by Wuhan University
-* The table file “leap.sec” needs to be downloaded now, and the “glonass_chn” table file is removed and replaced by the “sat_parameters” table filex
-* GUI version of PRIDE PPP-AR with additional plotting functions
-* Fix known bugs
+
+* New batch script name “*pdp3*”, updated command-line parameters
+* Multi-day processing capability up to 5 days
+* No longer requires DCB products
+* New default products after 2020: Multi-GNSS satellite orbit, clock, bias, quaternion, and ERP products from Wuhan University (WUM0MGXRAP)
+* “leap.sec” now required, “glonass\_chn” replaced by “sat\_parameters”
+* GUI version with additional plotting functions
+* Known bugs have been fixed
 
 2022-05-07
 
-* install.sh: default table directory can be set outside /home directory
-* pdp3.sh: adjust PCO/PCV models used for different CODE products
-* pdp3.sh: naming patterns for RINEX observation file are more compatible
-* pdp3.sh: support file paths with spaces
-* pdp3.sh: support old versions of *wget*
-* table: add M14.ATX 
+* install.sh: default table directory can be set outside /home
+* pdp3.sh: adjusted PCO/PCV models for CODE products
+* pdp3.sh: improved compatibility of RINEX observation file naming
+* pdp3.sh: added support for file paths with spaces
+* pdp3.sh: added support for older versions of *wget*
+* table: added M14.ATX
 
 2022-06-20
 
-* pdp3.sh: add alerts to some improper operations
-* pdp3.sh: add OFFLINE mode that can save the time from calling *wget*
-* pdp3.sh: add SA mode for SPP processing
-* pdp3.sh: bug fixes in creating linkage to ANTEX file which may damage this file in batch processing 
-* pdp3.sh: bug fixes in unexpected break off in multi-day processing when the first observation file is truncated
-* pdp3.sh: increase the maximum number of days for multi-day processing from 5 to 32
+* pdp3.sh: added alerts for improper installation operations
+* pdp3.sh: added OFFLINE mode to save time from *wget* calls
+* pdp3.sh: added SA mode for SPP processing
+* pdp3.sh: bug fixes for ANTEX file damage in batch processing
+* pdp3.sh: bug fixes for unexpected break off in multi-day processing
+* pdp3.sh: increased maximum number of days for multi-day processing to 32
 
 2022-10-28
 
-* pdp3.sh: increase the maximum processing interval from 30.0 to 300.0 seconds
-* pdp3.sh: fix syntax errors in some of the output
-* spp: the timestamp of the initial coordinates file are now aligned to the timestamp of observations
-* lsq: fixed some possible fatal issues caused by rounding errors
-* tedit: arguments with decimal comma now no longer causes the run to hang indefinitely
+* pdp3.sh: increased maximum processing interval to 300.0 secs
+* pdp3.sh: fixed syntax errors in output
+* spp: aligned initial coordinates file timestamp with observations
+* lsq: fixed potential fatal issues caused by rounding errors
 
 2022-11-21
 
-* pdp3.sh: increase the number of decimal places in the time range from two to three
-* pdp3.sh: use IGS Repro3 combination products (IGS2R03FIN) between 1995 and 2020, support PPP-AR after 2000
-* table: add igsR3_2135.atx, remove M14.ATX
+* New default products for dates between 1995 and 2020: IGS Repro3 combination products (IGS2R03FIN) that supprot PPP-AR after 2020
+* pdp3.sh: increased decimal places in time range from two to three
+* table: added igsR3\_2135.atx, removed M14.ATX
 
-2023-02-05
+2023-02-14
 
-* pdp3.sh: support IGS20
-* table: add igs20_2239.atx
-* lib: resolved the issue in which BDS B1I observations were unable to be read from the RINEX 3.02 format
+* Added IGS20 compatilibility with new ANTEX file, SINEX file, and "APC\_MODEL" keyword
+* pdp3.sh: decreased the minimum processing time range for loose editing to 30.0 secs
+* pdp3.sh: priori station coordinates can now be specified in the sit.xyz manually
+* lib: adopted complete phase center correction on the Melbourn-Wubbena combination
+* lib: fixed the issue of unable to read BDS B1I observations from RINEX 3.02 format
+* lib: fixed the issue of unable to read zero biases from bias product
+* lsq: untrusted coordinates (that previously marked with “\*”) are no longer exproted to the kin file
+* table: added igs20\_2247.atx
  
 ## Getting in Touch
 
