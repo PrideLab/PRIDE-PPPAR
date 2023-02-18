@@ -12,10 +12,10 @@ WUM0MGXRAP_20212100000_01D_30S_CLK.CLK                      SAT CLOCK
 WUM0MGXRAP_20212100000_01D_01D_ERP.ERP                      SAT ERP
 WUM0MGXRAP_20212100000_01D_30S_ATT.OBX                      SAT ATTITUDE
 WUM0MGXRAP_20212100000_01D_01D_ABS.BIA                      SAT BIAS
-IGS14_2148                                                  TABLE ANTEX
 TRIMBLE NETR9                                               SITE RECEIVER TYPE
 TRM59800.00     SCIS                                        SITE ANTENNA TYPE
         0.0000        0.0000        0.0000                  SITE ANTENNA E/N/H (meter)
+IGS14_2148                                                  TABLE ANTEX
 PWC:60                                                      TROP ZENITH
 NON                                                         TROP GRADIENT
 NO                                                          IONO 2ND
