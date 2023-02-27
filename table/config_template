@@ -125,11 +125,11 @@ Critical search     = 3 4 1.8 3.0              ! highest number of ambiguities t
  E34   1
  E35   1
  E36   1
- C01   3
- C02   3
- C03   3
- C04   3
- C05   3
+#C01   3
+#C02   3
+#C03   3
+#C04   3
+#C05   3
  C06   1
  C07   1
  C08   1
@@ -176,9 +176,9 @@ Critical search     = 3 4 1.8 3.0              ! highest number of ambiguities t
  C56   1
  C57   1
  C58   1
- C59   3
- C60   3
- C61   3
+#C59   3
+#C60   3
+#C61   3
  J01   1
  J02   1
  J03   1

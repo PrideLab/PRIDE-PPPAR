@@ -1,7 +1,7 @@
 !
 !! read_position.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2022 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
 !! 
 !!
 !!
@@ -35,7 +35,7 @@ subroutine read_position(flnpos, name, skd, x, dx0)
 !
 !! local
   logical*1 lfirst
-  integer*4 i, k, lfnsit, lfnpos, ierr
+  integer*4 i, lfnsit, lfnpos, ierr
   real*8 v(3), tref, x1(3), dx1(3)
   character*256 line
 !
@@ -86,18 +86,23 @@ subroutine read_position(flnpos, name, skd, x, dx0)
     do while (.true.)
       read (lfnsit, '(a)', end=200) line
       if (line(1:1) .ne. ' ' .or. len_trim(line) .eq. 0) cycle
+      do while (.true.)
+        i = index(line, ',')
+        if (i .le. 0) exit
+        line(i:i) = '.'
+      end do
       if (skd(1:1) .eq. 'F') then
         read (line, *, err=300) name1, (x1(i), i=1, 3), (dx1(i), i=1, 3)
       else
-        read (line, *) name1, (x1(i), i=1, 3)
-      endif
+        read (line, *, err=300) name1, (x1(i), i=1, 3)
+      end if
       name1 = upper_string(name1)
       if (name1 .eq. upper_string(name)) then
         x(1:3) = x1(1:3)*1.d-3
-        if (skd(1:1).eq.'F') dx0(1:3)=dx1(1:3)
-      endif
-    enddo
-  endif
+        if (skd(1:1) .eq. 'F') dx0(1:3) = dx1(1:3)
+      end if
+    end do
+  end if
 200 continue
   if (x(1) .ne. 0.d0 .or. x(2) .ne. 0.d0 .or. x(3) .ne. 0.d0) return
 !
@@ -105,9 +110,9 @@ subroutine read_position(flnpos, name, skd, x, dx0)
   write (*, '(2a)') '###WARNING(read_position): position not found ', name
   do i = 1, 3
     x(i) = 1.d0
-  enddo
+  end do
 
   return
 300 write(*,'(a)') '***ERROR(read_position): read sit.xyz'
   call exit(1)
-end
+end subroutine

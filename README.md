@@ -176,6 +176,12 @@ Release of PRIDE PPP-AR v2.2
 * lib: fixed the issue of unable to read zero biases from bias product
 * lsq: untrusted coordinates (that previously marked with “\*”) are no longer exproted to the kin file
 * table: added igs20\_2247.atx
+
+2023-02-27
+
+* pdp3.sh: consider specifying the language/region setting to "en_US.UTF-8" to avoid issues with decimal comma
+    - please contact us if further issues persist in your region
+* table/config\_template: BDS GEO satellites are disabled by default to enhance processing quality
  
 ## Getting in Touch
 

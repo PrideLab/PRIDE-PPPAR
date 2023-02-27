@@ -1,7 +1,7 @@
 !
 !! get_xyz.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2022 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Jianghui Geng, Songfeng Yang
+!! Contributor: Jianghui Geng, Songfeng Yang, Jihang Lin
 !! 
 !!
 !

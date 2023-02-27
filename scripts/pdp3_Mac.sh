@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Feb-14, 2023                                                    ##
+##  DATE   : Feb-27, 2023                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -49,7 +49,7 @@ readonly MSGSTA="${BLUE}===>$NC"
 ######################################################################
 
 shopt -s extglob                        # Enable Extendded Globbing
-readonly LC_NUMERIC="en_US.UTF-8"       # Specify period decimal point
+export LANG="en_US.UTF-8"               # Specify period decimal point
 
 readonly DEBUG=NO                       # YES/NO (uppercase!)
 readonly OFFLINE=NO                     # OFFLINE=YES will overwrite USECACHE=NO
@@ -132,7 +132,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     fi
 
     readonly local SITE_REGEX="^[[:alpha:]0-9]{4}$"
-    readonly local PNUM_REGEX="^[+.]?[0-9]+([.][0-9]+)?$"
+    readonly local PNUM_REGEX="^[+.,]?[0-9]+([.,][0-9]+)?$"
 
     local i s t iarg time_sec
     local rnxo_path rnxo_name rinex_dir ctrl_path ctrl_file
@@ -266,10 +266,10 @@ ParseCmdArgs() { # purpose : parse command line into arguments
             -i | --interval )
                 [ -z "$interval" ]                              || throw_conflict_opt "$1"
                 check_optional_arg "$2" "$last_arg"             || throw_require_arg  "$1"
-                if [[ $2 =~ $PNUM_REGEX ]]                && \
-                   [[ $(echo "0.02  <= $2" | bc) -eq 1 ]] && \
-                   [[ $(echo "$2 <= 300.0" | bc) -eq 1 ]]; then
-                    interval="$2"
+                if [[ $2 =~ $PNUM_REGEX ]]                      && \
+                   [[ $(echo "0.02  <= ${2/,/.}" | bc) -eq 1 ]] && \
+                   [[ $(echo "${2/,/.} <= 300.0" | bc) -eq 1 ]]; then
+                    interval="${2/,/.}"
                 else
                     throw_invalid_arg "interval" "$2"
                 fi
@@ -286,10 +286,10 @@ ParseCmdArgs() { # purpose : parse command line into arguments
             -c | --cutoff-elev )
                 [ -z "$eloff" ]                                 || throw_conflict_opt "$1"
                 check_optional_arg "$2" "$last_arg"             || throw_require_arg  "$1"
-                if [[ $2 =~ $PNUM_REGEX ]]               && \
-                   [[ $(echo "0.00 <= $2" | bc) -eq 1 ]] && \
-                   [[ $(echo "$2 <= 60.0" | bc) -eq 1 ]]; then
-                    eloff="$2"
+                if [[ $2 =~ $PNUM_REGEX ]]                     && \
+                   [[ $(echo "0.00 <= ${2/,/.}" | bc) -eq 1 ]] && \
+                   [[ $(echo "${2/,/.} <= 60.0" | bc) -eq 1 ]]; then
+                    eloff="${2/,/.}"
                 else
                     throw_invalid_arg "cutoff elevation" "$2"
                 fi
@@ -366,10 +366,10 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 esac
                 shift 1
                 if check_optional_arg "$2" "$last_arg"; then
-                    if [[ $2 =~ $PNUM_REGEX ]]               && \
-                       [[ $(echo "0.00 <= $2" | bc) -eq 1 ]] && \
-                       [[ $(echo "$2 <= 10.0" | bc) -eq 1 ]]; then
-                        ztdp="$2"
+                    if [[ $2 =~ $PNUM_REGEX ]]                     && \
+                       [[ $(echo "0.00 <= ${2/,/.}" | bc) -eq 1 ]] && \
+                       [[ $(echo "${2/,/.} <= 10.0" | bc) -eq 1 ]]; then
+                        ztdp="${2/,/.}"
                     else
                         throw_invalid_arg "ZTD process noise" "$2"
                     fi
@@ -564,8 +564,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
         local cand=("86400" "300" "60" "30" "25" "20" "15" "10" "5" "2" "1" "0.5" "0.25" "0.2" "0.1" "0.05" "0.02" "-86400")
         for i in $(seq 1 $[${#cand[@]}-1]); do
             last_can=${cand[$[$i-1]]}
-            last_dif=$(echo "$obsintvl" | awk '{print("'${last_can}'"-$0)}')
-            this_dif=$(echo "$obsintvl" | awk '{print($0-"'${cand[$i]}'")}')
+            last_dif=$(echo "$obsintvl" | awk '{print "'${last_can}'"-$0}')
+            this_dif=$(echo "$obsintvl" | awk '{print $0-"'${cand[$i]}'"}')
             if [[ $(echo "$last_dif < $this_dif" | bc) -eq 1 ]]; then
                 if [[ $(echo "$obsintvl == $last_can" | bc) -ne 1 ]]; then
                     >&2 echo -e "$MSGWAR observation interval rounded to the nearest candidate: $obsintvl -> $last_can"
@@ -606,7 +606,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     sed -i '' "/^ZTD model/s/ = .*/ = $ztd_opt/" "$ctrl_file"
 
     if [ -z "$ztdp" ]; then
-        local ztdp=$(echo "$opt_lin" | awk '{print($7)}')
+        local ztdp=$(echo "$opt_lin" | awk '{print $7}')
         if [[ ! $ztdp =~ $PNUM_REGEX ]]; then
             case ${ztd_opt:0:3} in
             "STO" ) ztdp=".0004" ;;
@@ -627,7 +627,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     sed -i '' "/^HTG model/s/ = .*/ = $htg_opt/" "$ctrl_file"
 
     if [ -z "$htgp" ]; then
-        local htgp=$(echo "$opt_lin" | awk '{print($9)}')
+        local htgp=$(echo "$opt_lin" | awk '{print $9}')
         [[ $htgp =~ $PNUM_REGEX ]] || htgp=".002"
     fi
 
@@ -689,24 +689,24 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     grep -q "^ [GECJ][0-9][0-9] " "$ctrl_file" || AR="N"
 
     # Mapping function
-    [ -n "$map_opt" ] || map_opt=$(echo "$opt_lin" | awk '{print($3)}')
+    [ -n "$map_opt" ] || map_opt=$(echo "$opt_lin" | awk '{print $3}')
     [ "$map_opt" == "XXX" ] && map_opt="GMF"
 
     # Cutoff elevation
-    [ -n "$eloff" ] || eloff=$(echo "$opt_lin" | awk '{print($5)}')
+    [ -n "$eloff" ] || eloff=$(echo "$opt_lin" | awk '{print $5}')
     [[ $eloff =~ $PNUM_REGEX ]] || eloff="7"
 
     eloff=$(echo "$eloff" | awk '{printf("%2d",$0)}')
 
     # Modify option line
-    local clkm=$(echo "$opt_lin" | awk '{print($4)}')
-    local ztdm=$(echo "$opt_lin" | awk '{print($6)}')
-    local htgm=$(echo "$opt_lin" | awk '{print($8)}')
-    local ragm=$(echo "$opt_lin" | awk '{print($10)}')
-    local phsc=$(echo "$opt_lin" | awk '{print($11)}')
-    local poxm=$(echo "$opt_lin" | awk '{print($12)}')
-    local poym=$(echo "$opt_lin" | awk '{print($13)}')
-    local pozm=$(echo "$opt_lin" | awk '{print($14)}')
+    local clkm=$(echo "$opt_lin" | awk '{print $4}')
+    local ztdm=$(echo "$opt_lin" | awk '{print $6}')
+    local htgm=$(echo "$opt_lin" | awk '{print $8}')
+    local ragm=$(echo "$opt_lin" | awk '{print $10}')
+    local phsc=$(echo "$opt_lin" | awk '{print $11}')
+    local poxm=$(echo "$opt_lin" | awk '{print $12}')
+    local poym=$(echo "$opt_lin" | awk '{print $13}')
+    local pozm=$(echo "$opt_lin" | awk '{print $14}')
 
     opt_lin=" $site $mode  $map_opt $clkm $eloff $ztdm $ztdp $htgm $htgp $ragm $phsc $poxm $poym $pozm"
     sed -i '' "s/^ .... [KSFX] .*/$opt_lin/" "$ctrl_file"
@@ -1052,18 +1052,22 @@ ProcessSingleSite() { # purpose : process data of single site
     local session_time=($(awk '/^Duration/{print $3,$4,$5,$6,$7,$8,$9}' tmp_ComputeInitialPos))
     if [ ${mode} == "F" ]; then
         if [ -e sit.xyz ] && grep -q "$site" sit.xyz; then
-            local initial_pos=($(awk '/'${site}'/{print($2,$3,$4,$5,$6,$7)}' sit.xyz))
-            printf " %s%16.4f%16.4f%16.4f%10.6f%10.6f%10.6f\n" ${site} ${initial_pos[*]} > sit.xyz
+            local initial_pos=($(awk '/'${site}'/{print $2,$3,$4,$5,$6,$7}' sit.xyz))
+            [ ${#initial_pos[@]} -eq 3 ] && initial_pos+=("0.0000" "0.0000" "0.0000")
+            if [ ${#initial_pos[@]} -ne 6 ]; then
+                echo -e "$MSGERR ProcessSingleDay: invalid position or sigma in sit.xyz"
+                return 1
+            fi
         else
             local initial_pos=($(snx2sit $site $mjd_s))
             if [ ${#initial_pos[@]} -ne 6 ]; then
                 echo -e "$MSGERR ProcessSingleDay: no position or sigma in station coordinate product: $site snx_${year}${doy}"
                 return 1
             fi
-            printf " %s%16.4f%16.4f%16.4f%10.6f%10.6f%10.6f\n" ${site} ${initial_pos[*]} > sit.xyz
         fi
+        echo " ${site} ${initial_pos[*]}" > sit.xyz
     else
-        awk -v sit=$site '/^Position/{printf(" %s%16.4f%16.4f%16.4f\n",sit,$3,$4,$5)}' tmp_ComputeInitialPos > sit.xyz
+        awk '/^Position/{print " '${site}'",$3,$4,$5}' tmp_ComputeInitialPos > sit.xyz
     fi
     rm -f tmp_ComputeInitialPos
     echo -e "$MSGSTA Prepare initial position ${site} done"
@@ -1137,7 +1141,7 @@ ProcessSingleSite() { # purpose : process data of single site
     # Data clean (iteration)
     echo -e "$MSGSTA Data cleaning ..."
     if [ "$editing_mode" == YES ]; then
-        local short=$(echo $interval | awk '{printf("%.0f\n", 600/$1)}')
+        local short=$(echo "$interval" | awk '{printf("%.0f\n", 600/$1)}')
         local jumps=(400 200 100 50)
         local jump_end=50
     else
@@ -1308,7 +1312,7 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
     local satpara_exi="0"
     local satpara_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/table/$satpara"
     if [ -f "$satpara" ]; then
-        local tmpymd=($(sed -n "1p;q" "$satpara" | awk '{print(substr($0,56,4),substr($0,61,2),substr($0,64,2))}'))
+        local tmpymd=($(sed -n "1p;q" "$satpara" | awk '{print substr($0,56,4),substr($0,61,2),substr($0,64,2)}'))
         local tmpmjd=$(ymd2mjd ${tmpymd[@]})
         [ $? -ne 0 -o "$tmpmjd" -lt "$mjd_e" ] && satpara_ftp="1"
         grep -q "\-prn_indexed" "$satpara"     || satpara_ftp="1"
@@ -1334,7 +1338,7 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
         echo -e "$MSGINF please download it from $satpara_url and place it in the table directory for processing"
         return 1
     else
-        local tmpymd=($(sed -n "1p;q" "$satpara" | awk '{print(substr($0,56,4),substr($0,61,2),substr($0,64,2))}'))
+        local tmpymd=($(sed -n "1p;q" "$satpara" | awk '{print substr($0,56,4),substr($0,61,2),substr($0,64,2)}'))
         local tmpmjd=$(ymd2mjd ${tmpymd[@]})
         if [ $? -ne 0 -o "$tmpmjd" -lt "$mjd_e" ]; then
             echo -e "$MSGWAR PrepareTables: outdated $satpara"
@@ -1575,8 +1579,8 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     sp3_cmp="${sp3}.gz"
                     sp3_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${sp3_cmp}"
                     if [ -f "$product_cmn_dir/$sp3_cmp" ]; then
-                        size_last=$(ls -l "$product_cmn_dir/$sp3_cmp" | awk '{print($5)}')
-                        size_next=$(curl "$(dirname $sp3_url)/" | grep "$sp3" | awk '{print($5)}')
+                        size_last=$(ls -l "$product_cmn_dir/$sp3_cmp" | awk '{print $5}')
+                        size_next=$(curl "$(dirname $sp3_url)/" | grep "$sp3" | awk '{print $5}')
                         if [ $? -eq 0 ]; then
                            if [ "$size_next" -gt "$size_last" ]; then
                                rm -f "$sp3"* "$product_cmn_dir/$sp3"*
@@ -1669,8 +1673,8 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     clk_cmp="${clk}.gz"
                     clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/${clk_cmp}"
                     if [ -f "$product_cmn_dir/$clk_cmp" ]; then
-                        size_last=$(ls -l "$product_cmn_dir/$clk_cmp" | awk '{print($5)}')
-                        size_next=$(curl "$(dirname $clk_url)/" | grep "$clk" | awk '{print($5)}')
+                        size_last=$(ls -l "$product_cmn_dir/$clk_cmp" | awk '{print $5}')
+                        size_next=$(curl "$(dirname $clk_url)/" | grep "$clk" | awk '{print $5}')
                         if [ $? -eq 0 ]; then
                            if [ "$size_next" -gt "$size_last" ]; then
                                rm -f "$clk"* "$product_cmn_dir/$clk"*
@@ -1759,8 +1763,8 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     erp_cmp="${erp}.gz"
                     erp_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${erp_cmp}"
                     if [ -f "$product_cmn_dir/$erp_cmp" ]; then
-                        size_last=$(ls -l "$product_cmn_dir/$erp_cmp" | awk '{print($5)}')
-                        size_next=$(curl "$(dirname $erp_url)/" | grep "$erp" | awk '{print($5)}')
+                        size_last=$(ls -l "$product_cmn_dir/$erp_cmp" | awk '{print $5}')
+                        size_next=$(curl "$(dirname $erp_url)/" | grep "$erp" | awk '{print $5}')
                         if [ $? -eq 0 ]; then
                            if [ "$size_next" -gt "$size_last" ]; then
                                rm -f "$erp"* "$product_cmn_dir/$erp"*
@@ -1967,7 +1971,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     # APC model for code/phase biases
     local apc_setting=$(get_ctrl "$ctrl_file" "PCO on wide-lane")
     if [ "$apc_setting" == "Default" ]; then
-        local apc_keyword=$(grep "APC_MODEL" "$fcb" | head -1 | awk '{print($2)}')
+        local apc_keyword=$(grep "APC_MODEL" "$fcb" | head -1 | awk '{print $2}')
         if [[ -n "$apc_keyword" ]] && [[ "$apc_keyword" =~ ^NO* ]]; then
             sed -i '' "/^PCO on wide-lane/s/ = .*/ = NO/"  "$ctrl_file"
         else
@@ -2369,20 +2373,22 @@ snx2sit() {
     local wkdow=($(mjd2wkdow $mjd))
     local ydoy=($(mjd2ydoy $mjd))
     local site_u=$(echo $site | tr 'a-z' 'A-Z')
-    awk -v sit=${site_u} 'BEGIN{fg=0;x=0.0;y=0.0;z=0.0;sigx=0.0;sigy=0.0;sigz=0.0;snam=" "}\
-         {\
-           if($1=="+SOLUTION/ESTIMATE"){fg=1};if($1=="-SOLUTION/ESTIMATE"){fg=0};\
-           if(fg==1)\
-           {\
-             if($2=="STAX"){snam=$3;x=$9;sigx=$10};\
-             if($2=="STAY"){y=$9;sigy=$10};\
-             if($2=="STAZ"&&$3==sit)\
-             {\
-               z=$9;sigz=$10;printf(" %25.6f %25.6f %25.6f %25.6f %25.6f %25.6f\n",x,y,z,sigx,sigy,sigz);\
-               snam=" ";x=0.0;y=0.0;z=0.0;sigx=0.0;sigy=0.0;sigz=0.0;\
-             };\
-           }\
-         }' "snx_${ydoy[0]}${ydoy[1]}"
+    awk '{
+        if ("+SOLUTION/ESTIMATE" == $1) fg = 1;
+        if ("-SOLUTION/ESTIMATE" == $1) fg = 0;
+        if (fg == 1) {
+            if ("STAX" == $2) {
+                x = $9; sigx = $10;
+            }
+            if ("STAY" == $2){
+                y = $9; sigy = $10;
+            }
+            if ("STAZ" == $2 && "'${site_u}'" == $3) {
+                z = $9; sigz=$10;
+                print(x, y, z, sigx, sigy, sigz);
+            }
+        }
+    }' "snx_${ydoy[0]}${ydoy[1]}"
 }
 
 ymd2mjd() {
@@ -2474,28 +2480,28 @@ xyz2blh() {
     local y=$2
     local z=$3
     echo "$x $y $z" | awk 'BEGIN{
-            F = 298.257223563;
-            A = 6378137.0;
-            B = A - A/F;
-            E = 1 - (B/A)^2;
-         }{
-            x=$1; y=$2; z=$3;
-            d = sqrt(x^2+y^2);
-            h0 = sqrt(d^2+z^2) - A;
-            b0 = z/d/(1-E*A/(A+h));
-            while (i++ < 5) {
-                n = A/sqrt(1-E*(1/(1+1/b0^2)));
-                h = d/(1/sqrt(1+b0^2)) - n;
-                b = z/d + n/(n+h) * E * b0;
-                h0 = h;
-                b0 = b;
-            }
-         }END{
-            b = atan2(b, 1) * 180/atan2(0, -1);
-            l = atan2(y, x) * 180/atan2(0, -1);
-            if (l < 0) l += 360;
-            printf("%15.7f%15.7f%15.4f\n", b, l, h)
-         }'
+        F = 298.257223563;
+        A = 6378137.0;
+        B = A - A/F;
+        E = 1 - (B/A)^2;
+    } {
+        x=$1; y=$2; z=$3;
+        d = sqrt(x^2+y^2);
+        h0 = sqrt(d^2+z^2) - A;
+        b0 = z/d/(1-E*A/(A+h));
+        while (i++ < 5) {
+            n = A/sqrt(1-E*(1/(1+1/b0^2)));
+            h = d/(1/sqrt(1+b0^2)) - n;
+            b = z/d + n/(n+h) * E * b0;
+            h0 = h;
+            b0 = b;
+        }
+    } END {
+        b = atan2(b, 1) * 180/atan2(0, -1);
+        l = atan2(y, x) * 180/atan2(0, -1);
+        if (l < 0) l += 360;
+        print(b, l, h)
+    }'
 }
 
 ######################################################################
