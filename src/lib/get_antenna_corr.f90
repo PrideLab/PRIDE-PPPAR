@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin, Zeng Jing
 !! 
 !!
 !!
@@ -210,7 +210,7 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
     x2 = x2 + (AX(ript)%pcv(izen + 1, iazi + 1, frequency1, sys) - AX(ript)%pcv(izen + 1, iazi, frequency1, sys))*alpha
   endif
   alpha = (zen - AX(ript)%zen1)/AX(ript)%dzen - izen + 1
-  var(frequency1) = var(frequency1) + x1 + (x2 - x1)*alpha
+  var(1) = var(1) + x1 + (x2 - x1)*alpha
   
   x1 = AX(ript)%pcv(izen, iazi, frequency2, sys)
   x2 = AX(ript)%pcv(izen + 1, iazi, frequency2, sys)
@@ -220,7 +220,7 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
     x2 = x2 + (AX(ript)%pcv(izen + 1, iazi + 1, frequency2, sys) - AX(ript)%pcv(izen + 1, iazi, frequency2, sys))*alpha
   endif
   alpha = (zen - AX(ript)%zen1)/AX(ript)%dzen - izen + 1
-  var(frequency2) = var(frequency2) + x1 + (x2 - x1)*alpha
+  var(2) = var(2) + x1 + (x2 - x1)*alpha
 !
 !! satellite pcv index
  10 continue
@@ -282,12 +282,12 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
   x1 = AX(sipt)%pcv(izen, 0, frequency1, sys)
   x2 = AX(sipt)%pcv(izen + 1, 0, frequency1, sys)
   alpha = (nad - AX(sipt)%zen1)/AX(sipt)%dzen - izen + 1
-  var(frequency1) = var(frequency1) + x1 + (x2 - x1)*alpha
+  var(1) = var(1) + x1 + (x2 - x1)*alpha
   
   x1 = AX(sipt)%pcv(izen, 0, frequency2, sys)
   x2 = AX(sipt)%pcv(izen + 1, 0, frequency2, sys)
   alpha = (nad - AX(sipt)%zen1)/AX(sipt)%dzen - izen + 1
-  var(frequency2) = var(frequency2) + x1 + (x2 - x1)*alpha
+  var(2) = var(2) + x1 + (x2 - x1)*alpha
 
  20 continue
   return
