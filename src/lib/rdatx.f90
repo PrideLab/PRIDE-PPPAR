@@ -1,7 +1,7 @@
 !
 !! rdatx.f90
 !!
-!!    Copyright (C) 2022 by Wuhan University
+!!    Copyright (C) 2021 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -178,6 +178,7 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
   frq1_J='J01'
   frq2_J='J02'
   ATX%sys_multi=''
+  ATX%sys_multi2=''
   do i = 1, ATX%nfreq
 !
 !! find frequency
@@ -198,19 +199,15 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
     elseif(line(4:4).eq.'R')then
       sys=2
       frq_Rall=trim(frq_Rall)//line(4:6)
-      !sys_R='R'
     elseif(line(4:4).eq.'E')then
       sys=3
       frq_Eall=trim(frq_Eall)//line(4:6)
-      !sys_E='E'
     elseif(line(4:4).eq.'C')then
       sys=4
       frq_Call=trim(frq_Call)//line(4:6)
-      !sys_C='C'
     elseif(line(4:4).eq.'J')then
       sys=5
       frq_Jall=trim(frq_Jall)//line(4:6)
-      !sys_J='J'
     endif
     ATX%frq(k,sys)=line(4:6)
 !
@@ -243,11 +240,20 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
       enddo
     enddo
   enddo
-  if (index(frq_Rall,frq1_R).ne.0 .and. index(frq_Rall,frq2_R).ne.0) sys_R='R'
-  if (index(frq_Eall,frq1_E).ne.0 .and. index(frq_Eall,frq2_E).ne.0) sys_E='E'
-  if (index(frq_Call,frq1_C).ne.0 .and. index(frq_Call,frq2_C).ne.0) sys_C='C'
-  if (index(frq_Jall,frq1_J).ne.0 .and. index(frq_Jall,frq2_J).ne.0) sys_J='J'
+  if (index(frq_Rall,frq1_R).ne.0) sys_R='R'
+  if (index(frq_Eall,frq1_E).ne.0) sys_E='E'
+  if (index(frq_Call,frq1_C).ne.0) sys_C='C'
+  if (index(frq_Jall,frq1_J).ne.0) sys_J='J'
   ATX%sys_multi=sys_G//sys_R//sys_E//sys_C//sys_J
+  sys_R=''
+  sys_E=''
+  sys_C=''
+  sys_J=''
+  if (index(frq_Rall,frq2_R).ne.0) sys_R='R'
+  if (index(frq_Eall,frq2_E).ne.0) sys_E='E'
+  if (index(frq_Call,frq2_C).ne.0) sys_C='C'
+  if (index(frq_Jall,frq2_J).ne.0) sys_J='J'
+  ATX%sys_multi2=sys_G//sys_R//sys_E//sys_C//sys_J
 
   return
 200 continue

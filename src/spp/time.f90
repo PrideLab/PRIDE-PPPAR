@@ -251,6 +251,45 @@ fmtstr="(I4.4'/'I2.2'/'I2.2' 'I2.2':'I2.2':'f"//trim(f6)//")"
 write(s,fmtstr) int(ep(1:5)),ep(6)
 end subroutine
 
+! beidou time (bdt) to time -------------------------------------------------
+! convert week and tow in beidou time (bdt) to gtime_t struct
+! args   : int    week      I   week number in bdt
+!          double sec       I   time of week in bdt (s)
+! return : gtime_t struct
+!----------------------------------------------------------------------------
+type(gtime_t) function bdt2time(week, sec)
+implicit none
+include 'file_para.h'
+integer*4, intent(in) :: week
+real*8, intent(in) :: sec
+type(gtime_t) t, epoch2time
+real*8 sec2
+external :: epoch2time
+sec2=sec; t=epoch2time(bdt0)
+if (sec2<-1d9 .or. 1d9<sec2) sec2=0.d0
+t%time=t%time+86400*7*week+int(sec2)
+t%sec=sec2-int(sec2)
+bdt2time=t
+end function
+
+! bdt to gpstime ------------------------------------------------------------
+! convert bdt (beidou navigation satellite system time) to gpstime
+! args   : gtime_t t        I   time expressed in bdt
+! return : time expressed in gpstime
+! notes  : ref [8] 3.3, 2006/1/1 00:00 BDT = 2006/1/1 00:00 UTC
+!          no leap seconds in BDT
+!          ignore slight time offset under 100 ns
+! add for BDS (2023/3/13)
+!----------------------------------------------------------------------------
+type(gtime_t) function bdt2gpst(t)
+implicit none
+include 'file_para.h'
+type(gtime_t), intent(in) :: t
+type(gtime_t) timeadd
+external :: timeadd
+bdt2gpst=timeadd(t, 14.d0)
+end function
+
 ! add time ------------------------------------------------------------------
 ! add time to gtime_t struct
 ! args   : gtime_t t        I   gtime_t struct

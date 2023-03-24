@@ -13,6 +13,7 @@ integer*4 sys, prn
 integer*4, external :: uraindex,sisa_index
 real*8, external :: SQR,rcond
 type(gtime_t), external :: gpst2time,adjweek
+type(gtime_t), external :: bdt2gpst, bdt2time
 
 call satsys(sat,prn,sys)
 if (and(sys,or(SYS_GPS,or(SYS_GAL,or(SYS_QZS,or(SYS_CMP,SYS_IRN)))))==0)then
@@ -73,6 +74,21 @@ elseif(sys==SYS_GAL)then
     eph%tgd(1)=mydata(26)         ! BGD E5a/E1 
     eph%tgd(2)=mydata(27)         ! BGD E5b/E1 
 elseif(sys==SYS_CMP)then
+    eph%toc=bdt2gpst(eph%toc)
+    eph%iode=int(mydata( 4))      ! IODE 
+    eph%iodc=int(mydata(29))      ! IODC 
+    eph%toes=   (mydata(12))      ! toe (s) in gps week 
+    eph%week=int(mydata(22))      ! gps week 
+    eph%toe=bdt2gpst(bdt2time(eph%week,mydata(12)))
+    eph%ttr=bdt2gpst(bdt2time(eph%week,mydata(28)))
+    eph%toe=adjweek(eph%toe,toc)
+    eph%ttr=adjweek(eph%ttr,toc)
+
+    eph%svh =int(mydata(25))      ! sv health 
+    eph%sva =uraindex(mydata(24)) ! ura (m%index) 
+
+    eph%tgd(1)=   mydata(26)      ! TGD 
+    eph%tgd(2)=   mydata(27)      ! TGD 
 elseif(sys==SYS_IRN)then
 endif
 stat=1

@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin, Zeng Jing
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin, Jing Zeng
 !! 
 !!
 !!
@@ -34,7 +34,7 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
   integer*4 iptatx, ript, sipt
   real*8 fjd_beg, fjd_end, zeni, azim, nadir, enu(1:*), var(2)
   character*20 antnam, antnum
-  integer*4 sys,frequency1,frequency2
+  integer*4 sys1,sys2,frequency1,frequency2
   character*1 system
 !
 !! local
@@ -66,62 +66,81 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
 !
 !! get antenna phase offset
   5 continue
-  sys=0
+  sys1=0
+  sys2=0
   frequency1=0
   frequency2=0
   if(system .eq. 'G')then
-    sys=1
+    sys1=1
+    sys2=1
     frequency1=1
     frequency2=2
   elseif(system .eq. 'R')then
-    sys=2
+    sys1=2
+    sys2=2
     frequency1=1
     frequency2=2
     if(index(AX(iptatx)%sys_multi,'R') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(iptatx)%sys_multi2,'R') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   elseif(system .eq. 'E')then
-    sys=3
+    sys1=3
+    sys2=3
     frequency1=1
     frequency2=5
     if(index(AX(iptatx)%sys_multi,'E') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(iptatx)%sys_multi2,'E') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   elseif(system .eq. 'C')then
-    sys=4
+    sys1=4
+    sys2=4
     frequency1=2
     frequency2=6
     if(index(AX(iptatx)%sys_multi,'C') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(iptatx)%sys_multi2,'C') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   elseif(system .eq. 'J')then
-    sys=5
+    sys1=5
+    sys2=5
     frequency1=1
     frequency2=2
     if(index(AX(iptatx)%sys_multi,'J') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(iptatx)%sys_multi2,'J') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
+
   endif
   if(antnam(1:5).ne.'BLOCK' .and. antnam(1:7).ne.'GLONASS' .and. antnam(1:7).ne.'GALILEO' &
      .and. antnam(1:6).ne.'BEIDOU' .and. antnam(1:4).ne.'QZSS') then
-    enu(1) = AX(iptatx)%neu(2, frequency1, sys)
-    enu(2) = AX(iptatx)%neu(1, frequency1, sys)
-    enu(3) = AX(iptatx)%neu(3, frequency1, sys)
-    enu(4) = AX(iptatx)%neu(2, frequency2, sys)
-    enu(5) = AX(iptatx)%neu(1, frequency2, sys)
-    enu(6) = AX(iptatx)%neu(3, frequency2, sys)
+    enu(1) = AX(iptatx)%neu(2, frequency1, sys1)
+    enu(2) = AX(iptatx)%neu(1, frequency1, sys1)
+    enu(3) = AX(iptatx)%neu(3, frequency1, sys1)
+    enu(4) = AX(iptatx)%neu(2, frequency2, sys2)
+    enu(5) = AX(iptatx)%neu(1, frequency2, sys2)
+    enu(6) = AX(iptatx)%neu(3, frequency2, sys2)
   else
     do i = 1, 3
-      enu(i) = AX(iptatx)%neu(i, frequency1, sys)
-      enu(i + 3) = AX(iptatx)%neu(i, frequency2, sys)
+      enu(i) = AX(iptatx)%neu(i, frequency1, sys1)
+      enu(i + 3) = AX(iptatx)%neu(i, frequency2, sys2)
     enddo
   endif
 
@@ -143,47 +162,65 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
 !
 !! receiver pcv index
   if (ript .le. 0) goto 10
-  sys=0
+  sys1=0
+  sys2=0
   frequency1=0
   frequency2=0
   if(system .eq. 'G')then
-    sys=1
+    sys1=1
+    sys2=1
     frequency1=1
     frequency2=2
   elseif(system .eq. 'R')then
-    sys=2
+    sys1=2
+    sys2=2
     frequency1=1
     frequency2=2
     if(index(AX(ript)%sys_multi,'R') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(ript)%sys_multi2,'R') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   elseif(system .eq. 'E')then
-    sys=3
+    sys1=3
+    sys2=3
     frequency1=1
     frequency2=5
     if(index(AX(ript)%sys_multi,'E') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(ript)%sys_multi2,'E') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   elseif(system .eq. 'C')then
-    sys=4
+    sys1=4
+    sys2=4
     frequency1=2
     frequency2=6
     if(index(AX(ript)%sys_multi,'C') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(ript)%sys_multi2,'C') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   elseif(system .eq. 'J')then
-    sys=5
+    sys1=5
+    sys2=5
     frequency1=1
     frequency2=2
     if(index(AX(ript)%sys_multi,'J') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(ript)%sys_multi2,'J') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   endif
@@ -202,70 +239,89 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
 !! zenith dependent
   izen = int((zen - AX(ript)%zen1)/AX(ript)%dzen) + 1
 
-  x1 = AX(ript)%pcv(izen, iazi, frequency1, sys)
-  x2 = AX(ript)%pcv(izen + 1, iazi, frequency1, sys)
+  x1 = AX(ript)%pcv(izen, iazi, frequency1, sys1)
+  x2 = AX(ript)%pcv(izen + 1, iazi, frequency1, sys1)
   if (iazi .ne. 0) then
     alpha = azi/AX(ript)%dazi - iazi + 1
-    x1 = x1 + (AX(ript)%pcv(izen, iazi + 1, frequency1, sys) - AX(ript)%pcv(izen, iazi, frequency1, sys))*alpha
-    x2 = x2 + (AX(ript)%pcv(izen + 1, iazi + 1, frequency1, sys) - AX(ript)%pcv(izen + 1, iazi, frequency1, sys))*alpha
+    x1 = x1 + (AX(ript)%pcv(izen, iazi + 1, frequency1, sys1) - AX(ript)%pcv(izen, iazi, frequency1, sys1))*alpha
+    x2 = x2 + (AX(ript)%pcv(izen + 1, iazi + 1, frequency1, sys1) - AX(ript)%pcv(izen + 1, iazi, frequency1, sys1))*alpha
   endif
   alpha = (zen - AX(ript)%zen1)/AX(ript)%dzen - izen + 1
   var(1) = var(1) + x1 + (x2 - x1)*alpha
   
-  x1 = AX(ript)%pcv(izen, iazi, frequency2, sys)
-  x2 = AX(ript)%pcv(izen + 1, iazi, frequency2, sys)
+  x1 = AX(ript)%pcv(izen, iazi, frequency2, sys2)
+  x2 = AX(ript)%pcv(izen + 1, iazi, frequency2, sys2)
   if (iazi .ne. 0) then
     alpha = azi/AX(ript)%dazi - iazi + 1
-    x1 = x1 + (AX(ript)%pcv(izen, iazi + 1, frequency2, sys) - AX(ript)%pcv(izen, iazi, frequency2, sys))*alpha
-    x2 = x2 + (AX(ript)%pcv(izen + 1, iazi + 1, frequency2, sys) - AX(ript)%pcv(izen + 1, iazi, frequency2, sys))*alpha
+    x1 = x1 + (AX(ript)%pcv(izen, iazi + 1, frequency2, sys2) - AX(ript)%pcv(izen, iazi, frequency2, sys2))*alpha
+    x2 = x2 + (AX(ript)%pcv(izen + 1, iazi + 1, frequency2, sys2) - AX(ript)%pcv(izen + 1, iazi, frequency2, sys2))*alpha
   endif
   alpha = (zen - AX(ript)%zen1)/AX(ript)%dzen - izen + 1
   var(2) = var(2) + x1 + (x2 - x1)*alpha
+
 !
 !! satellite pcv index
  10 continue
   if (sipt .le. 0) goto 20
-  sys=0
+  sys1=0
+  sys2=0
   frequency1=0
   frequency2=0
   if(system .eq. 'G')then
-    sys=1
+    sys1=1
+    sys2=1
     frequency1=1
     frequency2=2
   elseif(system .eq. 'R')then
-    sys=2
+    sys1=2
+    sys2=2
     frequency1=1
     frequency2=2
     if(index(AX(sipt)%sys_multi,'R') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(sipt)%sys_multi2,'R') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   elseif(system .eq. 'E')then
-    sys=3
+    sys1=3
+    sys2=3
     frequency1=1
     frequency2=5
     if(index(AX(sipt)%sys_multi,'E') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(sipt)%sys_multi2,'E') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   elseif(system .eq. 'C')then
-    sys=4
+    sys1=4
+    sys2=4
     frequency1=2
     frequency2=6
     if(index(AX(sipt)%sys_multi,'C') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(sipt)%sys_multi2,'C') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   elseif(system .eq. 'J')then
-    sys=5
+    sys1=5
+    sys2=5
     frequency1=1
     frequency2=2
     if(index(AX(sipt)%sys_multi,'J') .eq. 0)then
-      sys=1
+      sys1=1
       frequency1=1
+    endif
+    if(index(AX(sipt)%sys_multi2,'J') .eq. 0)then
+      sys2=1
       frequency2=2
     endif
   endif
@@ -279,13 +335,13 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, system, at
 !! only zenith dependent
   izen = int((nad - AX(sipt)%zen1)/AX(sipt)%dzen) + 1
 
-  x1 = AX(sipt)%pcv(izen, 0, frequency1, sys)
-  x2 = AX(sipt)%pcv(izen + 1, 0, frequency1, sys)
+  x1 = AX(sipt)%pcv(izen, 0, frequency1, sys1)
+  x2 = AX(sipt)%pcv(izen + 1, 0, frequency1, sys1)
   alpha = (nad - AX(sipt)%zen1)/AX(sipt)%dzen - izen + 1
   var(1) = var(1) + x1 + (x2 - x1)*alpha
   
-  x1 = AX(sipt)%pcv(izen, 0, frequency2, sys)
-  x2 = AX(sipt)%pcv(izen + 1, 0, frequency2, sys)
+  x1 = AX(sipt)%pcv(izen, 0, frequency2, sys2)
+  x2 = AX(sipt)%pcv(izen + 1, 0, frequency2, sys2)
   alpha = (nad - AX(sipt)%zen1)/AX(sipt)%dzen - izen + 1
   var(2) = var(2) + x1 + (x2 - x1)*alpha
 

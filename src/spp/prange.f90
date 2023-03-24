@@ -27,6 +27,10 @@ if(NFREQ>=3 .and. and(sys,or(SYS_GAL,SYS_SBS))/=0) j=2
 if(NFREQ<2 .or. dabs(lam(i+1))<=1d-20 .or. dabs(lam(j+1))<=1d-20) return
 
 gamma=SQR(lam(j+1))/SQR(lam(i+1))  ! f1^2/f2^2 
+if(and(sys, SYS_CMP)/=0) then
+   i=1
+   j=2
+endif
 P1=obs%P(i+1)
 P2=obs%P(j+1)
 P1_P2=nav%cbias(obs%sat,1)

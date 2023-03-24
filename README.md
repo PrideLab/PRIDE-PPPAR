@@ -182,6 +182,10 @@ Release of PRIDE PPP-AR v2.2
 * pdp3.sh: consider specifying the language/region setting to "en_US.UTF-8" to avoid issues with decimal comma
     - please contact us if further issues persist in your region
 * table/config\_template: BDS GEO satellites are disabled by default to enhance processing quality
+
+2023-03-24
+* lib: improved the substitution rules for vacant multi-GNSS PCOs/PCVs and fixed related read issues
+* spp: fixed the issue of unable to process BDS-only observations
  
 ## Getting in Touch
 

@@ -60,7 +60,7 @@ timeoffset_=0.d0
 
 ! defaults processing options
 prcopt_default = prcopt_t(&
-    PMODE_SINGLE, 0, 2, or(SYS_GPS,or(SYS_GAL,SYS_GLO)),&  ! mode, soltype:forward, nf:L1+L2, navsys
+    PMODE_SINGLE, 0, 2, or(SYS_GPS,or(SYS_GAL,or(SYS_GLO,SYS_CMP))),&  ! mode, soltype:forward, nf:L1+L2, navsys
     10.d0*D2R, 0, 3, 1, 1,&                                ! elmin, sateph:brdc, ionoopt:dual, tropopt:saas, niter
     30.d0, 30.d0, 0, '', (/0,0,0,0,1,0/), .false.)         ! maxinno, maxgdop, exsats, rnxopt, posopt, lsa
 
