@@ -46,5 +46,5 @@ HTGScor                                                     E-W TROPOSPHERE GRAD
 End Field Description                                       COMMENT
                                                             END OF HEADER
 *YearS  MonS  DayS HourS  MinS      SecS YearE  MonE  DayE HourE  MinE      SecE    HTGCini    HTGCcor    HTGSini    HTGScor
-  2020     1     3     0     0  0.000000  2020     1     3    12     0  0.000000   0.000000   0.000442   0.000000   0.000873
-  2020     1     3    12     0  0.000000  2020     1     4     0     0  0.000000   0.000000   0.000718   0.000000   0.000531
+  2020     1     3     0     0  0.000000  2020     1     3    12     0  0.000000   0.000000   0.000442   0.000000   0.000870
+  2020     1     3    12     0  0.000000  2020     1     4     0     0  0.000000   0.000000   0.000714   0.000000   0.000530

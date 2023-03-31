@@ -183,8 +183,11 @@ Release of PRIDE PPP-AR v2.2
     - please contact us if further issues persist in your region
 * table/config\_template: BDS GEO satellites are disabled by default to enhance processing quality
 
-2023-03-24
+2023-03-31
+
+* lib: fixed the issue of reading multi-day quaternions
 * lib: improved the substitution rules for vacant multi-GNSS PCOs/PCVs and fixed related read issues
+* redig: imporved the ability to detect minor cycle slip 
 * spp: fixed the issue of unable to process BDS-only observations
  
 ## Getting in Touch

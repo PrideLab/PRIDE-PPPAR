@@ -1,7 +1,7 @@
 RINEX health Logfile      abpo                              COMMENT
      30.00                                                  INTERVAL
-        42       166         0                              AMB MAX/TOT/NEW
-     96204     32108         0                              EPO AVA/REM/NEW
+        41       165         0                              AMB MAX/TOT/NEW
+     93326     32108         0                              EPO AVA/REM/NEW
  2020  1  3  0  0  0.0000000    86340.00                    RES TIME BEG/LEN
                                                             END OF HEADER
 TIM 2020  1  3  0  0  0.0000000
@@ -37,7 +37,6 @@ E26                                                         DEL_LESSTHAN4OBS
 E31                             2020  1  3  8 18  0.0000000 AMB
 E33                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
-C05                             2020  1  3 23 59  0.0000000 AMB
 C06                                                         DEL_LESSTHAN4OBS
 C07                             2020  1  3  0 41  0.0000000 AMB
 C09                             2020  1  3  3 40 30.0000000 AMB

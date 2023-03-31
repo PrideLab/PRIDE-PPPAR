@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Feb-27, 2023                                                    ##
+##  DATE   : Mar-31, 2023                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -2286,7 +2286,7 @@ WgetDownload() { # purpose : download a file with wget
     local arg="-q -nv -nc -c -t 3 --connect-timeout=10 --read-timeout=60"
     [ -n "$url" ] && [ "$OFFLINE" = "NO" ] || return 1
 
-    wget --help | grep -q "\-\-show\-progress" && arg="$arg --show-progress"
+    wget --help | grep -q "\--show-progress" && arg="$arg --show-progress"
     local cmd="wget $arg $url"
     echo "$cmd" | bash
 

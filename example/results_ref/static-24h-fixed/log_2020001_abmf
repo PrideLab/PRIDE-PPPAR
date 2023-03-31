@@ -1,7 +1,7 @@
 RINEX health Logfile      abmf                              COMMENT
      30.00                                                  INTERVAL
         36       155         0                              AMB MAX/TOT/NEW
-     85916     17602         0                              EPO AVA/REM/NEW
+     85914     17604         0                              EPO AVA/REM/NEW
  2020  1  1  0  0  0.0000000    86340.00                    RES TIME BEG/LEN
                                                             END OF HEADER
 TIM 2020  1  1  0  0  0.0000000
@@ -17293,6 +17293,7 @@ G21                                                         DEL_LESSTHAN4OBS
 R06                                                         DEL_LESSTHAN4OBS
 R07                                                         DEL_LOWELEVATION
 E27                                                         DEL_LOWELEVATION
+C23                                                         DEL_BADRANGE
 C26                                                         DEL_LOWELEVATION
 TIM 2020  1  1 20  7  0.0000000
 G21                                                         DEL_LESSTHAN4OBS
@@ -17411,6 +17412,7 @@ R06                                                         DEL_LESSTHAN4OBS
 R15                                                         DEL_SHORTPIECE
 E05                                                         DEL_LOWELEVATION
 E27                                                         DEL_LOWELEVATION
+C23                                                         DEL_BADRANGE
 C26                                                         DEL_LESSTHAN4OBS
 TIM 2020  1  1 20 15  0.0000000
 G10                                                         DEL_LOWELEVATION
@@ -17436,6 +17438,7 @@ R06                                                         DEL_LESSTHAN4OBS
 R15                                                         DEL_SHORTPIECE
 E05                                                         DEL_LOWELEVATION
 E27                                                         DEL_LOWELEVATION
+C23                                                         DEL_BADRANGE
 C26                                                         DEL_LOWELEVATION
 TIM 2020  1  1 20 16 30.0000000
 G10                                                         DEL_LOWELEVATION
@@ -17470,6 +17473,7 @@ R15                                                         DEL_SHORTPIECE
 R17                                                         DEL_LOWELEVATION
 E05                                                         DEL_LOWELEVATION
 E27                                                         DEL_LOWELEVATION
+C23                                                         DEL_BADRANGE
 C26                                                         DEL_LESSTHAN4OBS
 TIM 2020  1  1 20 18 30.0000000
 G10                                                         DEL_LOWELEVATION
@@ -17712,7 +17716,6 @@ R17                                                         DEL_LOWELEVATION
 E05                                                         DEL_LOWELEVATION
 E15                                                         DEL_LOWELEVATION
 E27                                                         DEL_LOWELEVATION
-C23                                                         DEL_BADRANGE
 C26                                                         DEL_LOWELEVATION
 TIM 2020  1  1 20 28 30.0000000
 G08                                                         DEL_LOWELEVATION
@@ -17844,7 +17847,6 @@ E05                                                         DEL_LOWELEVATION
 E15                                                         DEL_LOWELEVATION
 E25                                                         DEL_LOWELEVATION
 E27                                                         DEL_LOWELEVATION
-C23                                                         DEL_BADRANGE
 TIM 2020  1  1 20 34  0.0000000
 G08                             2020  1  1 23 59  0.0000000 AMB
 G21                                                         DEL_LOWELEVATION

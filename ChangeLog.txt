@@ -97,6 +97,8 @@
  - pdp3.sh: consider specifying the language/region setting to "en_US.UTF-8" to avoid issues with decimal comma
  - table: BDS GEO satellites are disabled by default to enhance processing quality
 
- 19. 2023-03-24 (v2.2)
+ 19. 2023-03-30 (v2.2)
+ - lib: fixed the issue of reading multi-day quaternions
  - lib: improved the substitution rules for vacant multi-GNSS PCOs/PCVs and fixed related read issues
+ - redig: imporved the ability to detect minor cycle slip 
  - spp: fixed the issue of unable to process BDS-only observations
