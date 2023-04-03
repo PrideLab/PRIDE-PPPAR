@@ -79,7 +79,7 @@
  - lsq: fixed potential fatal issues caused by rounding errors
 
 16. 2022-11-21 (v2.2)
- - New default products for dates between 1995 and 2020: IGS Repro3 combination products (IGS2R03FIN) that supprot PPP-AR after 2020
+ - New default products for dates between 1995 and 2020: IGS Repro3 combination products (IGS2R03FIN) that supprot PPP-AR after 2000
  - pdp3.sh: increased decimal places in time range from two to three
  - table: added igsR3_2135.atx, removed M14.ATX
 
@@ -97,8 +97,7 @@
  - pdp3.sh: consider specifying the language/region setting to "en_US.UTF-8" to avoid issues with decimal comma
  - table: BDS GEO satellites are disabled by default to enhance processing quality
 
- 19. 2023-03-30 (v2.2)
+ 19. 2023-03-31 (v2.2)
  - lib: fixed the issue of reading multi-day quaternions
  - lib: improved the substitution rules for vacant multi-GNSS PCOs/PCVs and fixed related read issues
- - redig: imporved the ability to detect minor cycle slip 
  - spp: fixed the issue of unable to process BDS-only observations

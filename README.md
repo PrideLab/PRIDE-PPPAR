@@ -1,5 +1,5 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
-## PRIDE-PPPAR ver. 2.2
+## PRIDE-PPPAR ver. 2.2 (last updated on 2023-03-31)
 
 PRIDE PPP-AR ver. 2.2 originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -162,7 +162,7 @@ Release of PRIDE PPP-AR v2.2
 
 2022-11-21
 
-* New default products for dates between 1995 and 2020: IGS Repro3 combination products (IGS2R03FIN) that supprot PPP-AR after 2020
+* New default products for dates between 1995 and 2020: IGS Repro3 combination products (IGS2R03FIN) that supprot PPP-AR after 2000
 * pdp3.sh: increased decimal places in time range from two to three
 * table: added igsR3\_2135.atx, removed M14.ATX
 
@@ -187,7 +187,6 @@ Release of PRIDE PPP-AR v2.2
 
 * lib: fixed the issue of reading multi-day quaternions
 * lib: improved the substitution rules for vacant multi-GNSS PCOs/PCVs and fixed related read issues
-* redig: imporved the ability to detect minor cycle slip 
 * spp: fixed the issue of unable to process BDS-only observations
  
 ## Getting in Touch

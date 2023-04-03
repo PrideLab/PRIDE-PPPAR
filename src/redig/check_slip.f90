@@ -1,7 +1,7 @@
 !
 !! check_slip.f90
 !!
-!!    Copyright (C) 2022 by Wuhan University
+!!    Copyright (C) 2021 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jing Zeng
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
 !! 
 !!
 !!
@@ -114,7 +114,6 @@ subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
 !! new jump setting
   jmp = jump
   if (jmp .lt. 3.d0*sig) jmp = 3.d0*sig
-  50 continue
 !
 !! check jump
   do i = frt, nepo
@@ -131,10 +130,6 @@ subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
       endif
     endif
   enddo
-  if (.not. lfnd .and. jump .lt. 3.d0*sig) then
-    jmp = jump
-    goto 50
-  endif
 !
 !! find bad
   do i = nepo, frt, -1
