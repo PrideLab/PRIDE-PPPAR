@@ -1,5 +1,5 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
-## PRIDE-PPPAR ver. 2.2 (last updated on 2023-03-31)
+## PRIDE-PPPAR ver. 2.2 (last updated on 2023-05-09)
 
 PRIDE PPP-AR ver. 2.2 originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
