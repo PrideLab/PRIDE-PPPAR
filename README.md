@@ -1,5 +1,5 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
-## PRIDE-PPPAR ver. 2.2 (last updated on 2023-05-09)
+## PRIDE-PPPAR ver. 2.2.6 (last updated on 2023-05-19)
 
 PRIDE PPP-AR ver. 2.2 originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -123,7 +123,7 @@ Release of PRIDE PPP-AR v2.1
 
 ### v2.2
 
-2022-04-07
+2022-04-07 (v2.2.0)
 
 Release of PRIDE PPP-AR v2.2
 
@@ -135,7 +135,7 @@ Release of PRIDE PPP-AR v2.2
 * GUI version with additional plotting functions
 * Known bugs have been fixed
 
-2022-05-07
+2022-05-07 (v2.2.1)
 
 * install.sh: default table directory can be set outside /home
 * pdp3.sh: adjusted PCO/PCV models for CODE products
@@ -144,7 +144,7 @@ Release of PRIDE PPP-AR v2.2
 * pdp3.sh: added support for older versions of *wget*
 * table: added M14.ATX
 
-2022-06-20
+2022-06-20 (v2.2.2)
 
 * pdp3.sh: added alerts for improper installation operations
 * pdp3.sh: added OFFLINE mode to save time from *wget* calls
@@ -153,20 +153,20 @@ Release of PRIDE PPP-AR v2.2
 * pdp3.sh: bug fixes for unexpected break off in multi-day processing
 * pdp3.sh: increased maximum number of days for multi-day processing to 32
 
-2022-10-28
+2022-10-28 (v2.2.3)
 
 * pdp3.sh: increased maximum processing interval to 300.0 secs
 * pdp3.sh: fixed syntax errors in output
 * spp: aligned initial coordinates file timestamp with observations
 * lsq: fixed potential fatal issues caused by rounding errors
 
-2022-11-21
+2022-11-21 (v2.2.4)
 
 * New default products for dates between 1995 and 2020: IGS Repro3 combination products (IGS2R03FIN) that supprot PPP-AR after 2000
 * pdp3.sh: increased decimal places in time range from two to three
 * table: added igsR3\_2135.atx, removed M14.ATX
 
-2023-02-14
+2023-02-14 (v2.2.5)
 
 * Added IGS20 compatilibility with new ANTEX file, SINEX file, and "APC\_MODEL" keyword
 * pdp3.sh: decreased the minimum processing time range for loose editing to 30.0 secs
@@ -177,17 +177,15 @@ Release of PRIDE PPP-AR v2.2
 * lsq: untrusted coordinates (that previously marked with “\*”) are no longer exproted to the kin file
 * table: added igs20\_2247.atx
 
-2023-02-27
+2023-05-19 (v2.2.6)
 
 * pdp3.sh: consider specifying the language/region setting to "en_US.UTF-8" to avoid issues with decimal comma
     - please contact us if further issues persist in your region
-* table/config\_template: BDS GEO satellites are disabled by default to enhance processing quality
-
-2023-03-31
-
+* pdp3.sh: fixed the issue of unable to download GIM products for 2nd ionospheric corrections after 2022/300
 * lib: fixed the issue of reading multi-day quaternions
 * lib: improved the substitution rules for vacant multi-GNSS PCOs/PCVs and fixed related read issues
 * spp: fixed the issue of unable to process BDS-only observations
+* table/config\_template: BDS GEO satellites are disabled by default to enhance processing quality
  
 ## Getting in Touch
 

@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Mar-31, 2023                                                    ##
+##  DATE   : May-19, 2023                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -2084,8 +2084,13 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         [ "$OFFLINE" == "NO" ] && mkdir -p "$product_ion_dir"
         for mjd in $(seq $mjd_s $mjd_e); do
             local ydoy=($(mjd2ydoy $mjd))
-            local ion_tmp="CODG${ydoy[1]}0.${ydoy[0]:2:2}I"
-            local ion_cmp="${ion_tmp}.Z"
+            if [ $mjd -le 59879 ]; then
+                local ion_tmp="CODG${ydoy[1]}0.${ydoy[0]:2:2}I"
+                local ion_cmp="${ion_tmp}.Z"
+            else
+                local ion_tmp="COD0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01H_GIM.ION"
+                local ion_cmp="${ion_tmp}.gz"
+            fi
             local ion_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${ion_cmp}"
             CopyOrDownloadProduct "$product_ion_dir/$ion_tmp"
             if [ $? -ne 0 ]; then
