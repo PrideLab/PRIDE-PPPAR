@@ -1,5 +1,5 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
-## PRIDE-PPPAR ver. 2.2.6 (last updated on 2023-05-19)
+## PRIDE-PPPAR ver. 2.2.6 (last updated on 2023-07-24)
 
 PRIDE PPP-AR ver. 2.2 originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -177,14 +177,14 @@ Release of PRIDE PPP-AR v2.2
 * lsq: untrusted coordinates (that previously marked with “\*”) are no longer exproted to the kin file
 * table: added igs20\_2247.atx
 
-2023-05-19 (v2.2.6)
+2023-07-24 (v2.2.6)
 
 * pdp3.sh: consider specifying the language/region setting to "en_US.UTF-8" to avoid issues with decimal comma
     - please contact us if further issues persist in your region
 * pdp3.sh: fixed the issue of unable to download GIM products for 2nd ionospheric corrections after 2022/300
 * lib: fixed the issue of reading multi-day quaternions
 * lib: improved the substitution rules for vacant multi-GNSS PCOs/PCVs and fixed related read issues
-* spp: fixed the issue of unable to process BDS-only observations
+* spp & tedit: fixed the issue of unable to process BDS/GLONASS-only observations
 * table/config\_template: BDS GEO satellites are disabled by default to enhance processing quality
  
 ## Getting in Touch
