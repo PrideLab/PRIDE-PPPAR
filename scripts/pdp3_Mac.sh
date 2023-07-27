@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : May-19, 2023                                                    ##
+##  DATE   : Jul-27, 2023                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -157,8 +157,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
         [[ $last_arg =~ ^/ ]] && rnxo_path="$last_arg" || rnxo_path="$(pwd)/$last_arg"
         rnxo_name=$(basename "$rnxo_path")
         rinex_dir=$(dirname  "$rnxo_path")
-        if ! head -1 "$last_arg" | grep -q "OBS"; then
-            >&2 echo -e "$MSGERR illegal observation file: $last_arg"
+        if [[ $(head -1 $last_arg | cut -c 21-21) != "O" ]]; then
+            >&2 echo -e "$MSGERR unsupported RINEX observation type: $(head -1 $last_arg | cut -c 21-21)"
             exit 1
         fi
     else

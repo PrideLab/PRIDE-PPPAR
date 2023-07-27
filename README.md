@@ -177,11 +177,12 @@ Release of PRIDE PPP-AR v2.2
 * lsq: untrusted coordinates (that previously marked with “\*”) are no longer exproted to the kin file
 * table: added igs20\_2247.atx
 
-2023-07-24 (v2.2.6)
+2023-07-27 (v2.2.6)
 
 * pdp3.sh: consider specifying the language/region setting to "en_US.UTF-8" to avoid issues with decimal comma
     - please contact us if further issues persist in your region
 * pdp3.sh: fixed the issue of unable to download GIM products for 2nd ionospheric corrections after 2022/300
+* pdp3.sh: fixed the issue of unable to recognize some RINEX observation files
 * lib: fixed the issue of reading multi-day quaternions
 * lib: improved the substitution rules for vacant multi-GNSS PCOs/PCVs and fixed related read issues
 * spp & tedit: fixed the issue of unable to process BDS/GLONASS-only observations
