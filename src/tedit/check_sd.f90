@@ -1,7 +1,7 @@
 !
 !! check_sd.f90
 !!
-!!    Copyright (C) 2022 by Wuhan University
+!!    Copyright (C) 2021 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jing Zeng
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
 !! 
 !!
 !!
@@ -182,6 +182,9 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
 !! select satisfactory referece satellte
     iref = 1
     do isat = 1, nsat
+      if(prn0(isat)(1:1) .ne. 'G')then !add for referece satellte
+        cycle
+      endif
       if (nobsprn(isat) .gt. nobsprn(iref)) then
         iref = isat
       else if (nobsprn(isat) .eq. nobsprn(iref)) then
@@ -223,6 +226,9 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
 !!
 !! check other satellites, form single diff LC obs
     do isat = 1, nsat
+      if(prn0(isat)(1:1) .eq. 'C')then
+        cycle
+      endif
       if (nobsprn(isat) .gt. ndgr + 2 .and. isat .ne. iref) then
         jeph = 0
         nsd = 0

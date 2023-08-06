@@ -290,17 +290,17 @@ program lsq
 !! read kinematic position: if not found, use value at last epoch
     if (SITE%skd(1:1) .eq. 'K' .and. count(OB%obs(1:LCF%nprn, 3) .ne. 0.d0) .gt. 0) then
       call read_kinpos(SITE, jd, sod, deltax(1), deltax(2), deltax(3))
-      if (.not. all(deltax(1:3) .eq. 1.d0)) then
-        ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
-        ipar = OB%ltog(ipar, 1)
-        PM(ipar)%xini     = deltax(1)
-        PM(ipar + 1)%xini = deltax(2)
-        PM(ipar + 2)%xini = deltax(3)
-        call xyzblh(deltax(1:3), 1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, deltax)
-        if (deltax(3).lt.-4.d2.or.deltax(3).gt.20.d3) goto 40
-      else
-        goto 40
-      endif
+      if (all(deltax(1:3) .eq. 1.d0) .or. &
+          all(deltax(1:3) .eq. 0.d0)) then
+        deltax(1:3) = SITE%x(1:3) * 1.d3
+      end if
+      ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
+      ipar = OB%ltog(ipar, 1)
+      PM(ipar)%xini     = deltax(1)
+      PM(ipar + 1)%xini = deltax(2)
+      PM(ipar + 2)%xini = deltax(3)
+      call xyzblh(deltax(1:3), 1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, deltax)
+      if (deltax(3).lt.-4.d2.or.deltax(3).gt.20.d3) goto 40
     endif
 !
 !! add new ambiguities
