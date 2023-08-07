@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Jul-27, 2023                                                    ##
+##  DATE   : Aug-07, 2023                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -2088,7 +2088,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local ion_tmp="CODG${ydoy[1]}0.${ydoy[0]:2:2}I"
                 local ion_cmp="${ion_tmp}.Z"
             else
-                local ion_tmp="COD0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01H_GIM.ION"
+                local ion_tmp="COD0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01H_GIM.INX"
                 local ion_cmp="${ion_tmp}.gz"
             fi
             local ion_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${ion_cmp}"
