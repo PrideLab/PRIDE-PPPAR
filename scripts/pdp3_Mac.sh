@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Aug-07, 2023                                                    ##
+##  DATE   : Sept-08, 2023                                                   ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -1558,7 +1558,6 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         local custom_pro_sp3=""
         for mjd in $(seq $mjd_s $mjd_e); do
             local ydoy=($(mjd2ydoy $mjd))
-            local wkdow=($(mjd2wkdow $mjd))
             if [ $mjd_s -ge 58849 ]; then
                 local sp3="WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01M_ORB.SP3"
                 local sp3_cmp="${sp3}.gz"
@@ -1652,7 +1651,6 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         local custom_pro_clk=""
         for mjd in $(seq $mjd_s $mjd_e); do
             local ydoy=($(mjd2ydoy $mjd))
-            local wkdow=($(mjd2wkdow $mjd))
             if [ $mjd_s -ge 58849 ]; then
                 local clk="WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK"
                 local clk_cmp="${clk}.gz"
@@ -1739,15 +1737,13 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     else
         local custom_pro_erp=""
         for mjd in $(seq $mjd_s $mjd_e); do
-            local wkdow=($(mjd2wkdow $mjd))
+            local ydoy=($(mjd2ydoy $mjd))
             if [ $mjd_s -ge 58849 ]; then
-                local ydoy=($(mjd2ydoy $mjd))
                 local erp="WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP"
                 local erp_cmp="${erp}.gz"
                 local erp_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${erp_cmp}"
             elif [ $mjd_s -ge 49718 ]; then
-                local ydoy=($(wkdow2ydoy ${wkdow[0]} 0))
-                local erp="IGS1R03SNX_${ydoy[0]}${ydoy[1]}0000_07D_01D_ERP.ERP"
+                local erp="COD0R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP"
                 local erp_cmp="${erp}.gz"
                 local erp_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/${erp_cmp}"
             else
@@ -1901,7 +1897,6 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         local custom_pro_fcb=""
         for mjd in $(seq $mjd_s $mjd_e); do
             local ydoy=($(mjd2ydoy $mjd))
-            local wkdow=($(mjd2wkdow $mjd))
             if [ $mjd_s -ge 58849 ]; then
                 local fcb="WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ABS.BIA"
                 local fcb_cmp="${fcb}.gz"

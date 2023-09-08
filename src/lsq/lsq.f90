@@ -292,7 +292,7 @@ program lsq
       call read_kinpos(SITE, jd, sod, deltax(1), deltax(2), deltax(3))
       if (all(deltax(1:3) .eq. 1.d0) .or. &
           all(deltax(1:3) .eq. 0.d0)) then
-        deltax(1:3) = SITE%x(1:3) * 1.d3
+        goto 40
       end if
       ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
       ipar = OB%ltog(ipar, 1)

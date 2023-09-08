@@ -205,14 +205,12 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
           endif
         else if (PM(ipar)%pname(1:5) .eq. 'STAPX') then
           cid = ' '
-!         if (PM(ipar)%iobs .lt. 5) cid = ' *'
-          if (PM(ipar)%iobs .ge. 5) then
-            call xyzblh(PM(ipar : ipar+2)%xini + PM(ipar : ipar+2)%xcor, 1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, SITE%geod)
-            write (SITE%ikin, '(i5,f10.2,a2,3f13.3,2f16.10,f13.3,i7,6(1x,i2.2),f7.2)') int(mw), (mw - int(mw))*864.d2, cid, &
-                   (PM(ipar + i)%xini + PM(ipar + i)%xcor, i=0, 2), &
-                   SITE%geod(1)/PI*180.d0, SITE%geod(2)/PI*180.d0, SITE%geod(3), PM(ipar)%iobs, PM(ipar)%iobs_G, &
-                   PM(ipar)%iobs_R, PM(ipar)%iobs_E, PM(ipar)%iobs_C, PM(ipar)%iobs_3, PM(ipar)%iobs_J, pdop
-          endif
+          if (PM(ipar)%iobs .lt. 5) cid = ' *'
+          call xyzblh(PM(ipar : ipar+2)%xini + PM(ipar : ipar+2)%xcor, 1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, SITE%geod)
+          write (SITE%ikin, '(i5,f10.2,a2,3f13.3,2f16.10,f13.3,i7,6(1x,i2.2),f7.2)') int(mw), (mw - int(mw))*864.d2, cid, &
+                 (PM(ipar + i)%xini + PM(ipar + i)%xcor, i=0, 2), &
+                 SITE%geod(1)/PI*180.d0, SITE%geod(2)/PI*180.d0, SITE%geod(3), PM(ipar)%iobs, PM(ipar)%iobs_G, &
+                 PM(ipar)%iobs_R, PM(ipar)%iobs_E, PM(ipar)%iobs_C, PM(ipar)%iobs_3, PM(ipar)%iobs_J, pdop
         endif
       endif
       backspace lfnrem
