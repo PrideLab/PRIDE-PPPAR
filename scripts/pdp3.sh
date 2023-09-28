@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 2.2                                                         ##
 ##                                                                           ##
-##  DATE   : Sept-08, 2023                                                   ##
+##  DATE   : Sept-28, 2023                                                   ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -1990,7 +1990,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         echo -e "$MSGINF Prepare IGS ANTEX product: $abs_atx ..."
     else
         [[ "$OFFLINE" == "NO" ]] && abs_atx=$(curl https://files.igs.org/pub/station/general/ | grep -Eo "igs[0-9]{2}_[0-9]{4}.atx" | tail -1)
-        [[ $? -eq 0 ]] || abs_atx=$(ls "$table_dir/igs[0-9]{2}_[0-9]{4}.atx" | tail -1)
+        [ -n "$abs_atx" ] || abs_atx=$(ls "$table_dir" | grep -Eo "igs[0-9]{2}_[0-9]{4}.atx" | tail -1)
         echo -e "$MSGINF Prepare IGS ANTEX product: $abs_atx ..."
         echo -e "$MSGWAR no PCO/PCV model specified in clock product $clk, use default instead"
     fi
@@ -2079,7 +2079,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         [ "$OFFLINE" == "NO" ] && mkdir -p "$product_ion_dir"
         for mjd in $(seq $mjd_s $mjd_e); do
             local ydoy=($(mjd2ydoy $mjd))
-            if [ $mjd -le 59879 ]; then
+            if [ $mjd -le 59909 ]; then
                 local ion_tmp="CODG${ydoy[1]}0.${ydoy[0]:2:2}I"
                 local ion_cmp="${ion_tmp}.Z"
             else
