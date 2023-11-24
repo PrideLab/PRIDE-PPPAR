@@ -1,7 +1,7 @@
 !
 !! xyz2enu.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,13 +9,13 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Jianghui Geng, Songfeng Yang
+!! Contributor: Jianghui Geng, Songfeng Yang, Jihang Lin
 !!
 !!
 program xyz2enu
@@ -28,6 +28,7 @@ real*8 mean(3),sig(3),std(3)
 character*1 cin
 character*256 kinfil,difkin
 character*256 line
+character*64  fmtkin, fmtenu
 integer*4 num_all,num_err
 logical*1 tag_header
 
@@ -36,7 +37,7 @@ if (narg .ne. 2 .and. narg .ne. 5) then
   write(*,*)"Usage: xyz2enu kin_2020001 enu_2020001 [x_ref y_ref z_ref]"
   write(*,*)"if no x_ref y_ref z_ref, default x_avg y_avg z_avg"
   write(*,*)"output in file (m): sod E N U"
-  write(*,*)"output in screen (m): STD"
+  write(*,*)"output in screen (m): STD or RMS"
   call exit(1)
 endif
 if (narg .eq. 2 .or. narg .eq. 5) then
@@ -100,7 +101,14 @@ endif
 do while(.true.)
   read(10,'(a)',iostat=ierr) line
   if(ierr.ne.0) exit
-  read(line,'(i5,f10.2,1x,a1,3f13.3,45x,i7,6(1x,i2.2),f7.2)',iostat=ierr) &
+  if(line(31:31) .eq. ' ') then
+    fmtkin = '(i5,f10.2,1x,a1,3f13.3,45x,i7,6(1x,i2.2),f7.2)'
+    fmtenu = '(i5,f10.2,3f13.3,i7,6(1x,i2.2),f7.2)'
+  else
+    fmtkin = '(i5,f10.2,1x,a1,3f14.4,48x,i7,6(1x,i2.2),f7.2)'
+    fmtenu = '(i5,f10.2,3f14.4,i7,6(1x,i2.2),f7.2)'
+  endif
+  read(line,fmtkin,iostat=ierr) &
        mjd,sod,cin,x(1:3),satnum,satnum_G,satnum_R,satnum_E,satnum_C,satnum_3,satnum_J,pdop
   num_all=num_all+1
   if(cin.eq.'*') then
@@ -112,14 +120,22 @@ do while(.true.)
   k=k+1
   mean(1:3)=mean(1:3)+x(1:3)
   sig(1:3)=sig(1:3)+x(1:3)**2
-  write(15,'(i5,f10.2,3f13.3,i7,6(1x,i2.2),f7.2)') &
+  write(15,fmtenu) &
         mjd,sod,x(1:3),satnum,satnum_G,satnum_R,satnum_E,satnum_C,satnum_3,satnum_J,pdop
 enddo
 
-mean(1:3)=mean(1:3)/k
-sig(1:3)=dsqrt(sig(1:3)/k)
-std(1:3)=dsqrt(sig(1:3)**2-mean(1:3)*mean(1:3))
-write(*,'(a4,1x,3f14.4)') "STD:",std(1:3) !STD:m
+if(k.gt.0) then
+  mean(1:3)=mean(1:3)/k
+  sig(1:3)=dsqrt(sig(1:3)/k)
+  if (narg .eq. 2) then
+    std(1:3)=dsqrt(sig(1:3)**2-mean(1:3)**2)
+    write(*,'(a4,1x,3f14.4)') "STD:",std(1:3)
+  elseif (narg .eq. 5) then
+    write(*,'(a4,1x,3f14.4)') "RMS:",sig(1:3)
+  endif
+else
+  write(*,*) "***ERROR: no available record in ",trim(kinfil) 
+endif
 
 close(15)
 close(10)

@@ -6,7 +6,7 @@ type orbhdr
 !! satelilte 
   character*10 :: sattyp = ''   ! satellite type  
   integer*4 nprn                ! # of satellites
-  character*3 prn(MAXSAT)         ! satellite number
+  character*3 prn(MAXSAT)       ! satellite PRN
 !
 !! system tag
   character*80 :: iers = ''     ! IERS Conventions

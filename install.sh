@@ -6,13 +6,13 @@
 ##                                                                           ##
 ##  AUTHOR : the PRIDE Group pride@whu.edu.cn                                ##
 ##                                                                           ##
-##  VERSION: ver 2.2                                                         ##
+##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : May-23, 2022                                                    ##
+##  DATE   : Sept-13, 2023                                                   ##
 ##                                                                           ##
-##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
+##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
-##    Copyright (C) 2022 by Wuhan University                                 ##
+##    Copyright (C) 2023 by Wuhan University                                 ##
 ##                                                                           ##
 ##    This program is free software: you can redistribute it and/or modify   ##
 ##    it under the terms of the GNU General Public License (version 3) as    ##
@@ -20,11 +20,11 @@
 ##                                                                           ##
 ##    This program is distributed in the hope that it will be useful,        ##
 ##    but WITHOUT ANY WARRANTY; without even the implied warranty of         ##
-##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          ##
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           ##
 ##    GNU General Public License (version 3) for more details.               ##
 ##                                                                           ##
 ##    You should have received a copy of the GNU General Public License      ##
-##    along with this program.  If not, see <https://www.gnu.org/licenses/>. ##
+##    along with this program. If not, see <https://www.gnu.org/licenses/>.  ##
 ##                                                                           ##
 ###############################################################################
 
@@ -59,13 +59,9 @@ cd src && make clean && make && make install \
     && mkdir -p $install_dir \
     && cp -f ./bin/* $install_dir \
     && chmod 755 ./scripts/*
-if [ "$SYS" == "Darwin" ]; then
-    cp -f ./scripts/pdp3_Mac.sh $install_dir/pdp3
-else
-    cp -f ./scripts/pdp3.sh $install_dir/pdp3
-fi
 
-cp -f ./scripts/plot* ./scripts/merge2brdm.py $install_dir
+cp -f ./scripts/*py ./scripts/*sh $install_dir
+mv -f $install_dir/pdp3.sh $install_dir/pdp3
 if [ $? -eq 0 ]; then
     if [ "$SYS" == "Darwin" ]; then
         grep "^export PATH=$install_dir:\$PATH" ${HOME}/.bash_profile > /dev/null 2>&1
@@ -80,7 +76,7 @@ fi
 ls ${install_dir}/lsq > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo -e "\033[1;31m" && cat ./doc/logo && echo -e "$NC"
-    printf "${BLUE}::${NC} PRIDE-PPPAR (v2.2) installation successfully completed!\n"
+    printf "${BLUE}::${NC} PRIDE-PPPAR (v3.0) installation successfully completed!\n"
     printf "${BLUE}::${NC} executable binaries are copy to $install_dir\n"
     printf "${BLUE}::${NC} $install_dir added to PATH\n"
 else
@@ -108,10 +104,9 @@ if [ ${#test} -ge 1 ] && ( [ ${test:0:1} == "y" ] || [ ${test:0:1} == "Y" ] ); t
     cd example
     if [ "$SYS" == "Darwin" ]; then
         source ~/.bash_profile
-        bash test_Mac.sh
     else
         source ~/.bashrc
-        bash test.sh
     fi
+    bash test.sh
     cd ..
 fi

@@ -3,12 +3,12 @@
 type rnxhdr 
   logical*1    lc1p1,lc2p2
   integer*4    ver,fact1,fact2,nobstyp
-  integer*4    nobstyp3_G,nobstyp3_R,nobstyp3_E,nobstyp3_C,nobstyp3_J
+  integer*4    nobstyp3_sys(MAXSYS)
   integer*4    t0(5),t1(5)
   real*8       intv,x,y,z,h,e,n,t0s,t1s
   character*1  sys
-  character*3  obstyp(maxtyp)
-  character*3  obstyp3_G(maxtyp),obstyp3_R(maxtyp),obstyp3_E(maxtyp),obstyp3_C(maxtyp),obstyp3_J(maxtyp)
+  character*3  obstyp(MAXTYP)
+  character*3  cobstyp3_sys(MAXTYP, MAXSYS)
   character*4  mark
   character*6  recnum,antnum
   character*20 rectyp,anttyp
@@ -21,6 +21,7 @@ type rnxobr
   character*3  typuse(maxsat,4),prn(maxsat)
   real*8       tsec,dtrcv
   real*8       obs(maxsat,6)
+  integer*1    lli(maxsat,2) ! Lost of lock indicator (LLI) for carrier-phase observations
 !
 !! editing
   integer*4    lfnrhd,amb_epo,amb_tot,ava_obs,rem_obs

@@ -18,7 +18,6 @@ if(revs==0)then  ! input forward data
     endif
     i=0
     do while(i<nu .and. n<MAXOBS*2)
-        !if(obss%mydata(iobsu+1+i)%sat<33)then
         if(obss%mydata(iobsu+1+i)%sat<=MAXSAT)then
             obs(n+1)=obss%mydata(iobsu+1+i); n=n+1
         endif

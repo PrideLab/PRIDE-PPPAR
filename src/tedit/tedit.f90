@@ -1,7 +1,7 @@
 !
 !! tedit.f90
 !!
-!!    Copyright (C) 2022 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,14 +9,14 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
-!! 
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin, Jing Zeng
+!!
 !!
 !!
 !! Turboedit
@@ -24,230 +24,289 @@
 program tedit
   implicit none
   include '../header/const.h'
+  include '../header/absbia.h'
   include '../header/brdeph.h'
   include 'data_flag.h'
 
-  integer*4 nsat, jd0, nobs(MAXSAT)
-  integer*4, pointer :: flagall(:, :)
-  real*8, pointer :: ti(:), ts(:)
-  real*8 bias(MAXSAT, MAXTYP)
-  real*8, pointer :: obs(:, :, :)
-  integer*4 nepo, ierr
-
-! broadcast ephemeris
-  integer*4 neph
-  type(brdeph), allocatable :: ephem(:)
-
-  integer*4 lfnsd
-  logical*1 again, use_brdeph, check_pc, check_lc, turbo_edit, &
-    debug_sd, debug_tb, keep_end, lexist
-! control parameters
-  character*256 flnrnx, flneph, flnrhd, string*20, stanam*4
-  integer*4 tstart(5), length_gap, length_short
-  real*8 sstart, cutoff_elevation, interval, pclimit, lclimit, lglimit, lgrmslimit, &
-    max_mean_namb, min_percent, min_mean_nprn, session_length
-! local
-  integer*4 isat, iepo, nused
-  real*8, pointer :: x(:), y(:), z(:)
-  real*8 t_first_in_rinex, t_last_in_rinex
-  real*8 fjd0, fjd1
-  real*4, pointer :: v(:, :)
-! for one or single difference
-  real*8, pointer :: pg(:), sigpg(:), respg(:)
-  integer*4 ieph, glschn(MAXSAT_R), lfnchn
-!! function used
-  logical*1 istrue
-  integer*4 get_valid_unit, modified_julday
-  
+! common
+  integer*4     idxfrq(MAXSYS, 2)
+  common        idxfrq
 !
-!! get input from command line
-  call get_control_parameter(flnrnx, flneph, flnrhd, check_lc, &
-                             turbo_edit, use_brdeph, check_pc, keep_end, &
-                             tstart, sstart, session_length, length_gap, length_short, cutoff_elevation, &
-                             max_mean_namb, min_percent, min_mean_nprn, interval, lclimit, pclimit, &
-                             lglimit, lgrmslimit, stanam)
+  integer*4     jd0
+  integer*4     nsat, msat
+  integer*4     nobs(MAXSAT)
+  integer*4, pointer :: flag(:, :)
+  real*8, pointer :: ti(:), ts(:)
+  real*8, pointer :: x(:), y(:), z(:)
+  integer*4     kday, nday
+  integer*4     kepo, jepo
+  integer*4     mepo, nepo
+  integer*4     ierr
+  type(absbia)  bias(MAXSAT, MAXTYP)
+!! broadcast ephemerides
+  integer*4     neph
+  type(brdeph), pointer :: ephem(:)
+!! logical parameters
+  logical*1     again
+  logical*1     use_brdeph
+  logical*1     check_pc, check_lc
+  logical*1     turbo_edit, lm_edit
+  logical*1     debug_sd, debug_tb
+  logical*1     keep_end
+  logical*1     lexist
+! control parameters
+  character*1   trunc_dbd
+  character*256 flnrnx, flneph, flnrhd
+  character*20  string
+  character*4   stanam
+  integer*4     tstart(5), length_gap, length_short
+  real*8        sstart, interval, cutoff_elevation
+  real*8        pclimit, lclimit, lglimit, lgrmslimit
+  real*8        max_mean_namb, min_percent, min_mean_nprn, session_length
+! local
+  integer*4     lfnsd
+  integer*4     nused
+  integer*4     isat, iepo
+  integer*4, pointer :: tmpflg(:, :)
+  real*8, pointer :: obs(:, :, :)
+  real*8, pointer :: tti(:), tts(:)
+  real*8, pointer :: xt(:), yt(:), zt(:)
+  real*4, pointer :: vel(:, :)
+  real*8        t_first_in_rinex, t_last_in_rinex
+  real*8        fjd0, fjd1, overlap_sec, tmp_session
+! for one or single difference
+  real*8, pointer :: valpg(:), sigpg(:), respg(:)
+! function used
+  logical*1     istrue
+  integer*4     get_valid_unit
+  integer*4     modified_julday
+
+!
+!! initialize
+  idxfrq = 0
   debug_tb = .true.
   debug_sd = .false.
-
-  nepo = nint(session_length/interval)+1
-  allocate (x(1:nepo),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): x allocation ', nepo
-    call exit(1)
-  endif
-  allocate (y(1:nepo),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): y allocation ', nepo
-    call exit(1)
-  endif
-  allocate (z(1:nepo),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): z allocation ', nepo
-    call exit(1)
-  endif
-
-  call get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x, y, z)
-  allocate (ti(1:nepo),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): ti allocation ', nepo
-    call exit(1)
-  endif
-  allocate (ts(1:nepo),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): ts allocation ', nepo
-    call exit(1)
-  endif
-  allocate (flagall(1:nepo,1:MAXSAT),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): flagall allocation ', nepo
-    call exit(1)
-  endif
-  allocate (obs(1:nepo,1:MAXSAT,1:6),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): obs allocation ', nepo
-    call exit(1)
-  endif
-  allocate (v(1:nepo,1:MAXSAT),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): v allocation ', nepo
-    call exit(1)
-  endif
-  allocate (pg(1:nepo),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): pg allocation ', nepo
-    call exit(1)
-  endif
-  allocate (sigpg(1:nepo),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): sigpg allocation ', nepo
-    call exit(1)
-  endif
-  allocate (respg(1:nepo),stat=ierr)
-  if (ierr .ne. 0) then
-    write (*, '(a,i8)') '***ERROR(tedit): respg allocation ', nepo
-    call exit(1)
-  endif
-
-! calculate fjd span
-  fjd0 = modified_julday(tstart(3), tstart(2), tstart(1)) + tstart(4)/24.d0 + tstart(5)/1440.d0 + sstart/86400.d0
-  fjd1 = fjd0 + session_length/86400.d0
-
-! read broadcast ephemeris
-  if (use_brdeph) then
-    neph = int(ceiling(fjd1)-floor(fjd0)+1) * (MAXSAT*24 + MAXSAT_E*120)
-    allocate(ephem(neph))
-    call rdrnxn(flneph, fjd0, fjd1, neph, ephem)
-  endif
-
-! read GLONASS channel numbers
-  call read_glschn(int(fjd0), fraction(fjd0), glschn)
-
-! read rinex observation file
-  bias = 0.d0
-  call read_rinex_file(flnrnx, tstart, sstart, interval, &
-                       check_pc, pclimit, cutoff_elevation, use_brdeph, neph, &
-                       ephem, stanam, x, y, z, t_first_in_rinex, t_last_in_rinex, v, &
-                       nepo, nsat, jd0, nobs, flagall, ti, ts, obs, bias)
-
-! remove short piece and flag gap
-  do isat = 1, nsat
-    again = .true.
-    do while (again)
-! ********************************************************************** !
-!               remove short piece and mark large gap                    !
-! ********************************************************************** !
-      call remove_short(keep_end, nepo, ti, flagall(1, isat), length_short, length_gap, interval, flag_shrt, again)
-    enddo
-  enddo
-
-! SD LC checking when necessary
-  lfnsd = -1
-  if (debug_sd) lfnsd = 0
-  if (check_lc) then
-! ********************************************************************** !
-!                  check single-difference LC                            !
-! ********************************************************************** !
-    call check_sd(lfnsd, neph, ephem, 2, 3, 20, 8, x, y, z, interval, lclimit, &
-                  nepo, nsat, jd0, nobs, flagall, ti, ts, obs)
-  endif
 !
-! widelane checking etc.
-  do isat = 1, nsat
-    nused = 0
-    do iepo = 1, nepo
-      obs(iepo, isat, 4) = 0.d0
-      obs(iepo, isat, 5) = 0.d0
-      if (istrue(flagall(iepo, isat), 'ok')) then
-        pg(iepo) = obs(iepo, isat, 1)       ! geometry-free
-        nused = nused + 1
-      endif
-    enddo
-    if (nused .ne. 0 .and. turbo_edit) then
-!! ****************************************************************** !!
-!!                       Used MW obs to check epochs
-!!           Nov. 1, 2007. "limit" should not be too small
-!! ****************************************************************** !!
-      call edit_widelane(nepo, ti, obs(1, isat, 2), flagall(1, isat), 3.0d0)
-      if (check_lc) then
-!! ****************************************************************** !!
-!!                Check ionosphere observations: LG
-!!           Nov. 1, 2007. "limit" should not be too small
-!! ****************************************************************** !!
-        call check_ionosphere(nepo, flagall(1, isat), ti, pg, respg, sigpg, interval, lglimit, lgrmslimit)
-        call lc_help(nepo, flagall(1, isat))
-      endif
-    endif
-    if (nused .ne. 0) then
+!! get input from command line
+  call get_control_parameter(flnrnx, flneph, flnrhd, &
+                             check_lc, turbo_edit, lm_edit, use_brdeph, check_pc, keep_end, trunc_dbd, &
+                             tstart, sstart, session_length, length_gap, length_short, &
+                             cutoff_elevation, max_mean_namb, min_percent, min_mean_nprn, &
+                             interval, lclimit, pclimit, lglimit, lgrmslimit, &
+                             stanam)
+!
+!! calculate time span
+  fjd0 = modified_julday(tstart(3), tstart(2), tstart(1)) + tstart(4)/24.d0 + tstart(5)/144.d1 + sstart/864.d2
+  fjd1 = fjd0 + session_length/864.d2
+
+  nday = ceiling(fjd1 + 1d-9) - floor(fjd0)
+  nepo = nint(session_length/interval) + 1
+!
+!! allocate global arrays
+  allocate (ti(1:nepo), stat=ierr)
+  allocate (ts(1:nepo), stat=ierr)
+  allocate (flag(1:nepo, 1:MAXSAT), stat=ierr)
+!
+!! determine the first session
+  if (nday .le. 3) then
+  !
+  !! while nday <= 3, all data will be processed in a single session
+  !!   (e.g. 59488.5 - 59500.5)
+  !
+    kday = nday
+    overlap_sec = 0.d0
+    tmp_session = session_length
+  else
+  !
+  !! the first session is ended at 24 h in the first day
+  !! an overlap of 0.5 h is appended to avoid saving short piece while save_end=true
+  !
+    kday = 1
+    overlap_sec = 36.d2
+    tmp_session = 864.d2*(ceiling(fjd0 + 1.d-9) - fjd0) + overlap_sec
+  end if
+
+  ! round to the nearest millisecond
+  tmp_session = nint(tmp_session*1.d3)/1.d3
+
+!
+!! divide a long-period processing into several sessions
+  kepo = 1
+  jepo = 1
+  do while (kday .le. nday)
+
+    ! number of epoch for this session
+    mepo = nint(tmp_session/interval) + 1
+
+    ! allocate temporary arrays
+    allocate (xt(1:mepo),    stat=ierr)
+    allocate (yt(1:mepo),    stat=ierr)
+    allocate (zt(1:mepo),    stat=ierr)
+    allocate (tmpflg(1:mepo, 1:MAXSAT),   stat=ierr)
+    allocate (obs(1:mepo, 1:MAXSAT, 1:7), stat=ierr)
+    allocate (vel(1:mepo, 1:MAXSAT),      stat=ierr)
+    allocate (tti(1:mepo),   stat=ierr)
+    allocate (tts(1:mepo),   stat=ierr)
+    allocate (valpg(1:mepo), stat=ierr)
+    allocate (sigpg(1:mepo), stat=ierr)
+    allocate (respg(1:mepo), stat=ierr)
+
+    ! read a priori xyz
+    call get_xyz(use_brdeph, tstart, sstart, tmp_session, mepo, interval, xt, yt, zt)
+
+    ! read broadcast ephemerids
+    if (use_brdeph) then
+      neph = 3*(MAXSAT*24 + MAXSAT_E*120)
+      allocate (ephem(neph))
+      call rdrnxn(flneph, fjd0 + sstart/864.d2, fjd0 + (sstart + tmp_session)/864.d2, neph, ephem)
+    end if
+
+    ! read rinex observation file
+    call read_rinex_file(flnrnx, tstart, sstart, interval, &
+                         check_pc, pclimit, &
+                         cutoff_elevation, use_brdeph, neph, ephem, lm_edit, &
+                         stanam, xt, yt, zt, t_first_in_rinex, t_last_in_rinex, vel, &
+                         mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs, bias)
+
+    ! remove short piece and flag gap
+    do isat = 1, nsat
       again = .true.
       do while (again)
-        call remove_short(keep_end, nepo, ti, flagall(1, isat), length_short, length_gap, interval, flag_shrt, again)
-      enddo
-      if (debug_tb) then
-        do iepo = 1, nepo
-          if (.not. istrue(flagall(iepo, isat), 'nodata')) then
+        ! ********************************************************************** !
+        !               remove short piece and mark large gap                    !
+        ! ********************************************************************** !
+        call remove_short(keep_end, trunc_dbd, mepo, tti, tmpflg(1, isat), length_short, length_gap, interval, flag_shrt, again)
+      end do
+    end do
+
+    ! SD LC checking when necessary
+    lfnsd = -1
+    if (debug_sd) lfnsd = 0
+    if (check_lc) then
+      ! ********************************************************************** !
+      !                  check single-difference LC                            !
+      ! ********************************************************************** !
+      call check_sd(lfnsd, neph, ephem, 2, 3, 20, 8, xt, yt, zt, interval, lclimit, &
+                    mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs)
+    end if
+    !
+    ! widelane checking etc.
+    do isat = 1, nsat
+      nused = 0
+      do iepo = 1, mepo
+        obs(iepo, isat, 4) = 0.d0
+        obs(iepo, isat, 5) = 0.d0
+        if (istrue(tmpflg(iepo, isat), 'ok')) then
+          ! geometry-free
+          valpg(iepo) = obs(iepo, isat, 1)
+          nused = nused + 1
+        end if
+      end do
+      if (nused .ne. 0 .and. turbo_edit) then
+  !! ****************************************************************** !!
+  !!                       Used MW obs to check epochs
+  !!           Nov. 1, 2007. "limit" should not be too small
+  !!           Dec. 6, 2022. improved with FBMWA and STPIR algorithm
+  !! ****************************************************************** !!
+        if (.not. lm_edit) then
+          call edit_widelane(mepo, tti, obs(1, isat, 2), tmpflg(1, isat), 3.0d0)
+        else
+          call lfbmwa(mepo, tti, obs(1, isat, 2), obs(1, isat, 7), tmpflg(1, isat), 1.0d0)
+          call edit_widelane(mepo, tti, obs(1, isat, 2), tmpflg(1, isat), 3.0d0)
+          call mstpir(mepo, tmpflg(1, isat), tti, valpg)
+        end if
+        if (check_lc) then
+  !! ****************************************************************** !!
+  !!                Check ionosphere observations: LG
+  !!           Nov. 1, 2007. "limit" should not be too small
+  !! ****************************************************************** !!
+          call check_ionosphere(mepo, tmpflg(1, isat), tti, valpg, respg, sigpg, interval, lglimit, lgrmslimit)
+          call lc_help(mepo, tmpflg(1, isat))
+        end if
+      end if
+      if (nused .ne. 0) then
+        again = .true.
+        do while (again)
+          call remove_short(keep_end, trunc_dbd, mepo, tti, tmpflg(1, isat), &
+                            length_short, length_gap, interval, flag_shrt, again)
+        end do
+        if (debug_tb) then
+          do iepo = 1, mepo
+            if (istrue(tmpflg(iepo, isat), 'nodata')) cycle
             string = 'ok'
-            if (istrue(flagall(iepo, isat), 'no4')) then
+            if (istrue(tmpflg(iepo, isat), 'no4')) then
               string = 'No 4'
-            else if (istrue(flagall(iepo, isat), 'lowele')) then
+            else if (istrue(tmpflg(iepo, isat), 'lowele')) then
               string = 'Low Elevation'
-            else if (istrue(flagall(iepo, isat), 'shrt')) then
+            else if (istrue(tmpflg(iepo, isat), 'shrt')) then
               string = 'Short Piece'
-            else if (istrue(flagall(iepo, isat), 'lwbad')) then
+            else if (istrue(tmpflg(iepo, isat), 'lwbad')) then
               string = 'Bad Widelane'
-            else if (istrue(flagall(iepo, isat), 'lgbad')) then
+            else if (istrue(tmpflg(iepo, isat), 'lgbad')) then
               string = 'Bad Ionosphere'
-            else if (istrue(flagall(iepo, isat), 'lccheck')) then
+            else if (istrue(tmpflg(iepo, isat), 'lccheck')) then
               string = 'Can not check LC'
-            else if (istrue(flagall(iepo, isat), 'pcbad')) then
+            else if (istrue(tmpflg(iepo, isat), 'pcbad')) then
               string = 'Bad Range   '
-            else if (istrue(flagall(iepo, isat), 'pc1ms')) then
+            else if (istrue(tmpflg(iepo, isat), 'pc1ms')) then
               string = 'Bad Range 1ms'
-            else if (istrue(flagall(iepo, isat), 'amb')) then
+            else if (istrue(tmpflg(iepo, isat), 'amb')) then
               string = 'AMB'
-            endif
-          endif
-        enddo
-      endif
-    endif
-  enddo
+            end if
+          end do
+        end if
+      end if
+    end do
 
-! write rhd file for further processing
+    if (nday .gt. 3 .and. kday .ne. 1) then
+      jepo = jepo - nint(length_short/interval)
+    end if
+
+    ! save time tags
+    ti(jepo:(kepo + mepo - 1)) = tti((jepo - kepo + 1):mepo)
+    ts(jepo:(kepo + mepo - 1)) = tts((jepo - kepo + 1):mepo)
+
+    ! save flags
+    flag(jepo:(kepo + mepo - 1), :) = tmpflg((jepo - kepo + 1):mepo, :)
+
+    ! deallocate temporary arrays
+    deallocate (tmpflg)
+    deallocate (obs)
+    deallocate (vel)
+    deallocate (tti)
+    deallocate (tts)
+    deallocate (valpg)
+    deallocate (sigpg)
+    deallocate (respg)
+    deallocate (ephem)
+
+    ! accumulate sstart
+    sstart = 864.d2*(kday - 1 + ceiling(fjd0 + 1.d-9) - fjd0)
+    jepo = kepo + mepo 
+    kepo = nint(sstart/interval) + 1
+
+    ! come to next session
+    kday = kday + 1
+    if (kday .eq. nday) then
+      tmp_session = 864.d2*(fjd1 - floor(fjd1))
+    else
+      tmp_session = 864.d2 + overlap_sec
+    end if
+
+    ! round to the nearest millisecond
+    sstart = dnint(sstart*1.d3)/1.d3
+    tmp_session = dnint(tmp_session*1.d3)/1.d3
+
+  end do
+
+!
+!! write rhd file for further processing
   if (flnrhd(1:1) .ne. ' ') then
-    call write_diag_rpt(flnrhd, nepo, nsat, stanam, jd0, ts, session_length, flagall, interval)
-  endif
-
-  if (allocated(ephem)) deallocate (ephem) 
-
+    call write_diag_rpt(flnrhd, nepo, MAXSAT, stanam, jd0, ts, session_length, flag, interval, trunc_dbd)
+  end if
+!
+!! deallocate global arrays
   deallocate (ti)
   deallocate (ts)
-  deallocate (flagall)
-  deallocate (obs)
-  deallocate (v)
-  deallocate (x)
-  deallocate (y)
-  deallocate (z)
-  deallocate (pg)
-  deallocate (sigpg)
-  deallocate (respg)
-
-end
+  deallocate (flag)
+end program

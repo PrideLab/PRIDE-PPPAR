@@ -1,22 +1,22 @@
 !
 !! lagrange_interp_orbit.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
-!!    This program belongs to PRIDE PPP-AR which is an open source software: 
-!!    you can redistribute it and/or modify it under the terms of the GNU 
+!!    This program belongs to PRIDE PPP-AR which is an open source software:
+!!    you can redistribute it and/or modify it under the terms of the GNU
 !!    General Public License (version 3) as published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Shuyin Mao
-!! 
+!! Contributor: Maorong Ge, Shuyin Mao, Jihang Lin
+!!
 !!
 !!
 !! purpose  : lagrange interplolation of satellite position and partial derivatives
@@ -62,11 +62,11 @@ subroutine lagrange_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
   type(orb_int_data) DT(MAXSAT)
 !
 !! local
-  logical*1 first, update_alpha, update_memory
+  logical*1 first, lrepeat
   integer*4 it, nprn
   character*3 prn(MAXSAT)
-  integer*4 ierr, ipos, i, j, k, ivar, jpos, jepo, sepo, irec
-  real*8 s, u, s2, u2, sum1, sum2, epo
+  integer*4 ierr, ipos, i, j, k, iepo, jepo, sepo, irec
+  real*8 epo
   real*8 coeff(MAXPNT)
 !
 !! function
@@ -87,113 +87,120 @@ subroutine lagrange_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
     LI%dintv = OH%dintv
     LI%jde = OH%jd1
     LI%sode = OH%sod1
-    LI%nrec = nint(timdif(OH%jd1, OH%sod1, OH%jd0, OH%sod0)/OH%dintv) + 1
+    LI%nrec = floor(timdif(OH%jd1, OH%sod1, OH%jd0, OH%sod0)/OH%dintv) + 1
     nprn = OH%nprn
-    do i = 1, nprn
-      prn(i) = OH%prn(i)
-    enddo
+    prn(1:nprn) = OH%prn(1:nprn)
     LI%ndgr = 8
     if (LI%ndgr .gt. MAXDGR) then
       write (*, '(a,2i3)') '***ERROR(lagrange_interp_orbit): LI%ndgr larger than MAXDGR', LI%ndgr, MAXDGR
       call exit(1)
-    endif
+    end if
 
     LI%irec_inmemory = 1
-    LI%nrec_inmemory = LI%ndgr+1
+    LI%nrec_inmemory = LI%ndgr + 1
     do irec = 1, LI%nrec_inmemory
-      read (LI%lunit, end=300) k, ((DT(i)%table(irec, j), j=1, 3), i=1, nprn)
-    enddo
-  endif
-!
-!! check time
-  if (timdif(jd, sod, LI%jds, LI%sods) .lt. -1.d-6 .or. timdif(jd, sod, LI%jde, LI%sode) .gt. 1.d-6) then
-    !write (*, '(a,i5,f9.1)') '###WARNING(everett_interp_orbit): arc not cover epoch ', jd, sod
-    !x(1:3) = 1.d15
-    !v(1:3) = 1.d15
-    !call exit(1)
-  endif
+      read (LI%lunit, end=300) k, lrepeat, ((DT(i)%table(irec, j), j=1, 3), i=1, nprn)
+      do while (lrepeat)
+        read (LI%lunit, end=300) k, lrepeat, ((DT(i)%table(irec, j), j=1, 3), i=1, nprn)
+      end do
+    end do
+  end if
 !
 !! which satellite
   it = pointer_string(nprn, prn, iprn)
   if (it .eq. 0) then
-    write (*, '(a3)') '***ERROR(everett_interp_orbit): in table no data for satellite ', iprn
+    write (*, '(a3)') '***ERROR(lagrange_interp_orbit): in table no data for satellite ', iprn
     call exit(1)
-  endif
-  
+  end if
+
   !
   !! interpolation epoch
-  epo=timdif(jd, sod, LI%jds, LI%sods)/LI%dintv+1.d0
+  epo = timdif(jd, sod, LI%jds, LI%sods)/LI%dintv + 1.d0
+
   !
   !! start epoch of the interpolation arc
-  sepo=nint(epo-LI%ndgr/2+1d-5/LI%dintv)
-  
-  if(sepo.lt.1) sepo=1
-  if(sepo+LI%ndgr.gt.LI%nrec) sepo=LI%nrec-LI%ndgr
-  
+  sepo = nint(epo - LI%ndgr/2 + 1d-5/LI%dintv)
+
+  !
+  !! avoid the interpolation arc across day-boundary
+  iepo = nint(timdif(jd, 0.d0, LI%jds, LI%sods)/LI%dintv + 1.d0)
+  jepo = nint(timdif(jd + 1, 0.d0, LI%jds, LI%sods)/LI%dintv + 1.d0)
+  if (sepo + LI%ndgr .gt. jepo) sepo = jepo - LI%ndgr
+  if (sepo .lt. iepo) sepo = iepo
+  if (epo + 1.d-1/LI%dintv .gt. jepo) sepo = jepo
+
+  if (sepo .lt. 1) sepo = 1
+  if (sepo + LI%ndgr .gt. LI%nrec) sepo = LI%nrec - LI%ndgr
+
   !
   !! check if we have enough data in memory.
-  !
-  !! forwards
-  if(LI%irec_inmemory + LI%nrec_inmemory - 1 .lt. sepo+LI%ndgr .and. &
-     LI%irec_inmemory + LI%nrec_inmemory - 1 .lt. LI%nrec) then
+  if (LI%irec_inmemory + LI%nrec_inmemory - 1 .lt. sepo + LI%ndgr .and. &
+      LI%irec_inmemory + LI%nrec_inmemory - 1 .lt. LI%nrec) then
+    !
+    !! forwards
     do while (LI%irec_inmemory .lt. sepo)
       do k = 1, nprn
-        do j = 1, 3
-          do i = 1, LI%nrec_inmemory-1
-            DT(k)%table(i, j) = DT(k)%table(i + 1, j)
-          enddo
-        enddo
-      enddo
-      read (LI%lunit, end=300) k, ((DT(i)%table(LI%nrec_inmemory, j), j=1, 3), i=1, nprn)
+        do i = 1, LI%nrec_inmemory - 1
+          DT(k)%table(i, 1:3) = DT(k)%table(i + 1, 1:3)
+        end do
+      end do
+      read (LI%lunit, end=300) k, lrepeat, ((DT(i)%table(LI%nrec_inmemory, j), j=1, 3), i=1, nprn)
+      do while (lrepeat)
+        do k = 1, nprn
+          DT(k)%table(LI%nrec_inmemory - 1, 1:3) = DT(k)%table(LI%nrec_inmemory, 1:3)
+        end do
+        read (LI%lunit, end=300) k, lrepeat, ((DT(i)%table(LI%nrec_inmemory, j), j=1, 3), i=1, nprn)
+      end do
       LI%irec_inmemory = LI%irec_inmemory + 1
-    enddo
-  !
-  !! backwards
-  else if(LI%irec_inmemory .gt. sepo) then
+    end do
+  else if (LI%irec_inmemory .gt. sepo) then
+    !
+    !! backwards
     do while (LI%irec_inmemory .gt. sepo)
       backspace LI%lunit
       LI%irec_inmemory = LI%irec_inmemory - 1
-    enddo
+    end do
     do i = 1, LI%nrec_inmemory
       backspace LI%lunit
-    enddo
+    end do
     do irec = 1, LI%nrec_inmemory
-      read (LI%lunit, end=300) k, ((DT(i)%table(irec, j), j=1, 3), i=1, nprn)
-    enddo
-  endif  
-  
+      read (LI%lunit, end=300) k, lrepeat, ((DT(i)%table(irec, j), j=1, 3), i=1, nprn)
+      do while (lrepeat)
+        read (LI%lunit, end=300) k, lrepeat, ((DT(i)%table(irec, j), j=1, 3), i=1, nprn)
+      end do
+    end do
+  end if
+
   !
   !! if missing data
   if (any(DT(it)%table(1:LI%nrec_inmemory, 1) .eq. 1.d15)) then
     x(1:3) = 1.d15
     v(1:3) = 1.d15
     return
-  endif
-  !
-  !!
-  jepo=sepo-LI%irec_inmemory
-  !
-  !!
-  call lagrange_coeff(LI%ndgr,epo-sepo,.true.,coeff)
+  end if
+
+  call lagrange_coeff(LI%ndgr, epo - sepo, .true., coeff)
+  jepo = sepo - LI%irec_inmemory
+
   !
   !! interpolation
-  do ivar = 1, 3
-    x(ivar) = 0.d0
-    v(ivar) = 0.d0
-    do k = 1, LI%ndgr+1
-      x(ivar)=x(ivar)+coeff(k)*DT(it)%table(jepo+k,ivar)
-    enddo
-    if (ivar .le. 3 .and. lvel) then
-      do k = 1, LI%ndgr+1
-      v(ivar) = v(ivar)+coeff(LI%ndgr+1+k)*DT(it)%table(jepo+k,ivar)
-      enddo
-      v(ivar)=v(ivar)/LI%dintv
-    endif
-  enddo
+  do i = 1, 3
+    x(i) = 0.d0
+    v(i) = 0.d0
+    do k = 1, LI%ndgr + 1
+      x(i) = x(i) + coeff(k)*DT(it)%table(jepo + k, i)
+    end do
+    if (i .le. 3 .and. lvel) then
+      do k = 1, LI%ndgr + 1
+        v(i) = v(i) + coeff(LI%ndgr + 1 + k)*DT(it)%table(jepo + k, i)
+      end do
+      v(i) = v(i)/LI%dintv
+    end if
+  end do
   return
 
 300 continue
-  write (*, '(a)') '***ERROR(everett_interpolate_orbit): end of file '
+  write (*, '(a)') '***ERROR(lagrange_interpolate_orbit): end of file '
   call exit(1)
 !
 !! reset
@@ -201,4 +208,4 @@ subroutine lagrange_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
   close (LI%lunit)
   first = .true.
   return
-end
+end subroutine

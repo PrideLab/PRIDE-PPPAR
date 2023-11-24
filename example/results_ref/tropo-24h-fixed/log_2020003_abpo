@@ -1,8 +1,14 @@
 RINEX health Logfile      abpo                              COMMENT
      30.00                                                  INTERVAL
-        41       165         0                              AMB MAX/TOT/NEW
-     93326     32108         0                              EPO AVA/REM/NEW
+TRUNCATED                                                   AMB AT DAT-BOUNDARY
+        41       164         0                              AMB MAX/TOT/NEW
+     93185     32250         0                              EPO AVA/REM/NEW
  2020  1  3  0  0  0.0000000    86340.00                    RES TIME BEG/LEN
+GPS       L1   L2                                           SYS / FREQUENCY BAND
+GLO       G1   G2                                           SYS / FREQUENCY BAND
+GAL       E1   E5a                                          SYS / FREQUENCY BAND
+BDS       B1I  B3I                                          SYS / FREQUENCY BAND
+QZS       L1   L2                                           SYS / FREQUENCY BAND
                                                             END OF HEADER
 TIM 2020  1  3  0  0  0.0000000
 G10                             2020  1  3  2  3  0.0000000 AMB
@@ -39,8 +45,8 @@ E33                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
 C07                             2020  1  3  0 41  0.0000000 AMB
-C09                             2020  1  3  3 40 30.0000000 AMB
-C10                             2020  1  3 11 28 30.0000000 AMB
+C09                             2020  1  3  3 28 30.0000000 AMB
+C10                             2020  1  3 11 38  0.0000000 AMB
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C19                                                         DEL_SHORTPIECE
@@ -365,7 +371,7 @@ R04                                                         DEL_LOWELEVATION
 R06                                                         DEL_LESSTHAN4OBS
 R17                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
-E09                             2020  1  3  6  4 30.0000000 AMB
+E09                             2020  1  3  6  5 30.0000000 AMB
 E20                                                         DEL_BADRANGE
 E24                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LESSTHAN4OBS
@@ -2914,7 +2920,7 @@ C06                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LESSTHAN4OBS
-C14                             2020  1  3  3 28  0.0000000 AMB
+C14                             2020  1  3  3 57 30.0000000 AMB
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C36                                                         DEL_LOWELEVATION
@@ -3847,7 +3853,7 @@ C08                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C22                                                         DEL_LOWELEVATION
-C24                             2020  1  3  9 24  0.0000000 AMB
+C24                             2020  1  3  9 18 30.0000000 AMB
 TIM 2020  1  3  2 11  0.0000000
 G10                                                         DEL_LOWELEVATION
 R06                                                         DEL_LESSTHAN4OBS
@@ -4006,7 +4012,7 @@ R26                                                         DEL_SHORTPIECE
 E19                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                             2020  1  3  8 20 30.0000000 AMB
+C08                             2020  1  3  8 28 30.0000000 AMB
 C18                                                         DEL_BADRANGE
 C22                                                         DEL_LOWELEVATION
 TIM 2020  1  3  2 18  0.0000000
@@ -4797,14 +4803,20 @@ R06                                                         DEL_LESSTHAN4OBS
 R07                                                         DEL_OUTLIER
 R08                                                         DEL_OUTLIER
 R09                                                         DEL_OUTLIER
-R16                                                         DEL_OUTLIER
 R19                                                         DEL_OUTLIER
 R20                                                         DEL_OUTLIER
-R21                                                         DEL_OUTLIER
 R26                                                         DEL_SHORTPIECE
+E01                                                         DEL_OUTLIER
+E05                                                         DEL_OUTLIER
+E24                                                         DEL_OUTLIER
+E26                                                         DEL_OUTLIER
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_OUTLIER
+C14                                                         DEL_OUTLIER
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_OUTLIER
+C29                                                         DEL_OUTLIER
 C34                                                         DEL_LESSTHAN4OBS
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  2 58  0.0000000
@@ -5459,7 +5471,6 @@ R26                                                         DEL_BADRANGE
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C14                             2020  1  3  3 57 30.0000000 AMB
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 29  0.0000000
@@ -5471,6 +5482,7 @@ R26                                                         DEL_BADRANGE
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 29 30.0000000
@@ -5481,6 +5493,7 @@ R26                                                         DEL_BADRANGE
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 30  0.0000000
@@ -5492,6 +5505,7 @@ R26                                                         DEL_BADRANGE
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 30 30.0000000
@@ -5514,6 +5528,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 31 30.0000000
@@ -5537,6 +5552,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 32 30.0000000
@@ -5548,6 +5564,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 33  0.0000000
@@ -5559,6 +5576,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 33 30.0000000
@@ -5570,6 +5588,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 34  0.0000000
@@ -5580,6 +5599,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 34 30.0000000
@@ -5591,6 +5611,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 35  0.0000000
@@ -5603,6 +5624,7 @@ E26                                                         DEL_LOWELEVATION
 C02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 J03                                                         DEL_LOWELEVATION
 TIM 2020  1  3  3 35 30.0000000
@@ -5626,6 +5648,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_SHORTPIECE
 J03                                                         DEL_LOWELEVATION
@@ -5638,6 +5661,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_SHORTPIECE
 J03                                                         DEL_LOWELEVATION
@@ -5649,6 +5673,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_SHORTPIECE
 J03                                                         DEL_LOWELEVATION
@@ -5661,6 +5686,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_SHORTPIECE
 J03                                                         DEL_LOWELEVATION
@@ -5673,6 +5699,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_SHORTPIECE
 J03                                                         DEL_LESSTHAN4OBS
@@ -5685,6 +5712,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_SHORTPIECE
 J03                                                         DEL_LESSTHAN4OBS
@@ -5697,6 +5725,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_SHORTPIECE
 J03                                                         DEL_LESSTHAN4OBS
@@ -5709,6 +5738,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_SHORTPIECE
 J03                                                         DEL_LOWELEVATION
@@ -5731,6 +5761,7 @@ E11                                                         DEL_LESSTHAN4OBS
 E26                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
+C09                                                         DEL_SHORTPIECE
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_SHORTPIECE
 J03                                                         DEL_LESSTHAN4OBS
@@ -6183,7 +6214,7 @@ R10                                                         DEL_LESSTHAN4OBS
 R16                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
 R26                                                         DEL_BADRANGE
-E05                             2020  1  3  5 50 30.0000000 AMB
+E05                             2020  1  3  6  2 30.0000000 AMB
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
@@ -9045,7 +9076,6 @@ G20                                                         DEL_LOWELEVATION
 G21                                                         DEL_LESSTHAN4OBS
 R10                                                         DEL_LESSTHAN4OBS
 R26                                                         DEL_BADRANGE
-E05                             2020  1  3  6  3 30.0000000 AMB
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
@@ -9290,6 +9320,7 @@ G04                                                         DEL_SHORTPIECE
 G20                                                         DEL_LOWELEVATION
 G22                                                         DEL_LOWELEVATION
 R10                                                         DEL_LESSTHAN4OBS
+E05                                                         DEL_SHORTPIECE
 E33                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
@@ -9300,6 +9331,7 @@ G04                                                         DEL_SHORTPIECE
 G20                                                         DEL_LOWELEVATION
 G22                                                         DEL_LOWELEVATION
 R10                                                         DEL_LESSTHAN4OBS
+E05                                                         DEL_SHORTPIECE
 E33                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
@@ -9343,7 +9375,6 @@ G20                                                         DEL_LOWELEVATION
 G22                                                         DEL_LOWELEVATION
 R10                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
-E09                                                         DEL_OUTLIER
 E33                                                         DEL_LOWELEVATION
 C02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
@@ -10666,7 +10697,7 @@ C18                                                         DEL_BADRANGE
 TIM 2020  1  3  7  9 30.0000000
 G04                                                         DEL_SHORTPIECE
 G09                                                         DEL_LOWELEVATION
-G30                             2020  1  3 11 16 30.0000000 AMB
+G30                             2020  1  3 11 30  0.0000000 AMB
 R10                                                         DEL_LESSTHAN4OBS
 E09                                                         DEL_LESSTHAN4OBS
 C02                                                         DEL_LESSTHAN4OBS
@@ -12506,17 +12537,22 @@ C18                                                         DEL_BADRANGE
 C33                                                         DEL_LOWELEVATION
 TIM 2020  1  3  8 21 30.0000000
 G04                                                         DEL_LESSTHAN4OBS
+G27                                                         DEL_OUTLIER
 R06                                                         DEL_LESSTHAN4OBS
+R08                                                         DEL_OUTLIER
 R10                                                         DEL_LESSTHAN4OBS
 R21                                                         DEL_LOWELEVATION
+E02                                                         DEL_OUTLIER
 E04                                                         DEL_LESSTHAN4OBS
 E09                                                         DEL_LESSTHAN4OBS
+E12                                                         DEL_OUTLIER
 E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
+C08                                                         DEL_OUTLIER
 C09                                                         DEL_LESSTHAN4OBS
+C14                                                         DEL_OUTLIER
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_SHORTPIECE
 TIM 2020  1  3  8 22  0.0000000
@@ -12530,24 +12566,28 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
 TIM 2020  1  3  8 22 30.0000000
 G04                                                         DEL_LESSTHAN4OBS
 G23                                                         DEL_LESSTHAN4OBS
+G27                                                         DEL_OUTLIER
 R06                                                         DEL_LESSTHAN4OBS
+R08                                                         DEL_OUTLIER
 R10                                                         DEL_LESSTHAN4OBS
 R21                                                         DEL_LOWELEVATION
+E02                                                         DEL_OUTLIER
 E04                                                         DEL_LESSTHAN4OBS
 E09                                                         DEL_LESSTHAN4OBS
+E12                                                         DEL_OUTLIER
 E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
+C08                                                         DEL_OUTLIER
 C09                                                         DEL_LESSTHAN4OBS
+C14                                                         DEL_OUTLIER
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_SHORTPIECE
 TIM 2020  1  3  8 23  0.0000000
@@ -12563,7 +12603,6 @@ E31                                                         DEL_LOWELEVATION
 C02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12578,7 +12617,6 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12593,7 +12631,6 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12607,7 +12644,6 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12621,7 +12657,6 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12651,7 +12686,6 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12668,7 +12702,6 @@ E18                                                         DEL_LESSTHAN4OBS
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12685,7 +12718,6 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12702,7 +12734,6 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12717,7 +12748,6 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C33                                                         DEL_LESSTHAN4OBS
@@ -12733,7 +12763,6 @@ E18                                                         DEL_LOWELEVATION
 E31                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
 C07                                                         DEL_LESSTHAN4OBS
-C08                                                         DEL_SHORTPIECE
 C09                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C28                                                         DEL_LESSTHAN4OBS
@@ -14492,7 +14521,7 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3  9 19  0.0000000
 G04                                                         DEL_LOWELEVATION
-G23                             2020  1  3 14 19 30.0000000 AMB
+G23                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
 E12                                                         DEL_LESSTHAN4OBS
@@ -14503,8 +14532,10 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 19 30.0000000
 G04                                                         DEL_LOWELEVATION
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14516,8 +14547,10 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 20  0.0000000
 G04                                                         DEL_LESSTHAN4OBS
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14528,8 +14561,10 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 20 30.0000000
 G04                                                         DEL_LOWELEVATION
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14541,8 +14576,10 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 21  0.0000000
 G04                                                         DEL_LOWELEVATION
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14553,8 +14590,10 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 21 30.0000000
 G04                                                         DEL_LOWELEVATION
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14565,8 +14604,10 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 22  0.0000000
 G17                                                         DEL_LESSTHAN4OBS
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14577,9 +14618,11 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 22 30.0000000
 G04                                                         DEL_LOWELEVATION
 G17                                                         DEL_LESSTHAN4OBS
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14590,9 +14633,11 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 23  0.0000000
 G04                                                         DEL_LOWELEVATION
 G17                             2020  1  3 15 51  0.0000000 AMB
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14603,8 +14648,10 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 23 30.0000000
 G04                                                         DEL_LOWELEVATION
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14615,8 +14662,10 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 24  0.0000000
 G04                                                         DEL_LOWELEVATION
+G23                                                         DEL_SHORTPIECE
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -14627,8 +14676,10 @@ C08                                                         DEL_LESSTHAN4OBS
 C09                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C24                                                         DEL_SHORTPIECE
 TIM 2020  1  3  9 24 30.0000000
 G04                                                         DEL_LOWELEVATION
+G23                             2020  1  3 14 19 30.0000000 AMB
 G27                                                         DEL_LOWELEVATION
 E04                                                         DEL_LESSTHAN4OBS
 E05                                                         DEL_LESSTHAN4OBS
@@ -15910,7 +15961,7 @@ TIM 2020  1  3 10 16 30.0000000
 G04                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
-C06                             2020  1  3 16 34  0.0000000 AMB
+C06                             2020  1  3 17 47 30.0000000 AMB
 C08                                                         DEL_LESSTHAN4OBS
 C12                                                         DEL_LOWELEVATION
 C16                                                         DEL_LESSTHAN4OBS
@@ -16005,7 +16056,7 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 22  0.0000000
-G19                             2020  1  3 16 38 30.0000000 AMB
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16015,6 +16066,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 22 30.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16024,6 +16076,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 23  0.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16033,6 +16086,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 23 30.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16042,6 +16096,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 24  0.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16051,6 +16106,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 24 30.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16059,6 +16115,7 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 25  0.0000000
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16068,6 +16125,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 25 30.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16077,6 +16135,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 26  0.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16086,6 +16145,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 26 30.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_OUTLIER
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16096,6 +16156,7 @@ C21                                                         DEL_LOWELEVATION
 C37                                                         DEL_LESSTHAN4OBS
 TIM 2020  1  3 10 27  0.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16105,6 +16166,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 27 30.0000000
 G04                                                         DEL_SHORTPIECE
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16113,6 +16175,7 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 28  0.0000000
+G19                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -16122,6 +16185,7 @@ C18                                                         DEL_BADRANGE
 C21                                                         DEL_LOWELEVATION
 TIM 2020  1  3 10 28 30.0000000
 G04                                                         DEL_SHORTPIECE
+G19                             2020  1  3 16 38 30.0000000 AMB
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -17180,7 +17244,6 @@ TIM 2020  1  3 11 17  0.0000000
 G04                                                         DEL_SHORTPIECE
 G07                                                         DEL_LOWELEVATION
 G18                                                         DEL_LOWELEVATION
-G30                             2020  1  3 11 30  0.0000000 AMB
 R12                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
@@ -17482,7 +17545,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17498,7 +17560,6 @@ E04                                                         DEL_LESSTHAN4OBS
 C02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17512,7 +17573,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17527,7 +17587,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17541,7 +17600,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17556,7 +17614,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17572,7 +17629,6 @@ E04                                                         DEL_LESSTHAN4OBS
 C02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17587,7 +17643,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17602,7 +17657,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17617,7 +17671,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17647,7 +17700,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17662,7 +17714,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17677,7 +17728,6 @@ E03                                                         DEL_LESSTHAN4OBS
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17688,11 +17738,10 @@ G07                                                         DEL_LOWELEVATION
 G08                                                         DEL_LOWELEVATION
 G18                                                         DEL_LOWELEVATION
 G30                                                         DEL_LOWELEVATION
-E03                             2020  1  3 22  3  0.0000000 AMB
+E03                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17703,10 +17752,10 @@ G07                                                         DEL_LOWELEVATION
 G08                                                         DEL_LOWELEVATION
 G18                                                         DEL_LOWELEVATION
 G30                                                         DEL_LOWELEVATION
+E03                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17716,6 +17765,7 @@ G07                                                         DEL_LOWELEVATION
 G08                                                         DEL_LOWELEVATION
 G18                                                         DEL_LOWELEVATION
 G30                                                         DEL_LOWELEVATION
+E03                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -17731,10 +17781,10 @@ G07                                                         DEL_LOWELEVATION
 G08                                                         DEL_LOWELEVATION
 G18                                                         DEL_LOWELEVATION
 G30                                                         DEL_LESSTHAN4OBS
+E03                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17745,10 +17795,10 @@ G07                                                         DEL_LOWELEVATION
 G08                                                         DEL_LOWELEVATION
 G18                                                         DEL_LOWELEVATION
 G30                                                         DEL_LESSTHAN4OBS
+E03                                                         DEL_SHORTPIECE
 E04                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
-C10                                                         DEL_SHORTPIECE
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C25                                                         DEL_LOWELEVATION
@@ -17759,6 +17809,7 @@ G07                                                         DEL_LOWELEVATION
 G08                                                         DEL_LOWELEVATION
 G18                                                         DEL_LOWELEVATION
 G30                                                         DEL_LESSTHAN4OBS
+E03                             2020  1  3 19 57  0.0000000 AMB
 E04                                                         DEL_LESSTHAN4OBS
 C02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
@@ -21816,7 +21867,7 @@ G04                                                         DEL_LOWELEVATION
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
 R01                                                         DEL_LESSTHAN4OBS
-R04                             2020  1  3 22  7  0.0000000 AMB
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -21829,6 +21880,7 @@ G04                                                         DEL_LOWELEVATION
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
 R01                                                         DEL_LESSTHAN4OBS
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -21840,6 +21892,7 @@ TIM 2020  1  3 14 16  0.0000000
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
 R01                                                         DEL_LESSTHAN4OBS
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -21850,6 +21903,7 @@ TIM 2020  1  3 14 16 30.0000000
 G04                                                         DEL_LOWELEVATION
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -21860,6 +21914,7 @@ TIM 2020  1  3 14 17  0.0000000
 G04                                                         DEL_LOWELEVATION
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -21870,6 +21925,7 @@ TIM 2020  1  3 14 17 30.0000000
 G04                                                         DEL_LOWELEVATION
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 E30                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
@@ -21881,6 +21937,7 @@ TIM 2020  1  3 14 18  0.0000000
 G04                                                         DEL_LESSTHAN4OBS
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -21890,6 +21947,7 @@ C25                                                         DEL_LOWELEVATION
 TIM 2020  1  3 14 18 30.0000000
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -21900,6 +21958,7 @@ TIM 2020  1  3 14 19  0.0000000
 G04                                                         DEL_LESSTHAN4OBS
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -21909,6 +21968,7 @@ C25                                                         DEL_LOWELEVATION
 TIM 2020  1  3 14 19 30.0000000
 G12                                                         DEL_LESSTHAN4OBS
 G28                                                         DEL_LOWELEVATION
+R04                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -21920,6 +21980,7 @@ G04                                                         DEL_LESSTHAN4OBS
 G12                                                         DEL_LESSTHAN4OBS
 G23                                                         DEL_LOWELEVATION
 G28                                                         DEL_LOWELEVATION
+R04                             2020  1  3 22  7  0.0000000 AMB
 E02                                                         DEL_LESSTHAN4OBS
 E09                                                         DEL_LOWELEVATION
 C03                                                         DEL_LESSTHAN4OBS
@@ -22395,7 +22456,7 @@ E09                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C30                             2020  1  3 20  5 30.0000000 AMB
+C30                             2020  1  3 19 57  0.0000000 AMB
 TIM 2020  1  3 14 41 30.0000000
 G12                                                         DEL_LESSTHAN4OBS
 R23                                                         DEL_LOWELEVATION
@@ -22725,75 +22786,87 @@ C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  4  0.0000000
 G12                                                         DEL_LESSTHAN4OBS
-G15                             2020  1  3 23 37 30.0000000 AMB
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  4 30.0000000
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  5  0.0000000
 G12                                                         DEL_LESSTHAN4OBS
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  5 30.0000000
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  6  0.0000000
 G12                                                         DEL_LESSTHAN4OBS
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  6 30.0000000
 G12                                                         DEL_LESSTHAN4OBS
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  7  0.0000000
 G12                                                         DEL_LESSTHAN4OBS
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  7 30.0000000
 G12                                                         DEL_LESSTHAN4OBS
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  8  0.0000000
 G12                                                         DEL_LESSTHAN4OBS
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  8 30.0000000
 G12                                                         DEL_LESSTHAN4OBS
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  9  0.0000000
 G12                                                         DEL_LESSTHAN4OBS
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15  9 30.0000000
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15 10  0.0000000
+G15                                                         DEL_SHORTPIECE
 E02                                                         DEL_LESSTHAN4OBS
 C02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
@@ -22801,6 +22874,7 @@ C08                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 TIM 2020  1  3 15 10 30.0000000
 G12                                                         DEL_LESSTHAN4OBS
+G15                             2020  1  3 23 37 30.0000000 AMB
 E02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
@@ -23840,7 +23914,7 @@ C03                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C10                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C20                             2020  1  3 16  8  0.0000000 AMB
+C20                             2020  1  3 17  9 30.0000000 AMB
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 15 55 30.0000000
 G17                                                         DEL_LOWELEVATION
@@ -24214,7 +24288,6 @@ C08                                                         DEL_LESSTHAN4OBS
 C10                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C20                             2020  1  3 17  9 30.0000000 AMB
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 16  9  0.0000000
 G17                                                         DEL_LOWELEVATION
@@ -24864,7 +24937,6 @@ R12                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
 E25                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
-C06                             2020  1  3 17 47 30.0000000 AMB
 C07                                                         DEL_LESSTHAN4OBS
 C08                                                         DEL_LESSTHAN4OBS
 C10                                                         DEL_LESSTHAN4OBS
@@ -25793,7 +25865,7 @@ C10                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C20                                                         DEL_LESSTHAN4OBS
-C29                             2020  1  3 19 46  0.0000000 AMB
+C29                             2020  1  3 19 49  0.0000000 AMB
 TIM 2020  1  3 17 13 30.0000000
 G07                                                         DEL_LOWELEVATION
 R05                                                         DEL_LESSTHAN4OBS
@@ -26843,7 +26915,7 @@ C18                                                         DEL_BADRANGE
 C25                                                         DEL_LESSTHAN4OBS
 TIM 2020  1  3 17 51 30.0000000
 G28                                                         DEL_LOWELEVATION
-R20                             2020  1  3 20 44 30.0000000 AMB
+R20                             2020  1  3 19 56  0.0000000 AMB
 R26                                                         DEL_BADRANGE
 E05                                                         DEL_LOWELEVATION
 E07                                                         DEL_LESSTHAN4OBS
@@ -28071,7 +28143,6 @@ R26                                                         DEL_SHORTPIECE
 C02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
-C13                                                         DEL_OUTLIER
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C27                                                         DEL_LOWELEVATION
@@ -28684,7 +28755,7 @@ C06                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LOWELEVATION
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C19                             2020  1  3 23 59  0.0000000 AMB
+C19                             2020  1  3 19 57  0.0000000 AMB
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 31 30.0000000
 G02                                                         DEL_LOWELEVATION
@@ -29001,7 +29072,7 @@ G28                                                         DEL_LOWELEVATION
 G29                                                         DEL_LOWELEVATION
 R03                                                         DEL_LOWELEVATION
 R26                                                         DEL_SHORTPIECE
-E26                             2020  1  3 21  6  0.0000000 AMB
+E26                             2020  1  3 19 57  0.0000000 AMB
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LESSTHAN4OBS
@@ -29080,7 +29151,6 @@ C06                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C29                                                         DEL_SHORTPIECE
 C36                                                         DEL_LESSTHAN4OBS
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 47  0.0000000
@@ -29095,7 +29165,6 @@ C06                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C29                                                         DEL_SHORTPIECE
 C36                                                         DEL_LESSTHAN4OBS
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 47 30.0000000
@@ -29110,7 +29179,6 @@ C06                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C29                                                         DEL_SHORTPIECE
 C36                                                         DEL_LESSTHAN4OBS
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 48  0.0000000
@@ -29126,7 +29194,6 @@ C06                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C29                                                         DEL_SHORTPIECE
 C36                                                         DEL_LESSTHAN4OBS
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 48 30.0000000
@@ -29141,7 +29208,6 @@ C06                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C29                                                         DEL_SHORTPIECE
 C36                                                         DEL_LESSTHAN4OBS
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 49  0.0000000
@@ -29157,8 +29223,7 @@ C06                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
-C29                                                         DEL_SHORTPIECE
-C36                             2020  1  3 23 59  0.0000000 AMB
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 49 30.0000000
 G25                                                         DEL_LOWELEVATION
@@ -29173,6 +29238,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 50  0.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29188,6 +29254,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 50 30.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29203,6 +29270,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 51  0.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29218,6 +29286,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 51 30.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29233,6 +29302,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 52  0.0000000
 G25                                                         DEL_LOWELEVATION
@@ -29248,6 +29318,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 52 30.0000000
 G25                                                         DEL_LOWELEVATION
@@ -29263,6 +29334,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 53  0.0000000
 G25                                                         DEL_LOWELEVATION
@@ -29278,6 +29350,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 53 30.0000000
 G25                                                         DEL_LOWELEVATION
@@ -29293,6 +29366,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 54  0.0000000
 G25                                                         DEL_LOWELEVATION
@@ -29308,6 +29382,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 54 30.0000000
 G25                                                         DEL_LOWELEVATION
@@ -29323,6 +29398,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 55  0.0000000
 G25                                                         DEL_LOWELEVATION
@@ -29338,6 +29414,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 55 30.0000000
 G25                                                         DEL_SHORTPIECE
@@ -29353,6 +29430,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 56  0.0000000
 G25                                                         DEL_SHORTPIECE
@@ -29368,6 +29446,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 56 30.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29384,6 +29463,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 57  0.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29400,6 +29480,7 @@ C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C29                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 57 30.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29409,15 +29490,20 @@ R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
 R20                                                         DEL_LESSTHAN4OBS
 R26                                                         DEL_SHORTPIECE
+E03                             2020  1  3 22  3  0.0000000 AMB
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
 C13                                                         DEL_LESSTHAN4OBS
 C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
+C19                             2020  1  3 23 59  0.0000000 AMB
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 58  0.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29428,6 +29514,7 @@ R19                                                         DEL_LESSTHAN4OBS
 R20                                                         DEL_LESSTHAN4OBS
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29436,6 +29523,8 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 58 30.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29446,6 +29535,7 @@ R19                                                         DEL_LESSTHAN4OBS
 R20                                                         DEL_LESSTHAN4OBS
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29454,6 +29544,8 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 59  0.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29464,6 +29556,7 @@ R19                                                         DEL_LESSTHAN4OBS
 R20                                                         DEL_LESSTHAN4OBS
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29472,6 +29565,8 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 19 59 30.0000000
 G25                                                         DEL_LESSTHAN4OBS
@@ -29482,6 +29577,7 @@ R19                                                         DEL_LESSTHAN4OBS
 R20                                                         DEL_LESSTHAN4OBS
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29490,6 +29586,8 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  0  0.0000000
 G25                             2020  1  3 23 59  0.0000000 AMB
@@ -29500,6 +29598,7 @@ R19                                                         DEL_LESSTHAN4OBS
 R20                                                         DEL_LESSTHAN4OBS
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29508,14 +29607,18 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  0 30.0000000
 G28                                                         DEL_LOWELEVATION
 G29                                                         DEL_LESSTHAN4OBS
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29524,14 +29627,18 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  1  0.0000000
 G28                                                         DEL_LESSTHAN4OBS
 G29                                                         DEL_LESSTHAN4OBS
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29540,14 +29647,18 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  1 30.0000000
 G28                                                         DEL_LESSTHAN4OBS
 G29                                                         DEL_LESSTHAN4OBS
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29556,14 +29667,18 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  2  0.0000000
 G28                                                         DEL_LESSTHAN4OBS
 G29                                                         DEL_LESSTHAN4OBS
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C02                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
@@ -29573,14 +29688,18 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  2 30.0000000
 G28                                                         DEL_LESSTHAN4OBS
 G29                                                         DEL_LESSTHAN4OBS
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29589,14 +29708,18 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  3  0.0000000
 G28                                                         DEL_LESSTHAN4OBS
 G29                                                         DEL_LESSTHAN4OBS
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29605,13 +29728,17 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  3 30.0000000
 G28                                                         DEL_LOWELEVATION
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29620,13 +29747,17 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  4  0.0000000
 G28                                                         DEL_LOWELEVATION
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_OUTLIER
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_OUTLIER
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29636,13 +29767,16 @@ C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_BADRANGE
 C30                                                         DEL_LESSTHAN4OBS
+C36                                                         DEL_OUTLIER
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  4 30.0000000
 G28                                                         DEL_LOWELEVATION
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29651,14 +29785,18 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  5  0.0000000
 G28                                                         DEL_LESSTHAN4OBS
 G29                                                         DEL_LESSTHAN4OBS
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29667,14 +29805,18 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  5 30.0000000
 G28                                                         DEL_LESSTHAN4OBS
 G29                                                         DEL_LESSTHAN4OBS
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                                                         DEL_SHORTPIECE
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                                                         DEL_SHORTPIECE
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29683,14 +29825,18 @@ C16                                                         DEL_LESSTHAN4OBS
 C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_SHORTPIECE
+C30                                                         DEL_SHORTPIECE
+C36                                                         DEL_SHORTPIECE
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  6  0.0000000
 G28                                                         DEL_LESSTHAN4OBS
 G29                                                         DEL_LESSTHAN4OBS
 R03                                                         DEL_LOWELEVATION
 R19                                                         DEL_LESSTHAN4OBS
+R20                             2020  1  3 20 44 30.0000000 AMB
 R26                                                         DEL_SHORTPIECE
 E25                                                         DEL_LOWELEVATION
+E26                             2020  1  3 21  6  0.0000000 AMB
 E27                                                         DEL_LESSTHAN4OBS
 C03                                                         DEL_LESSTHAN4OBS
 C06                                                         DEL_LESSTHAN4OBS
@@ -29700,6 +29846,7 @@ C18                                                         DEL_BADRANGE
 C23                                                         DEL_LOWELEVATION
 C29                                                         DEL_BADRANGE
 C30                                                         DEL_LESSTHAN4OBS
+C36                             2020  1  3 23 59  0.0000000 AMB
 J02                                                         DEL_LOWELEVATION
 TIM 2020  1  3 20  6 30.0000000
 R03                                                         DEL_LOWELEVATION

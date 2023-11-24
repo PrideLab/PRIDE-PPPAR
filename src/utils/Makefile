@@ -1,27 +1,21 @@
-# Modified by Songfeng Yang (sfyang@whu.edu.cn) --- add multi-GNSS PPP
+# Makefile created by Jihang Lin (jihanglin@whu.edu.cn), on Feb 23, 2023 
 
-all: xyz2enu get_ctrl pbopos
+# Library (should be compiled first)
+LIBCOM = ../lib/libcom.a
 
-DIR_GUARD = @mkdir -p $(@D)
-OBJ_PATH = .obj/
-
-# ASSIGMENTS
+# Flags
 FTN = gfortran 
 FFLAGS = -g -O3
 
-LIBCOM = ../lib/libcom.a
+# Get all Fortran files in the current directory
+F90_FILES = $(wildcard *.f90)
+EXE_FILES = $(patsubst %.f90,%,$(F90_FILES))
 
-xyz2enu : $(LIBCOM) xyz2enu.f90
-	$(FTN) $(FFLAGS) xyz2enu.f90 $(LIBCOM) -o $@
+all : $(EXE_FILES)
 
-pbopos : $(LIBCOM) pbopos.f90
-	$(FTN) $(FFLAGS) pbopos.f90 $(LIBCOM) -o $@
+%: %.f90 $(LIBCOM) 
+	$(FTN) $(FFLAGS) $< $(LIBCOM) -o $@
 
-get_ctrl : $(LIBCOM) get_ctrl.f90
-	$(FTN) $(FFLAGS) get_ctrl.f90 $(LIBCOM) -o $@
-
-
-.PHONY : clean
+.PHONY : all clean
 clean :
-	-rm xyz2enu pbopos get_ctrl
-
+	rm -f $(EXE_FILES) 

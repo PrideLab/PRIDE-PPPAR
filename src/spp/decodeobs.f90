@@ -20,7 +20,7 @@ character(8) :: defcodes(7)=(/&
     'X XXXX ',&  ! GAL: L1_5678_
     'CXXX   ',&  ! QZS: L1256___
     'C X    ',&  ! SBS: L1_5____
-    "XIXIIX ",&  ! BDS: L125678_ 
+    'XIXIIX ',&  ! BDS: L125678_
     '  A   A'/)  ! IRN: L__5___9
 real*8 del(3)
 integer*4 i,j,k,n,nt,prn,fcn,info,posi

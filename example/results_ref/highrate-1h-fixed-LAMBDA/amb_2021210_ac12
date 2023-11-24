@@ -15,7 +15,18 @@ WUM0MGXRAP_20212100000_01D_01D_ABS.BIA                      SAT BIAS
 TRIMBLE NETRS                                               SITE RECEIVER TYPE
 TRM59800.80     SCIT                                        SITE ANTENNA TYPE
         0.0000        0.0000        0.0083                  SITE ANTENNA E/N/H (meter)
+G  L1   1       0.88      1.32     84.85                    SITE ANTENNA PCO E/N/H (millimeter)
+G  L2   2      -0.32      1.02    118.08                    SITE ANTENNA PCO E/N/H (millimeter)
+R  G1   1       0.88      1.32     84.85                    SITE ANTENNA PCO E/N/H (millimeter)
+R  G2   2      -0.32      1.02    118.08                    SITE ANTENNA PCO E/N/H (millimeter)
+E  E1   1       0.88      1.32     84.85                    SITE ANTENNA PCO E/N/H (millimeter)
+E  E5a  5      -0.32      1.02    118.08                    SITE ANTENNA PCO E/N/H (millimeter)
+C  B1I  2       0.88      1.32     84.85                    SITE ANTENNA PCO E/N/H (millimeter)
+C  B3I  6      -0.32      1.02    118.08                    SITE ANTENNA PCO E/N/H (millimeter)
+J  L1   1       0.88      1.32     84.85                    SITE ANTENNA PCO E/N/H (millimeter)
+J  L2   2      -0.32      1.02    118.08                    SITE ANTENNA PCO E/N/H (millimeter)
 IGS14_2148                                                  TABLE ANTEX
+WNO                                                         RECEIVER CLOCK
 STO                                                         TROP ZENITH
 NON                                                         TROP GRADIENT
 NO                                                          IONO 2ND
@@ -26,6 +37,7 @@ YES  GPS     7  GAL     0  BDS2    0  BDS3    0  QZSS    0  AMB FIXING
     0.20    0.15 1000.00                                    AMB WIDELANE
     0.15    0.15 1000.00                                    AMB NARROWLANE
     3       4       1.80    3.00                            AMB SEARCH
+TRUNCATED                                                   AMB AT DAT-BOUNDARY
    12                                                       # OF AMB RESOLVABLE SAT
 G02 G03 G04 G05 G06 G07 G09 G16 G20 G26 G29 G30             AMB RESOLVABLE SATELLITES
 Start Field Description                                     COMMENT
@@ -44,7 +56,7 @@ End Field Description                                       COMMENT
  G06     -130684088.484033      -27851398.545762  59424.2500000000  59424.2916666667   0.0161   0.0035  31.6
  G07     -131570321.258903      -29068199.569225  59424.2500000000  59424.2916666667   0.0236   0.0025  54.6
  G09     -134369710.346694      -29288357.592933  59424.2500000000  59424.2916666667   0.0141   0.0022  76.2
- G16     -137674329.993743      -31176987.536513  59424.2500000000  59424.2916666667   0.0336   0.0036  24.9
+ G16     -137674329.993744      -31176987.536513  59424.2500000000  59424.2916666667   0.0336   0.0036  24.9
  G20     -135534265.883926      -30239606.587023  59424.2500000000  59424.2916666667   0.0224   0.0034  31.2
  G26     -132030826.059578      -29154124.485870  59424.2500000000  59424.2899884259   0.0449   0.0055  14.0
  G29     -131345559.627310      -28036485.695714  59424.2500000000  59424.2837268518   0.0565   0.0091   8.2

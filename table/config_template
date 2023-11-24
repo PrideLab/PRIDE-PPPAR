@@ -1,33 +1,38 @@
-# Configuration template for PRIDE PPP-AR 2
+# Configuration template for PRIDE PPP-AR 3
 
-## Observation session configuration
-Interval            = Default 
-Session time        = -YYYY- -MM- -DD- -HH- -MI- -SS- -SE-
-Table directory     = Default
+## Observation configuration
+Frequency combination  = Default
+Interval               = Default 
+Session time           = -YYYY- -MM- -DD- -HH- -MI- -SS- -SE-
+Table directory        = Default
 
 ## Satellite product
-Product directory   = Default
-Satellite orbit     = Default
-Satellite clock     = Default
-ERP                 = Default
-Quaternions         = Default
-Code/phase bias     = Default
+Product directory      = Default
+Satellite orbit        = Default
+Satellite clock        = Default
+ERP                    = Default
+Quaternions            = Default
+Code/phase bias        = Default
+LEO quaternions        = Default
 
 ## Data processing strategies
-Strict editing      = Default                  ! changed to NO if using high-dynamic data with bad quality
-ZTD model           = Default                  ! zenith troposphere delay (PWC/STO). PWC:60, piece-wise constant for 60 min. STO, random walk
-HTG model           = Default                  ! horizontal troposphere gradient (PWC/NON)
-Iono 2nd            = Default                  ! changed to YES if correcting 2-order ionospheric delays
-Tides               = SOLID/OCEAN/POLE         ! remove any to shut it down, or changed to NON if not correcting tidal errors
+Strict editing         = Default                 ! change to NO if using high-dynamic data with bad quality
+RCK model              = Default                 ! receiver clock (WNO/STO). WNO, white noise
+ZTD model              = Default                 ! zenith troposphere delay (PWC/STO). PWC:60, piece-wise constant for 60 min. STO, random walk
+HTG model              = Default                 ! horizontal troposphere gradient (PWC/STO/NON)
+Iono 2nd               = Default                 ! change to YES if correcting 2-order ionospheric delays
+Tides                  = SOLID/OCEAN/POLE        ! remove any to shut it down, or changed to NON if not correcting tidal errors
 
 ## Ambiguity fixing options
-Ambiguity co-var    = Default                  ! changed to YES if the `Ambiguity fixing` method is LAMBDA
-Ambiguity duration  = 600                      ! time duration in seconds for a resolvable ambiguity
-Cutoff elevation    = 15                       ! cutoff mean elevation for eligible ambiguities to be resolved
-PCO on wide-lane    = Default                  ! pco corrections on Melbourne-Wubbena or not
-Widelane decision   = 0.20 0.15 1000.          ! deviation (cycle), sigma (cycle) and decision threshold for WL ambiguities
-Narrowlane decision = 0.15 0.15 1000.          ! deviation (cycle), sigma (cycle) and decision threshold for NL ambiguities
-Critical search     = 3 4 1.8 3.0              ! highest number of ambiguities to be excluded, lowest number to be reserved, fixed/float, ratio threshold
+Ambiguity co-var       = Default                 ! change to YES if the Ambiguity fixing method is LAMBDA
+Ambiguity duration     = 600                     ! time duration in seconds for a resolvable ambiguity
+Cutoff elevation       = 15                      ! cutoff mean elevation for eligible ambiguities to be resolved
+PCO on wide-lane       = YES                     ! pco corrections on Melbourne-Wubbena or not
+Widelane decision      = 0.20 0.15 1000.         ! deviation (cycle), sigma (cycle) and decision threshold for WL ambiguities
+Narrowlane decision    = 0.15 0.15 1000.         ! deviation (cycle), sigma (cycle) and decision threshold for NL ambiguities
+Critical search        = 3 4 1.8 3.0             ! highest number of ambiguities to be excluded, lowest number to be reserved, fixed/float, ratio threshold
+Truncate at midnight   = YES                     ! truncate all ambiguities at midnight to avoid day boundary discontinuity
+Verbose output         = NO                      ! output detailed information of ambiguity resolution
 
 ## Satellite list
 # Inserting `#' at the beginning of individual GNSS PRN means not to use this satellite
@@ -182,13 +187,14 @@ Critical search     = 3 4 1.8 3.0              ! highest number of ambiguities t
  J01   1
  J02   1
  J03   1
- J07   3
+#J07   3
 -GNSS satellites
 
 ## Option line
 # There should be only one option line to be processed
 # Arguments can be replaced by command-line automatically
 # Available positioning mode:  S -- static
+#                              P -- piec-wise
 #                              K -- kinematic
 #                              F -- fixed
 # Available mapping function:  NIE -- Niell Mapping Function (NMF)
@@ -197,6 +203,6 @@ Critical search     = 3 4 1.8 3.0              ! highest number of ambiguities t
 #                              VM3 -- Vienna Mapping Function (VMF3)
 # Other arguments can be kept if you are not familiar with them
 +Station used
-*NAME TP MAP CLKm EV ZTDm  PoDm HTGm PoDm RAGm PHSc PoXEm PoYNm PoZHm
- xxxx X  XXX 9000 xx 0.20 xxxxx .005 xxxx 0.30 0.01 10.00 10.00 10.00
+*NAME TP MAP CLKm  PoDm EV ZTDm  PoDm HTGm  PoDm RAGm PHSc PoLns PoXEm PoYNm PoZHm
+ xxxx X  XXX 9000 xxxxx xx 0.20 xxxxx .005 xxxxx 0.30 0.01 xxxxx 10.00 10.00 10.00
 -Station used

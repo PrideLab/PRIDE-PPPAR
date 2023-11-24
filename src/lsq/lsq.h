@@ -5,7 +5,8 @@ type prmt
   character*15 pname                 !! parameter name  
   character*1 ptype                  !! parameter type
   integer*4 ipt                      !! pointer to normal equation  
-  integer*4 iobs,iobs_G,iobs_R,iobs_E,iobs_C,iobs_3,iobs_J                     !! number of observations 
+  integer*4 iepo                     !! number of epochs 
+  integer*4 iobs,iobs_G,iobs_R,iobs_E,iobs_C,iobs_3,iobs_J  !! number of observations 
   real*8 xsig,xrwl,xrms,xswl,mele    !! sigma of process & ambiguities
   integer*4 psat                     !! corresponding satellite id
   real*8 ptime(2),ptbeg,ptend        !! living time span

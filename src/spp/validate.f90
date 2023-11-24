@@ -22,8 +22,8 @@ if(nv>nx1)then
         !stat=1; return
     endif
 endif
-! validation of sigma
-if(.not. opt%lsa .and. (sol%qr(1)>=400 .or. sol%qr(2)>=400))then
+! validation of sigma (modified from 400 to 800, 2023, Jing Zeng)
+if(.not. opt%lsa .and. (sol%qr(1)>=800 .or. sol%qr(2)>=800))then
     stat=0; return
 endif
 ! large gdop check 

@@ -1,7 +1,7 @@
 !
 !! lsq_slv_prmt.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,14 +9,14 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
 !! Contributor: Maorong Ge, Jianghui Geng
-!! 
+!!
 !!
 !!
 !! purpose   : solve for parameter in LSQ
@@ -43,25 +43,25 @@ subroutine lsq_slv_prmt(LCF, NM, PM)
   do i = 1, NM%imtx
     do j = i + 1, NM%imtx
       NM%norx(j, i) = NM%norx(i, j)
-    enddo
-  enddo
+    end do
+  end do
 !
 !! inverse
   call matinv(NM%norx, NM%nmtx, NM%imtx, det)
   if (det .eq. 0.d0) then
     write (*, '(a)') '***ERROR(lsq_slv_prmt): matrix inversion, singularity '
     call exit(1)
-  endif
+  end if
 !
 !! solve parameter
   do i = 1, NM%imtx
     det = 0.d0
     do j = 1, NM%imtx
       det = det + NM%norx(i, j)*NM%norx(j, NM%imtx + 1)
-    enddo
+    end do
     PM(NM%iptp(i))%xcor = det
     NM%ltpl = NM%ltpl - PM(NM%iptp(i))%xcor*NM%norx(i, NM%imtx + 1)
-  enddo
+  end do
 !
 !! sigma0
   NM%sig0 = dsqrt(dabs(NM%ltpl)/(NM%nobs - NM%nuk))
@@ -69,7 +69,7 @@ subroutine lsq_slv_prmt(LCF, NM, PM)
 !! sigma of parameters
   do i = 1, NM%imtx
     PM(NM%iptp(i))%xsig = dsqrt(NM%norx(i, i))*NM%sig0
-  enddo
+  end do
 
   return
 end

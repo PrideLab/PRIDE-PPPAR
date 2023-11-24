@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 ###############################################################################
 ##                                                                           ##
@@ -10,7 +10,7 @@
 ##                                                                           ##
 ##  DATE   : Jan-18, 2022                                                    ##
 ##                                                                           ##
-##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
+##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
 ##    Copyright (C) 2022 by Wuhan University                                 ##
 ##                                                                           ##
@@ -20,11 +20,11 @@
 ##                                                                           ##
 ##    This program is distributed in the hope that it will be useful,        ##
 ##    but WITHOUT ANY WARRANTY; without even the implied warranty of         ##
-##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          ##
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           ##
 ##    GNU General Public License (version 3) for more details.               ##
 ##                                                                           ##
 ##    You should have received a copy of the GNU General Public License      ##
-##    along with this program.  If not, see <https://www.gnu.org/licenses/>. ##
+##    along with this program. If not, see <https://www.gnu.org/licenses/>.  ##
 ##                                                                           ##
 ###############################################################################
 

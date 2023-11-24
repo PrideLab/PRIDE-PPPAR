@@ -42,18 +42,16 @@ do while(.true.)
     if(mode==0 .and. sopt%issingle==0)then ! forward/backward 
         call outsol(fp,rtk%sol,rtk%rb,sopt)
     endif
-    ! if(sopt%issingle==1)then  ! store solutions
-        solindex_=solindex_+1
-        if(solindex_<=size(allsol_))then
-            allsol_(solindex_)=rtk%sol
-        else
-            allocate(sol_data(size(allsol_)+MAXSOLNUM))
-            sol_data(1:size(allsol_))=allsol_(1:size(allsol_))
-            deallocate(allsol_)
-            allsol_=>sol_data
-            nullify(sol_data)
-        endif
-    ! endif
+    solindex_=solindex_+1
+    if(solindex_<=size(allsol_))then
+        allsol_(solindex_)=rtk%sol
+    else
+        allocate(sol_data(size(allsol_)+MAXSOLNUM))
+        sol_data(1:size(allsol_))=allsol_(1:size(allsol_))
+        deallocate(allsol_)
+        allsol_=>sol_data
+        nullify(sol_data)
+    endif
 enddo
 call rtkfree(rtk);
 if(clkfile_/="") close(unit=fpclk1,status='keep')  ! output sat clock
@@ -131,7 +129,6 @@ nu=nu-1
 time=rtk%sol%time  ! previous epoch 
 ! rover position by single point positioning 
 call pntpos(obs,nu,nav,rtk%opt,rtk%sol,azel,rtk%ssat,msg,info)
-
 if (info==0)then
     stat=0; return
 endif
@@ -202,7 +199,11 @@ call estpos(obs,n,rs,dts,var,svh,nav,opt_,sol,azel_,vsat,resp,msg,stat1)
 
 ! raim fde 
 if (stat1==0 .and. n>=6 .and. opt%posopt(5)/=0)then
-    call raim_fde(obs,n,rs,dts,var,svh,nav,opt_,sol,azel_,vsat,resp,msg,stat1)
+! disable raim fde (2023, Jihang Lin)
+!   reason: generraly no availabe solution can be derived and sol%time0 is not
+!   initialized
+!   call raim_fde(obs,n,rs,dts,var,svh,nav,opt_,sol,azel_,vsat,resp,msg,stat1)
+    stat=0; return
 endif
 
 azel=azel_

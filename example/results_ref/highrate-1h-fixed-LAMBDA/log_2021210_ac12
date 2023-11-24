@@ -1,8 +1,14 @@
 RINEX health Logfile      ac12                              COMMENT
       1.00                                                  INTERVAL
+TRUNCATED                                                   AMB AT DAT-BOUNDARY
         11        12         0                              AMB MAX/TOT/NEW
      36774      2734         0                              EPO AVA/REM/NEW
  2021  7 29  6  0  0.0000000     3600.00                    RES TIME BEG/LEN
+GPS       L1   L2                                           SYS / FREQUENCY BAND
+GLO       G1   G2                                           SYS / FREQUENCY BAND
+GAL       E1   E5a                                          SYS / FREQUENCY BAND
+BDS       B1I  B3I                                          SYS / FREQUENCY BAND
+QZS       L1   L2                                           SYS / FREQUENCY BAND
                                                             END OF HEADER
 TIM 2021  7 29  6  0  0.0000000
 G02                             2021  7 29  7  0  0.0000000 AMB

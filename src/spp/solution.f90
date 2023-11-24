@@ -15,7 +15,6 @@ if(len_trim(outfile)/=0)then
     fp=FPOUT
     open(unit=fp,file=trim(outfile),status='replace',iostat=info)
     if(info/=0)then
-        !showmsg('error : open output file %s',outfile)
         write(unit=6,fmt="('Error : open output file ',A)") trim(outfile)
         outhead=0; return
     endif
@@ -91,8 +90,10 @@ timeu=0
 if(opt%maxsolstd>0.d0 .and. sol_std(sol)>opt%maxsolstd)then
     stat1=0; return
 endif
+! align the timestamp with observations insead of estimates (2022, Jihang Lin)
+!   reason: avoid mismatching timestamps with float seconds
 time=sol%time0
-! time=sol%time
+call time2mjd(time,mjd,sod)
 if (opt%times>=TIMES_UTC) time=gpst2utc(time)
 if (opt%times==TIMES_JST) time=timeadd(time,9*3600.d0)
 call time2mjd(time,mjd,sod)
@@ -118,9 +119,7 @@ character(1) :: sep=char(9)  !'\t'
 character(9) solqr(6)
 character(10) soltmp
 integer*4 i
-write(buff,"(A,A2,3(F13.3))") trim(s),'',sol%rr(1),sol%rr(2),sol%rr(3)
-!write(buff,"(A,A2,3(F13.3),F14.2)") trim(s),'',sol%rr(1),sol%rr(2),sol%rr(3),sol%dop(2)
-!write(buff,"(A,A2,3(F13.3),4(E14.4))") trim(s),'',sol%rr(1),sol%rr(2),sol%rr(3),sol%dtr(1),sol%dtr(2),sol%dtr(3),sol%dtr(4)
+write(buff,"(A,A2,3(F14.4))") trim(s),'',sol%rr(1),sol%rr(2),sol%rr(3)
 stat1=len_trim(buff)
 end subroutine
 

@@ -1,7 +1,7 @@
 !
 !! get_sp3orb_args.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,13 +9,13 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng
+!! Contributor: Maorong Ge, Jianghui Geng, Jihang Lin
 !! 
 !!
 !
@@ -44,7 +44,7 @@ subroutine get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
 !! read command arguments
   nargs = iargc()
   if (nargs .eq. 0) then
-    write (*, '(a)') 'Usage: sp3orb sp3fil -cfg sescfg [-erp erpfil]'
+    write (*, '(a)') 'Usage: sp3orb sp3fil -cfg sescfg'
     call exit(4)
   endif
   sp3fil = ' '

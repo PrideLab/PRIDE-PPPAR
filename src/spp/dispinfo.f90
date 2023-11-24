@@ -12,7 +12,7 @@ type(gtime_t) tss, tee
 real*8 epss(6), timespan
 real*8, external :: raver, timediff
 avexyz=0
-! if(sopt%issingle==1)then  ! output a single solution
+
     if(solindex_==0)then
         ret=0; return
     endif
@@ -29,10 +29,8 @@ avexyz=0
     if(avexyz(1)==0 .and. avexyz(2)==0 .and. avexyz(3)==0)then
         ret=0; return
     endif
-    !if(sopt%issingle==1)then
-        write(unit=6,fmt="(A11,3F16.4)") "Position : ", avexyz(1), avexyz(2), avexyz(3)
-        !write(unit=6,fmt="(A5,3F16.4)") trim(stas(1)%name(1:4)), raver(rr(:,1)), raver(rr(:,2)), raver(rr(:,3))
-    !endif
+    write(unit=6,fmt="(A11,3F16.4)") "Position : ", avexyz(1), avexyz(2), avexyz(3)
+
     ! output time stamp
     tss=allsol_(1)%time0
     tee=allsol_(solindex_)%time0
@@ -40,7 +38,7 @@ avexyz=0
     timespan=timediff(tee, tss)
     write(unit=6,fmt="(A11,I4.4,' ',I2.2,' ',I2.2,' ',I2.2,' ',I2.2,' ',F5.2,' 'F11.2)") &
             "Duration : ", int(epss(1)), int(epss(2)), int(epss(3)), &
-            int(epss(4)), int(epss(5)), epss(6), timespan  !, round(timespan)
+                           int(epss(4)), int(epss(5)), epss(6), timespan  !, round(timespan)
 ! endif
 ret=1
 end subroutine

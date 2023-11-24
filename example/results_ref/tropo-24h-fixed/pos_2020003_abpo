@@ -15,17 +15,29 @@ WUM0MGXRAP_20200030000_01D_01D_ABS.BIA                      SAT BIAS
 SEPT POLARX5                                                SITE RECEIVER TYPE
 ASH701945G_M    SCIT                                        SITE ANTENNA TYPE
         0.0000        0.0000        0.0083                  SITE ANTENNA E/N/H (meter)
+G  L1   1      -0.43      0.76     89.24                    SITE ANTENNA PCO E/N/H (millimeter)
+G  L2   2      -0.46     -0.39    117.85                    SITE ANTENNA PCO E/N/H (millimeter)
+R  G1   1      -0.43      0.76     89.24                    SITE ANTENNA PCO E/N/H (millimeter)
+R  G2   2      -0.46     -0.39    117.85                    SITE ANTENNA PCO E/N/H (millimeter)
+E  E1   1      -0.43      0.76     89.24                    SITE ANTENNA PCO E/N/H (millimeter)
+E  E5a  5      -0.46     -0.39    117.85                    SITE ANTENNA PCO E/N/H (millimeter)
+C  B1I  2      -0.43      0.76     89.24                    SITE ANTENNA PCO E/N/H (millimeter)
+C  B3I  6      -0.46     -0.39    117.85                    SITE ANTENNA PCO E/N/H (millimeter)
+J  L1   1      -0.43      0.76     89.24                    SITE ANTENNA PCO E/N/H (millimeter)
+J  L2   2      -0.46     -0.39    117.85                    SITE ANTENNA PCO E/N/H (millimeter)
 IGS14_2136                                                  TABLE ANTEX
+WNO                                                         RECEIVER CLOCK
 STO                                                         TROP ZENITH
 PWC:720                                                     TROP GRADIENT
 NO                                                          IONO 2ND
 SOLID  POLE OCEAN                                           TIDES
-YES  GPS    41  GAL    28  BDS2   12  BDS3   21  QZSS    0  AMB FIXING
+YES  GPS    42  GAL    29  BDS2   12  BDS3   22  QZSS    0  AMB FIXING
   600.00                                                    AMB DURATION (sec)
    15.00                                                    AMB CUTOFF (deg)
     0.20    0.15 1000.00                                    AMB WIDELANE
     0.15    0.15 1000.00                                    AMB NARROWLANE
     3       4       1.80    3.00                            AMB SEARCH
+TRUNCATED                                                   AMB AT DAT-BOUNDARY
 Start Field Description                                     COMMENT
 Name                                                        STATION NAME
 Mjd                                                         MODIFIED JULIAN DAY
@@ -42,5 +54,5 @@ Sig0                                                        SQUARE ROOT OF VARIA
 Nobs                                                        NUMBER OF OBSERVATIONS
 End Field Description                                       COMMENT
                                                             END OF HEADER
-*Name         Mjd              X              Y              Z                       Sx                       Sy                       Sz                      Rxy                      Rxz                      Ryz                     Sig0           Nobs
- abpo  58851.4997   4097216.5407   4429119.2102  -2065771.1805     0.70685170031045E-08     0.94564586372011E-08     0.22726412799807E-08     0.71781717301839E-08    -0.30859149512400E-08    -0.36297495542383E-08     0.31404835532412E+01          93491
+*Name         Mjd               X               Y               Z                       Sx                       Sy                       Sz                      Rxy                      Rxz                      Ryz                     Sig0           Nobs
+ abpo  58851.4997   4097216.54019   4429119.20758  -2065771.17965     0.77982672352761E-08     0.10484551883958E-07     0.25244801510185E-08     0.79522440977185E-08    -0.34336684230780E-08    -0.40269207192506E-08     0.28465069386886E+01          93349

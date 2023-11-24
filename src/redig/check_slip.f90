@@ -1,7 +1,7 @@
 !
 !! check_slip.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,34 +9,36 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
-!! 
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin, Jing Zeng
+!!
 !!
 !!
 !! purpose  : check residual time series to identify slips or blunders
 !! parameter:
-!!    input : 
-!!            jump -- residual jump threshold value
-!!            nepo -- # of residuals
-!!            flag -- flags for each residual
-!!            resi -- residuals
-!!            trsi -- time tag for each residual
-!!    output: lfnd -- jump found or not
+!!            input :
+!!                    jump -- residual jump threshold value
+!!                    nepo -- # of residuals
+!!                    flag -- flags for each residual
+!!                    resi -- residuals
+!!                    trsi -- time tag for each residual
+!!            output: lfnd -- jump found or not
 !
-subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
+subroutine check_slip(RCF, nepo, flag, resi, trsi, lfnd)
   implicit none
   include '../header/const.h'
   include 'data_flag.h'
+  include 'rescfg.h'
 
+  type(rescfg) RCF
   logical*1 lfnd
   integer*4 nepo, flag(1:*)
-  real*8 jump, resi(1:*)
+  real*8 resi(1:*)
   character*27 trsi(1:*)
 !
 !! local
@@ -60,8 +62,8 @@ subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
       dif(i) = resi(i) - resi(j)
       ipt(i) = j
       exit
-    enddo
-  enddo
+    end do
+  end do
 !
 !! mean of residual time series
 100 continue
@@ -77,9 +79,9 @@ subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
       if (dabs(dif(i)) .gt. difmax) then
         imax = i
         difmax = abs(dif(i))
-      endif
-    endif
-  enddo
+      end if
+    end if
+  end do
   if (ndif .eq. 0) return
 !
 !! sigma of residual time series
@@ -88,8 +90,8 @@ subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
   do i = frt, nepo
     if (ipt(i) .ne. 0 .and. istrue(flag(i), 'GOOD')) then
       sig = sig + (dif(i) - mean)**2
-    endif
-  enddo
+    end if
+  end do
   sig = dsqrt(sig/ndif)
 !
 !! new sigma when max residual difference is removed
@@ -99,37 +101,45 @@ subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
     if (imax .eq. i) cycle
     if (ipt(i) .ne. 0 .and. istrue(flag(i), 'GOOD')) then
       signew = signew + (dif(i) - mean)**2
-    endif
-  enddo
+    end if
+  end do
   signew = dsqrt(signew/(ndif - 1))
 !
 !! whether to remove the largest residual difference
-  if (.not. chitst(-1, ndif - 1, sig, signew, 0.99d0) .and. dabs(dif(imax)) .gt. jump) then
-    write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(imax), ' Epo ', imax, ' marked as biggest jump'
-    flag(imax) = NEWAMB
-    lfnd = .true.
-    goto 100
-  endif
+  if (.not. chitst(-1, ndif - 1, sig, signew, 0.99d0) .and. dabs(dif(imax)) .gt. RCF%jump) then
+    !
+    !! ignore jump at day-boundary
+    if (RCF%amb_at_dbd(1:1) .ne. 'C' .or. index(trsi(imax), "  0  0  0.0000000") .eq. 0) then
+      write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(imax), ' Epo ', imax, ' marked as biggest jump'
+      flag(imax) = NEWAMB
+      lfnd = .true.
+      goto 100
+    end if
+  end if
 !
 !! new jump setting
-  jmp = jump
+  jmp = RCF%jump
   if (jmp .lt. 3.d0*sig) jmp = 3.d0*sig
 !
 !! check jump
   do i = frt, nepo
     if (dabs(dif(i)) .gt. jmp) then
       if (istrue(flag(i), 'GOOD')) then
-        write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' marked as jump'
-        flag(i) = NEWAMB
-        lfnd = .true.
-      endif
+    !
+    !! ignore jump at day-boundary
+        if (RCF%amb_at_dbd(1:1) .ne. 'C' .or. index(trsi(imax), "  0  0  0.0000000") .eq. 0) then
+          write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' marked as jump'
+          flag(i) = NEWAMB
+          lfnd = .true.
+        end if
+      end if
     else
       if (istrue(flag(i), 'NEWAMB')) then
         write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' reset as good'
         flag(i) = GOOD
-      endif
-    endif
-  enddo
+      end if
+    end if
+  end do
 !
 !! find bad
   do i = nepo, frt, -1
@@ -146,10 +156,10 @@ subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
         if (dabs(dif(i)) .lt. jmp) then
           write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' reset as good'
           flag(i) = GOOD
-        endif
-      endif
-    endif
-  enddo
+        end if
+      end if
+    end if
+  end do
 !
 !! handling special conditions
   do i = frt, nepo
@@ -158,7 +168,7 @@ subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
       j = i + 1
       do while (ipt(j) .eq. 0 .and. j .le. nepo)
         j = j + 1
-      enddo
+      end do
       if (k .lt. frt) then
         write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(k), ' Epo ', k, ' deleted as redundant ambiguity'
         flag(k) = DELBAD
@@ -173,10 +183,10 @@ subroutine check_slip(jump, nepo, flag, resi, trsi, lfnd)
         else if (istrue(flag(i), 'NEWAMB')) then
           write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as redundant ambiguity'
           flag(i) = DELBAD
-        endif
-      endif
-    endif
-  enddo
+        end if
+      end if
+    end if
+  end do
 
   return
-end
+end subroutine

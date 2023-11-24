@@ -70,6 +70,7 @@ type(sta_t), intent(in) :: sta
 type(gtime_t) :: time
 type(sigind_t) :: myindex(7)
 type(obs_t) obstmp
+type(nav_t) navtmp
 character(MAXRNXLEN) buff
 integer*4 :: i,n,nsat,sats(MAXOBS),mask,info,set_sysmask
 external :: set_sysmask
@@ -94,10 +95,19 @@ do while(.true.)
     read(fp,"(A)",iostat=info) buff
     !if(info/=0 .or. (buff=='' .and. ver>3d0)) exit  ! to be verified
     if(info/=0) exit
+    if(index(buff,"RINEX VERSION / TYPE")/=0)then
+        do while(.true.)
+            ! decode obs header 
+            call decode_obsh(fp,buff,ver,tsys,tobs,obstmp,navtmp,sta)
+            read(fp,"(A)",iostat=info) buff
+            if(info/=0)exit
+            if(index(buff,'END OF HEADER')/=0)exit
+        enddo
+    endif
     ! decode obs epoch 
     if(i==0)then
         call decode_obsepoch(fp,buff,ver,time,flag,sats,nsat)
-        if(nsat<=0) cycle
+        if(nsat<=0)cycle
     elseif(flag<=2 .or. flag==6)then
         mydata(n)%time=time
         mydata(n)%sat=sats(i)
@@ -105,8 +115,7 @@ do while(.true.)
         call decode_obsdata(fp,buff,ver,mask,myindex,mydata(n),info)
         if(info/=0 .and. n<=MAXOBS) n=n+1
     elseif(flag==3 .or. flag==4)then
-        ! decode obs header 
-        ! call decode_obsh(fp,buff,ver,tsys,tobs,NULL,NULL,sta)
+        backspace fp
     endif
     i=i+1
     if(i>nsat)then

@@ -1,7 +1,7 @@
 !
 !! lsq_rmv_normal.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,14 +9,14 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
 !! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
-!! 
+!!
 !!
 !!
 !! purpose  : eliminate non-active ambiguities in the LSQ estimator
@@ -41,24 +41,24 @@ subroutine lsq_rmv_normal(lfncid, lfnrem, ncol, icol, NM, PM)
     if (ipar .ne. NM%iptp(PM(ipar)%ipt)) then
       write (*, '(a)') '***ERROR(lsq_rmv_normal): index not consistent '
       call exit(1)
-    endif
+    end if
     call lsq_rmv_prmt(.true., lfncid, lfnrem, ipar, NM, PM, NM%norx)
     do i = 1, NM%ipm
       if (PM(i)%ipt .gt. PM(ipar)%ipt) PM(i)%ipt = PM(i)%ipt - 1
-    enddo
+    end do
     do i = PM(ipar)%ipt + 1, NM%imtx
       NM%iptp(i - 1) = NM%iptp(i)
-    enddo
+    end do
     if (PM(ipar)%ptype .eq. 'P') then
       PM(ipar)%ipt = -1        ! act as a flag
       NM%np = NM%np - 1
     else
       PM(ipar)%ipt = 0
       NM%ns = NM%ns - 1
-    endif
+    end if
     NM%iptp(NM%imtx) = 0
     NM%imtx = NM%imtx - 1
-  enddo
+  end do
 
   return
 end

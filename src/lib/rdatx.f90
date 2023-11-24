@@ -1,7 +1,7 @@
 !
 !! rdatx.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,14 +9,14 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jing Zeng
-!! 
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
+!!
 !!
 !!
 !! purpose   : read antenna atx file
@@ -29,23 +29,22 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
   include '../header/const.h'
   include '../header/antatx.h'
 
-  real*8 fjd_beg, fjd_end
-  type(antatx) ATX
-  character*60 snxcode
+  real*8        fjd_beg, fjd_end
+  type(antatx)  ATX
+  character*60  snxcode
 !
 !! local
-  logical*1 lfirst, lfound
-  integer*4 i, j, k, lfn, iy, imon, id, ih, im, ncol, nrow, icol, irow, ierr
-  real*8 sod, fjd0, fjd1
-  character*1 atxtyp
+  logical*1     lfirst, lfound
+  integer*4     i0, i, j, k, lfn, ierr
+  integer*4     iy, imon, id, ih, im
+  integer*4     ncol, nrow, icol, irow
+  real*8        sod, fjd0, fjd1
+  character*1   atxtyp
   character*512 line
-  integer*4 sys
-  character*1 sys_G,sys_R,sys_E,sys_C,sys_J
-  character*256 frq_Rall,frq_Eall,frq_Call,frq_Jall
-  character*3 frq1_R,frq2_R,frq1_E,frq2_E,frq1_C,frq2_C,frq1_J,frq2_J
+  character*5   lable
 !
 !! function called
-  integer*4 get_valid_unit, modified_julday
+  integer*4     get_valid_unit, modified_julday
 
   data lfirst/.true./
   save lfirst, lfn, atxtyp
@@ -57,7 +56,7 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
     if (ierr .ne. 0) then
       write (*, '(a,i4)') '***ERROR(rdatx): open antenna file abs_igs.atx', ierr
       call exit(1)
-    endif
+    end if
 !
 !! read header
     line = ' '
@@ -65,13 +64,13 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
       read (lfn, '(a)', end=100) line
       if (index(line, 'PCV TYPE / REFANT') .eq. 61) then
         read (line, '(a1)') atxtyp
-      endif
-    enddo
-  endif
+      end if
+    end do
+  end if
   if (atxtyp .ne. 'A') then
     write (*, '(a)') '***ERROR(rdatx): absolute antenna mode in abs_igs.atx'
     call exit(1)
-  endif
+  end if
 !
 !! find the right antenna
 10 continue
@@ -81,17 +80,16 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
     line = ' '
     do while (index(line, 'TYPE / SERIAL NO') .ne. 61)
       read (lfn, '(a)', end=100) line
-    enddo
-    if (ATX%antnam(1:5) .eq. 'BLOCK' .and. ATX%antnam(1:5) .ne. line(1:5) .or. &
-        ATX%antnam(1:7).eq.'GLONASS'.and.ATX%antnam(1:7).ne.line(1:7).or. &
-        ATX%antnam(1:7).eq.'GALILEO'.and.ATX%antnam(1:7).ne.line(1:7).or. &
-        ATX%antnam(1:6).eq.'BEIDOU'.and.ATX%antnam(1:6).ne.line(1:6).or. &
-        ATX%antnam(1:4).eq.'QZSS'.and.ATX%antnam(1:4).ne.line(1:4).or. &
-        ATX%antnam(1:5).ne.'BLOCK'.and.ATX%antnam(1:7).ne.'GLONASS'&
-        .and.ATX%antnam(1:7).ne.'GALILEO'.and.ATX%antnam(1:6).ne.'BEIDOU'.and.ATX%antnam(1:4).ne.'QZSS' &
-        .and.ATX%antnam.ne.line(1:20).or. &
-        ATX%antnum .ne. line(21:40)) cycle
-    ATX%antnam=line(1:20)
+    end do
+    if (ATX%antnam(1:5) .eq. 'BLOCK'   .and. ATX%antnam(1:5) .ne. line(1:5) .or.  &
+        ATX%antnam(1:7) .eq. 'GLONASS' .and. ATX%antnam(1:7) .ne. line(1:7) .or.  &
+        ATX%antnam(1:7) .eq. 'GALILEO' .and. ATX%antnam(1:7) .ne. line(1:7) .or.  &
+        ATX%antnam(1:6) .eq. 'BEIDOU'  .and. ATX%antnam(1:6) .ne. line(1:6) .or.  &
+        ATX%antnam(1:4) .eq. 'QZSS'    .and. ATX%antnam(1:4) .ne. line(1:4) .or.  &
+        ATX%antnam(1:5) .ne. 'BLOCK'   .and. ATX%antnam(1:7) .ne. 'GLONASS' .and. &
+        ATX%antnam(1:7) .ne. 'GALILEO' .and. ATX%antnam(1:6) .ne. 'BEIDOU'  .and. ATX%antnam(1:4) .ne. 'QZSS' .and. &
+        ATX%antnam .ne. line(1:20) .or. ATX%antnum .ne. line(21:40)) cycle
+    ATX%antnam = line(1:20)
     ATX%dazi = 0.d0
     ATX%dzen = 0.d0
     ATX%nfreq = 0
@@ -114,26 +112,26 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
       else if (index(line, '# OF FREQUENCIES') .eq. 61) then
         read (line, *, err=200) ATX%nfreq
         if (ATX%nfreq .gt. 2) then
-        endif
+        end if
       else if (index(line, 'SINEX CODE') .eq. 61) then
         if (len_trim(snxcode) .gt. 0 .and. &
             snxcode(1:len_trim(snxcode)) .ne. line(1:len_trim(line(1:60)))) then
-          write(*,'(3a)') '###WARNING(rdatx): inconsistent antex SINEX code: ',snxcode(1:len_trim(snxcode)),&
-              line(1:len_trim(line(1:60)))
+          write (*, '(3a)') '###WARNING(rdatx): inconsistent antex SINEX code: ', snxcode(1:len_trim(snxcode)), &
+            line(1:len_trim(line(1:60)))
         else
-          snxcode=line(1:len_trim(line(1:60)))
-        endif
-      endif
-    enddo
+          snxcode = line(1:len_trim(line(1:60)))
+        end if
+      end if
+    end do
     if ((fjd0 - fjd_beg)*86400.d0 .gt. MAXWND .or. (fjd_end - fjd1)*86400.d0 .gt. MAXWND) cycle
     lfound = .true.
     exit
-  enddo
+  end do
 100 continue
   backspace lfn
   if (.not. lfound) then
-    if(ATX%antnam(1:5).ne.'BLOCK' .and. ATX%antnam(1:7).ne.'GLONASS' &
-       .and. ATX%antnam(1:7).ne.'GALILEO' .and. ATX%antnam(1:6).ne.'BEIDOU' .and. ATX%antnam(1:4).ne.'QZSS') then 
+    if (ATX%antnam(1:5) .ne. 'BLOCK'   .and. ATX%antnam(1:7) .ne. 'GLONASS' .and. &
+        ATX%antnam(1:7) .ne. 'GALILEO' .and. ATX%antnam(1:6) .ne. 'BEIDOU'  .and. ATX%antnam(1:4) .ne. 'QZSS') then
       write (*, '(3a)') '###WARNING(rdatx): Antenna not found ', ATX%antnam, ATX%antnum
       if (ATX%antnam(17:20) .eq. 'NONE') then
         ATX%dazi = 5.d0
@@ -142,43 +140,26 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
         ATX%dzen = 5.d0
         ATX%neu = 0.d0
         ATX%pcv(1:50, 0:200, 1:10, 1:5) = 0.d0
-        write (*, '(a)') '$$$MESSAGE(rdatx): Zero antenna applied instead'
+        write (*, '(a)') '$$$MESSAGE(rdatx): zero antenna applied instead'
       else
         ATX%antnam(17:20) = 'NONE'
         write (*, '(a)') '$$$MESSAGE(rdatx): dome NONE is tried. Search again ...'
         goto 10
-      endif
+      end if
       return
     else
       write (*, '(3a)') '###WARNING(rdatx): atx not found ', ATX%antnam, ATX%antnum
       return
-    endif
-  endif
+    end if
+  end if
 !
 !! read offset and phase center variation
   ncol = 0
   nrow = 0
   if (ATX%dazi .ne. 0.d0) nrow = int(360.d0/ATX%dazi) + 1
   if (ATX%dzen .ne. 0.d0) ncol = int((ATX%zen2 - ATX%zen1)/ATX%dzen) + 1
-  sys_G=''
-  sys_R=''
-  sys_E=''
-  sys_C=''
-  sys_J=''
-  frq_Rall=''
-  frq_Eall=''
-  frq_Call=''
-  frq_Jall=''   
-  frq1_R='R01'
-  frq2_R='R02'
-  frq1_E='E01'
-  frq2_E='E05'
-  frq1_C='C02'
-  frq2_C='C06'
-  frq1_J='J01'
-  frq2_J='J02'
-  ATX%sys_multi=''
-  ATX%sys_multi2=''
+  ATX%frq = ''
+  ATX%sys_multi = ''
   do i = 1, ATX%nfreq
 !
 !! find frequency
@@ -188,28 +169,13 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
       if (index(line, 'END OF ANTENNA') .ne. 0) then
         write (*, '(a)') '***ERROR(rdatx): frquency not found '
         call exit(1)
-      endif
-    enddo
-    if(line(4:4).ne.'G' .and. line(4:4).ne.'R' .and. line(4:4).ne.'E' .and. line(4:4).ne.'C' .and. line(4:4).ne.'J') cycle ! add multisystem-GREC
+      end if
+    end do
+    i0 = index(GNSS_PRIO, line(4:4))
+    if (i0 .eq. 0) cycle
+    ATX%sys_multi(i0:i0) = line(4:4)
     read (line(5:6), *) k
-    sys=0
-    if(line(4:4).eq.'G')then
-      sys=1
-      sys_G='G'
-    elseif(line(4:4).eq.'R')then
-      sys=2
-      frq_Rall=trim(frq_Rall)//line(4:6)
-    elseif(line(4:4).eq.'E')then
-      sys=3
-      frq_Eall=trim(frq_Eall)//line(4:6)
-    elseif(line(4:4).eq.'C')then
-      sys=4
-      frq_Call=trim(frq_Call)//line(4:6)
-    elseif(line(4:4).eq.'J')then
-      sys=5
-      frq_Jall=trim(frq_Jall)//line(4:6)
-    endif
-    ATX%frq(k,sys)=line(4:6)
+    ATX%frq(k, i0) = line(4:6)
 !
 !! reading
     irow = 0
@@ -217,46 +183,33 @@ subroutine rdatx(fjd_beg, fjd_end, ATX, snxcode)
       read (lfn, '(a)') line
       if (line(61:76) .eq. 'END OF FREQUENCY') exit
       if (line(61:77) .eq. 'NORTH / EAST / UP') then
-        read (line, *, err=200) (ATX%neu(j, k, sys), j=1, 3)
+        read (line, *, err=200) (ATX%neu(j, k, i0), j=1, 3)
 !! convert unit from mm to m
         do j = 1, 3
-          ATX%neu(j, k, sys) = ATX%neu(j, k, sys)*1.d-3
-        enddo
+          ATX%neu(j, k, i0) = ATX%neu(j, k, i0)*1.d-3
+        end do
       else if (line(4:8) .eq. 'NOAZI') then
-        read (line(9:), *, err=200) (ATX%pcv(icol, 0, k, sys), icol=1, ncol)
+        read (line(9:), *, err=200) (ATX%pcv(icol, 0, k, i0), icol=1, ncol)
       else
         irow = irow + 1
-        read (line(9:), *, err=200) (ATX%pcv(icol, irow, k, sys), icol=1, ncol)
-      endif
-    enddo
+        read (line(9:), *, err=200) (ATX%pcv(icol, irow, k, i0), icol=1, ncol)
+      end if
+    end do
     if (irow .ne. nrow) then
       write (*, '(a)') '***ERROR(rdatx): pcv lost '
       call exit(1)
-    endif
+    end if
 !! convert unit from mm to m
     do irow = 0, nrow
       do icol = 1, ncol
-        ATX%pcv(icol, irow, k, sys) = ATX%pcv(icol, irow, k, sys)*1.d-3
-      enddo
-    enddo
-  enddo
-  if (index(frq_Rall,frq1_R).ne.0) sys_R='R'
-  if (index(frq_Eall,frq1_E).ne.0) sys_E='E'
-  if (index(frq_Call,frq1_C).ne.0) sys_C='C'
-  if (index(frq_Jall,frq1_J).ne.0) sys_J='J'
-  ATX%sys_multi=sys_G//sys_R//sys_E//sys_C//sys_J
-  sys_R=''
-  sys_E=''
-  sys_C=''
-  sys_J=''
-  if (index(frq_Rall,frq2_R).ne.0) sys_R='R'
-  if (index(frq_Eall,frq2_E).ne.0) sys_E='E'
-  if (index(frq_Call,frq2_C).ne.0) sys_C='C'
-  if (index(frq_Jall,frq2_J).ne.0) sys_J='J'
-  ATX%sys_multi2=sys_G//sys_R//sys_E//sys_C//sys_J
+        ATX%pcv(icol, irow, k, i0) = ATX%pcv(icol, irow, k, i0)*1.d-3
+      end do
+    end do
+  end do
 
   return
+
 200 continue
   write (*, '(2a)') '***ERROR(rdatx): read file ', trim(line)
   call exit(1)
-end
+end subroutine

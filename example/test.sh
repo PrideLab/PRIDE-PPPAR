@@ -2,17 +2,17 @@
 
 ###############################################################################
 ##                                                                           ##
-##  PURPOSE: Test PRIDE PPP-AR 2                                             ##
+##  PURPOSE: Test PRIDE PPP-AR                                               ##
 ##                                                                           ##
 ##  AUTHOR : the PRIDE Group pride@whu.edu.cn                                ##
 ##                                                                           ##
-##  VERSION: ver 2.2                                                         ##
+##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : Mar-23, 2022                                                    ##
+##  DATE   : Sept-13, 2023                                                   ##
 ##                                                                           ##
-##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2022               ##
+##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
-##    Copyright (C) 2022 by Wuhan University                                 ##
+##    Copyright (C) 2023 by Wuhan University                                 ##
 ##                                                                           ##
 ##    This program is free software: you can redistribute it and/or modify   ##
 ##    it under the terms of the GNU General Public License (version 3) as    ##
@@ -20,11 +20,11 @@
 ##                                                                           ##
 ##    This program is distributed in the hope that it will be useful,        ##
 ##    but WITHOUT ANY WARRANTY; without even the implied warranty of         ##
-##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          ##
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           ##
 ##    GNU General Public License (version 3) for more details.               ##
 ##                                                                           ##
 ##    You should have received a copy of the GNU General Public License      ##
-##    along with this program.  If not, see <https://www.gnu.org/licenses/>. ##
+##    along with this program. If not, see <https://www.gnu.org/licenses/>.  ##
 ##                                                                           ##
 ###############################################################################
 
@@ -35,11 +35,10 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Check installation
-source ${HOME}/.bashrc
 lsq > /dev/null 2>&1
 if [ $? -eq 127 ]; then  # command not found
-    printf "${RED}error:${NC} PRIDE PPP-AR 2 lsq not found\n"
-    printf "${RED}error:${NC} PRIDE PPP-AR 2 testing failed\n"; exit
+    printf "${RED}error:${NC} PRIDE PPP-AR 3 lsq not found\n"
+    printf "${RED}error:${NC} PRIDE PPP-AR 3 testing failed\n"; exit
 fi
 
 MvDir() {

@@ -1,7 +1,7 @@
 !
 !! check_sd.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,14 +9,14 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
-!! 
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
+!!
 !!
 !!
 !! purpose  : check single-difference LC
@@ -36,86 +36,85 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
   include '../header/const.h'
   include '../header/brdeph.h'
   include 'data_flag.h'
-!
-  integer*4 nepo, nsat, flagall(nepo, MAXSAT), jd0, nobs(MAXSAT)
-  real*8 ti(nepo), ts(nepo), obs(nepo, MAXSAT, 6)
-!
-  integer*4 neph, lfnsd, ndgr, niter, mepo, nstep
-  type(brdeph) ephem(1:*)
-  real*8 interval, lclimit, x(nepo), y(nepo), z(nepo)
-!
-!! local
-  logical*1 found, ref_ok, lwrite
-  integer*4 i, j, k, i0, i1, istart, istop, ngood, iepo, kobs, ierr, jeph, jepo, nsd, isat, iref, njump
-  integer*4 ichecked(nepo, MAXSAT), jump(nepo*10, 4), nobs_epoch(nepo), nobsprn(MAXSAT), nobsflg(MAXSAT)
-  integer*4 flglg(nepo), flglc(nepo), flglgref(nepo), ilc(nepo), ilg(nepo)
-  real*8 lc(nepo), lg(nepo), range_ref(nepo), range(nepo)
-  real*8 vlc(nepo), vlg(nepo), vlgref(nepo)
-  real*8 rmslg(MAXSAT), rmslc(MAXSAT)
-  real*8 dtsat, elev, dummy, a0
-  ! G
-  real*8 lambda1_G
-  ! R
-  integer*4 frequency_glo_nu,prn_int,glschn(MAXSAT_R)
-  character*3 prn_str
-  real*8 :: FREQ1_R(-50:50),FREQ2_R(-50:50),lambda1_R(-50:50)
-  ! E
-  real*8 lambda1_E
-  ! C
-  real*8 lambda1_C
-  ! J
-  real*8 lambda1_J
-  
-  character*3 prn0(MAXSAT)
-!
-!! function called
-  logical*1 istrue
-  integer*4 set_flag
 
-  call frequency_glonass(FREQ1_R,FREQ2_R)
-  call prn_matbld(prn0)
+! common
+  integer*4     idxfrq(MAXSYS, 2)
+  common        idxfrq
+! parameter
+  integer*4     lfnsd
+  integer*4     neph
+  type(brdeph)  ephem(1:*)
+  integer*4     ndgr, niter, mepo, nstep
+  real*8        x(nepo), y(nepo), z(nepo)
+  real*8        interval, lclimit
+  integer*4     nepo, nsat
+  integer*4     jd0
+  integer*4     nobs(MAXSAT)
+  integer*4     flagall(nepo, MAXSAT)
+  real*8        ti(nepo), ts(nepo)
+  real*8        obs(nepo, MAXSAT, 6)
+! local
+  logical*1     found, ref_ok, lwrite
+  integer*4     i, i0, i1, j, k
+  integer*4     isys, iG, istart, istop, iepo, kobs, ierr, jeph, jepo, isat, iref
+  integer*4     ngood, nsd, njump
+  integer*4     prn_int
+  integer*4     ichecked(nepo, MAXSAT), jump(nepo*10, 4)
+  integer*4     nobs_epoch(nepo), nobsprn(MAXSAT), nobsflg(MAXSAT)
+  integer*4     flglg(nepo), flglc(nepo), flglgref(nepo)
+  integer*4     ilc(nepo), ilg(nepo)
+  real*8        lc(nepo), lg(nepo), range_ref(nepo), range(nepo)
+  real*8        vlc(nepo), vlg(nepo), vlgref(nepo)
+  real*8        rmslg(MAXSAT), rmslc(MAXSAT)
+  real*8        dtsat, elev, dummy, a0
+  real*8        lam1(MAXSYS)
+  real*8        FREQ1_R(-50:50), FREQ2_R(-50:50)
+  integer*4     glschn(MAXSAT_R)
+  character*3   prn0(MAXSAT)
+  logical*1     lonlyG, lfound
+! function called
+  logical*1     istrue
+  integer*4     set_flag
 !
 !! initialization
   lwrite = .true.
   if (lfnsd .eq. 0) lfnsd = 6
   if (lfnsd .lt. 0) lwrite = .false.
-  ! R
   call read_glschn(jd0, ti(1), glschn)
-  ! G
-  lambda1_G=VLIGHT/FREQ1_G
-  ! E
-  lambda1_E=VLIGHT/FREQ1_E
-  ! C
-  lambda1_C=VLIGHT/FREQ1_C
-  ! J
-  lambda1_J=VLIGHT/FREQ1_J
+  iG = index(GNSS_PRIO, "G")
+  do i0 = 1, MAXSYS
+    i1 = idxfrq(i0, 1)
+    lam1(i0) = VLIGHT/FREQ_SYS(i1, i0)
+  end do
+  call frequency_glonass(FREQ1_R, FREQ2_R)
+  call prn_matbld(prn0)
   ierr = 0
 !! find out first and last epoch with enough data
 !! nobs_epoch -- # of obs. per epoch, the number of available satellite
-  istart = 0     ! start epoch
+  istart = 0    ! start epoch
   istop = 0     ! end epoch
   ngood = 0     ! Effective number of epoch
   do iepo = 1, nepo
     nobs_epoch(iepo) = 0
     do isat = 1, nsat
-      if(prn0(isat)(1:1) .eq. 'C')then
+      if (prn0(isat)(1:1) .eq. 'C') then
         cycle
-      endif
+      end if
       ichecked(iepo, isat) = 10
       if (istrue(flagall(iepo, isat), 'ok')) then
         nobs_epoch(iepo) = nobs_epoch(iepo) + 1    ! the number of available satellite
-      endif
-    enddo
+      end if
+    end do
     if (nobs_epoch(iepo) .ge. 2) then
       if (istart .eq. 0) istart = iepo
       istop = iepo
       ngood = ngood + 1
-    endif
-  enddo
+    end if
+  end do
   if (istop - istart + 1 .le. ndgr + 2 .or. ngood .le. ndgr + 2) then
 ! remove all
     return
-  endif
+  end if
 
   njump = 0
   iepo = istart
@@ -126,10 +125,9 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
 ! mepo = 20; default value, the constant length of check arc is 20 epochs
     i1 = min(iepo + mepo - 1, istop)   ! set the start epoch of check arc
     i0 = max(istart, i1 - mepo + 1)    ! set the end epoch of check arc
-
     do k = i0, i1
       if (nobs_epoch(k) .ge. 2) ngood = ngood + 1
-    enddo
+    end do
 
 ! ndgr = 2; default value
     if (ngood .le. ndgr + 2) goto 100
@@ -141,17 +139,17 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
 !-nobsprn : # of observations for each satellite
 !-nobsflg : # of flags (amb.) for each satellite
     do isat = 1, nsat
-      if(prn0(isat)(1:1) .eq. 'C')then
+      if (prn0(isat)(1:1) .eq. 'C') then
         cycle
-      endif
+      end if
       nobsprn(isat) = 0
       nobsflg(isat) = 0
       do jepo = 1, kobs
         k = i0 + jepo - 1
         if (istrue(flagall(k, isat), 'ok')) then
           nobsprn(isat) = nobsprn(isat) + 1     ! the number of available epochs for each satellite
-        endif
-      enddo
+        end if
+      end do
       if (nobsprn(isat) .gt. ndgr + 2) then
         do jepo = 1, kobs
           k = i0 + jepo - 1
@@ -159,42 +157,55 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
           if (istrue(flagall(k, isat), 'ok')) then
             flglg(jepo) = 1
             lg(jepo) = obs(k, isat, 1)          ! geometry-free obs value
-          endif
+          end if
           if (istrue(flagall(k, isat), 'good')) then
             flglg(jepo) = 0
-          endif
-        enddo
+          end if
+        end do
         call check_for_jump(' LG ', lfnsd, kobs, ti(i0), lg, flglg, ndgr, niter, &
                             2.0d0, 0.40d0, a0, rmslg(isat), vlg, ilg, ierr, interval)
         if (ierr .ne. 0) then
-        endif
+        end if
         do jepo = 1, kobs
           k = i0 + jepo - 1
           if (flglg(jepo) .eq. 1) nobsflg(isat) = nobsflg(isat) + 1
-        enddo
+        end do
         if (ierr .ne. 0) rmslg(isat) = 1.d3
       else
         nobsflg(isat) = ngood
         rmslg(isat) = 1.d3
-      endif
-    enddo
+      end if
+    end do
 !!
 !! select satisfactory referece satellte
     iref = 1
+    lonlyG = .true.
+    lfound = .false.
+50  continue
     do isat = 1, nsat
-      if(prn0(isat)(1:1) .ne. 'G')then !add for referece satellte
+      if (lonlyG .and. prn0(isat)(1:1) .ne. 'G') then !add for referece satellte
         cycle
-      endif
+      end if
       if (nobsprn(isat) .gt. nobsprn(iref)) then
         iref = isat
+        lfound = .true.
       else if (nobsprn(isat) .eq. nobsprn(iref)) then
         if (nobsflg(isat) .lt. nobsflg(iref)) then
           iref = isat
+          lfound = .true.
         else if (nobsflg(isat) .eq. nobsflg(iref)) then
-          if (rmslg(isat) .le. rmslg(iref)) iref = isat
-        endif
-      endif
-    enddo
+          if (rmslg(isat) .lt. rmslg(iref)) then
+            iref = isat
+            lfound = .true.
+          end if
+        end if
+      end if
+    end do
+    if (iref .eq. 1 .and. nobsprn(iref) .ne. 0) lfound = .true.
+    if (.not. lfound .and. lonlyG) then
+      lonlyG = .false.
+      goto 50
+    end if
 !!
 !! check referece satellite
 !!-range_ref : distance from ref. satellites to static station in each epoch
@@ -209,26 +220,31 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
         flglg(jepo) = 1
         if (istrue(flagall(k, iref), 'good')) flglg(jepo) = 0
         lg(jepo) = obs(k, iref, 1)
-      endif
-    enddo
+      end if
+    end do
     call check_for_jump(' LGR ', lfnsd, kobs, ti(i0), lg, flglg, ndgr, niter, &
                         2.0d0, 0.40d0, a0, rmslg(iref), vlg, ilg, ierr, interval)
     if (ierr .ne. 0) then
-    endif
+    end if
     do jepo = 1, kobs
       k = i0 + jepo - 1
       flglgref(jepo) = flglg(jepo)
       vlgref(jepo) = 0.d0
       if (ilg(jepo) .ne. 0) then
         vlgref(jepo) = vlgref(ilg(jepo)) + vlg(jepo)
-      endif
-    enddo
+      end if
+    end do
 !!
 !! check other satellites, form single diff LC obs
     do isat = 1, nsat
-      if(prn0(isat)(1:1) .eq. 'C')then
+      if ('C' .eq. prn0(isat)(1:1)) then
         cycle
-      endif
+      end if
+      isys = index(GNSS_PRIO, prn0(isat)(1:1))
+      if ('R' .eq. prn0(isat)(1:1)) then
+        read (prn0(isat), '(1x,i2)') prn_int
+        lam1(isys) = VLIGHT/FREQ1_R(glschn(prn_int))
+      end if
       if (nobsprn(isat) .gt. ndgr + 2 .and. isat .ne. iref) then
         jeph = 0
         nsd = 0
@@ -239,36 +255,18 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
           if (istrue(flagall(k, isat), 'ok') .and. istrue(flagall(k, iref), 'ok')) then
             call elevation(neph, ephem, prn0(isat), jd0, ti(k), x(k), y(k), z(k), elev, range(jepo), dtsat, dummy, jeph, .true.)
             range(jepo) = range(jepo) - dtsat
-            ! LC single-difference = troposphere delay or ...
-            if(prn0(isat)(1:1).eq.'G')then 
-              lc(jepo) = (obs(k, isat, 3)-range(jepo)/lambda1_G)*lambda1_G &
-                         -(obs(k, iref, 3)-range_ref(jepo)/lambda1_G)*lambda1_G
-            elseif(prn0(isat)(1:1).eq.'R')then
-              read(prn0(isat),'(1x,i2)') prn_int
-              frequency_glo_nu=glschn(prn_int)
-              lambda1_R(frequency_glo_nu)=VLIGHT/FREQ1_R(frequency_glo_nu)
-              lc(jepo) = (obs(k, isat, 3)-range(jepo)/lambda1_R(frequency_glo_nu))*lambda1_R(frequency_glo_nu) &
-                         -(obs(k, iref, 3)-range_ref(jepo)/lambda1_G)*lambda1_G
-            elseif(prn0(isat)(1:1).eq.'E')then
-              lc(jepo) = (obs(k, isat, 3)-range(jepo)/lambda1_E)*lambda1_E &
-                         -(obs(k, iref, 3)-range_ref(jepo)/lambda1_G)*lambda1_G
-            elseif(prn0(isat)(1:1).eq.'C')then
-              lc(jepo) = (obs(k, isat, 3)-range(jepo)/lambda1_C)*lambda1_C &
-                         -(obs(k, iref, 3)-range_ref(jepo)/lambda1_G)*lambda1_G
-            elseif(prn0(isat)(1:1).eq.'J')then
-              lc(jepo) = (obs(k, isat, 3)-range(jepo)/lambda1_J)*lambda1_J &
-                         -(obs(k, iref, 3)-range_ref(jepo)/lambda1_G)*lambda1_G
-            end if
+            !! LC single-difference = troposphere delay or ...
+            lc(jepo) = (obs(k, isat, 3)*lam1(isys) - range(jepo)) - (obs(k, iref, 3)*lam1(iG) - range_ref(jepo))
             if (lwrite) write (lfnsd, '(i6,f15.3)') k, lc(jepo)
             flglc(jepo) = 1
             if (istrue(flagall(k, isat), 'good') .and. istrue(flagall(k, iref), 'good')) then
               nsd = nsd + 1
               flglc(jepo) = 0
-            endif
-          endif
-        enddo
+            end if
+          end if
+        end do
         if (nsd .gt. ndgr + 2) then
-          if (lwrite) write (lfnsd, *) ' Satellite ', prn0(isat),prn0(iref)
+          if (lwrite) write (lfnsd, *) ' Satellite ', prn0(isat), prn0(iref)
           call check_for_jump(' LC ', lfnsd, kobs, ti(i0), lc, flglc, ndgr, niter, &
                               0.2d0, 0.12d0, a0, rmslc(isat), vlc, ilc, ierr, interval)
           if (ierr .eq. 0) then
@@ -293,8 +291,8 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
                                                                               jump(i, 3) .eq. iref)) then
                       found = .true.
                       cycle
-                    endif
-                  enddo
+                    end if
+                  end do
                   if (.not. found) then
                     njump = njump + 1
                     jump(njump, 1) = k
@@ -302,30 +300,30 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
                     jump(njump, 3) = iref
                     jump(njump, 4) = 2
                     if (ref_ok .and. istrue(flagall(k - 1, iref), 'ok')) jump(njump, 4) = 1
-                  endif
-                endif
-              endif
-            enddo
+                  end if
+                end if
+              end if
+            end do
           else
             if (lwrite) write (lfnsd, *) ' fit error, can not check this piece ', prn0(isat), i0, i1, ierr, rmslc(isat)
-          endif
-        endif
-      endif
+          end if
+        end if
+      end if
 ! next satellite
-    enddo
+    end do
 100 continue
 ! next epoch
     iepo = iepo + nstep
-  enddo
+  end do
 
 !!
 !! count and remove unchecked data
   j = 0
   do iepo = 1, nepo
     do isat = 1, nsat
-      if(prn0(isat)(1:1) .eq. 'C')then
+      if (prn0(isat)(1:1) .eq. 'C') then
         cycle
-      endif
+      end if
       if (ichecked(iepo, isat) .eq. 2) then
         if (lwrite) write (lfnsd, *) ' First Epoch ', iepo, prn0(isat)
         flagall(iepo, isat) = set_flag(flagall(iepo, isat), 'bigsd')
@@ -336,15 +334,15 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
             if (istrue(flagall(k, isat), 'ok')) then
               if (istrue(flagall(k, isat), 'good')) flagall(k, isat) = flagall(iepo, isat)
               exit
-            endif
-          enddo
+            end if
+          end do
           j = j + 1
           flagall(iepo, isat) = set_flag(flagall(iepo, isat), 'lccheck')
           if (lwrite) write (lfnsd, *) ' Not checked ', iepo, prn0(isat)
-        endif
-      endif
-    enddo
-  enddo
+        end if
+      end if
+    end do
+  end do
   if (lwrite) write (lfnsd, *) ' Not checked', j
 
 ! statistics of flags and set in 'flagall'
@@ -353,17 +351,17 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
     if (istrue(flagall(jump(i, 1), jump(i, 2)), 'ok')) then
       if (istrue(flagall(jump(i, 1), jump(i, 2)), 'good')) then
         j = j + 1
-      endif
+      end if
       flagall(jump(i, 1), jump(i, 2)) = set_flag(flagall(jump(i, 1), jump(i, 2)), 'bigsd')
-    endif
+    end if
     if (jump(i, 4) .eq. 2 .and. istrue(flagall(jump(i, 1), jump(i, 3)), 'ok')) then
       if (istrue(flagall(jump(i, 1), jump(i, 3)), 'good')) then
         j = j + 1
-      endif
+      end if
       flagall(jump(i, 1), jump(i, 3)) = set_flag(flagall(jump(i, 1), jump(i, 3)), 'bigsd')
-    endif
-  enddo
+    end if
+  end do
   if (lwrite) write (lfnsd, *) ' TOTAL NEW FLAGs', j
 
   return
-end
+end subroutine

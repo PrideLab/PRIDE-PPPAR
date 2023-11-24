@@ -9,11 +9,11 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
 !! Contributor: Maorong Ge, Jianghui Geng
 !! 
@@ -100,7 +100,7 @@ subroutine lsq_rmv_prmt(lcompact, lfncid, lfnrem, ipar, NM, PM, ntx)
     if (PM(ipar)%ptype .eq. 'P') then
       write (lfncid) 'pc'
       write (lfnrem) ipar, nelem, ipx(0), (ipx(i), i=1, nelem - 1), &
-        (elem(i), i=1, nelem), PM(ipar)%iobs, PM(ipar)%iobs_G, PM(ipar)%iobs_R, PM(ipar)%iobs_E, &
+        (elem(i), i=1, nelem), PM(ipar)%iepo, PM(ipar)%iobs, PM(ipar)%iobs_G, PM(ipar)%iobs_R, PM(ipar)%iobs_E, &
         PM(ipar)%iobs_C, PM(ipar)%iobs_3, PM(ipar)%iobs_J, PM(ipar)%xini, PM(ipar)%ptime(1:2)
     else if (PM(ipar)%ptype .eq. 'S') then
       write (lfncid) 'am'

@@ -38,9 +38,7 @@ type(gtime_t) stamp_
 popt_=popt
 
 ! read obs and nav data 
-!stamp_=timeget(); write(*,*) "Before readobsnav : ", stamp_%time*1d0+stamp_%sec
 call readobsnav(ts,te,ti,infile,myindex,n,popt_,obss,navs,stas,info)
-!stamp_=timeget(); write(*,*) "After readobsnav  : " , stamp_%time*1d0+stamp_%sec
 
 if (info==0)then
     write(*,*) "Function execution failure, readobsnav()"
@@ -61,7 +59,6 @@ if(popt_%mode==PMODE_SINGLE .or. popt_%soltype==0)then
     call procpos(fp,popt_,sopt,rtk,0,info)
     if(fp/=6)then
         if(sopt%issingle==0) close(unit=fp,status='keep')
-        !if(sopt%issingle==1) close(unit=fp,status='delete')
     endif
     if(info==0)then
         call freeobsnav(obss,navs)
@@ -69,7 +66,6 @@ if(popt_%mode==PMODE_SINGLE .or. popt_%soltype==0)then
         execses=0; return
     endif
 endif
-!stamp_=timeget(); write(*,*) "After procpos :     " , stamp_%time*1d0+stamp_%sec
 
 ! free obs and nav data 
 call freeobsnav(obss,navs)

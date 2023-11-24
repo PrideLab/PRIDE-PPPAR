@@ -1,7 +1,7 @@
 !
 !! rdrnxoh.f90
 !!
-!!    Copyright (C) 2022 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,14 +9,14 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
 !! Contributor: Maorong Ge, Jianghui Geng, Jihang Lin
-!! 
+!!
 !!
 !!
 !! purpose  : read header of a RINEX o-file
@@ -31,14 +31,27 @@ subroutine rdrnxoh(lfn, HD, ierr)
   include '../header/const.h'
   include '../header/rnxobs.h'
 
-  integer*4 lfn, ierr
-  type(rnxhdr) HD
+  integer*4     lfn, ierr
+  type(rnxhdr)  HD
+! local
+  integer*4     i, ioerr, ii, i0
+  real*8        ver
+  character*80  msg, line, keyword*20
+  character*1   type_sys
+
 !
-!! local
-  integer*4 i, ioerr, ii
-  real*8    ver
-  character*80 msg, line, keyword*20
-  character*1 type_sys
+!! initialize
+  HD%t0  = 0.d0
+  HD%t0s = 0.d0
+  HD%t1  = 0.d0
+  HD%t1s = 0.d0
+  HD%intv = 0.d0
+  HD%x = 0.d0
+  HD%y = 0.d0
+  HD%z = 0.d0
+  HD%h = 0.d0
+  HD%e = 0.d0
+  HD%n = 0.d0
 
   ierr = 0
   do while (.true.)
@@ -46,18 +59,18 @@ subroutine rdrnxoh(lfn, HD, ierr)
     read (lfn, '(a)', end=200) line
     keyword = line(61:80)
 !
-!! end of header.
-    if ((index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 200 .and. HD%ver .lt. 300) &
+!! end of header
+    if ((index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 200 .and.  HD%ver .lt. 300) &
         .or. (len_trim(keyword) .eq. 0 .and. HD%ver .lt. 200) &
-        .or. (index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 300 .and. HD%ver .lt. 400)) return
+        .or. (index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 300 .and.  HD%ver .lt. 400)) return
 !
-!! RINEX  version
+!! RINEX version
     if (index(keyword, 'RINEX VERSION') .ne. 0) then
       read (line, '(f10.2)', iostat=ioerr) ver
       HD%ver = int(ver*100)
       if (ioerr .ne. 0) msg = 'read RINEX VERSION error.'
-      if (HD%ver .lt. 100 .or. HD%ver .ge. 400) &
-        write (msg, '(a,i3)') 'invalid RINEX VERSION ', HD%ver
+      if (HD%ver .lt. 100 .or. HD%ver .ge. 420) &
+        write (msg, '(a,f4.2)') 'invalid RINEX VERSION ', HD%ver/100
 !
 !! site name
     else if (index(keyword, 'MARKER NAME') .ne. 0) then
@@ -98,73 +111,29 @@ subroutine rdrnxoh(lfn, HD, ierr)
         read (lfn, '(6x,9(4x,a2))', iostat=ioerr) (HD%obstyp(9*ii + i), i=1, min(HD%nobstyp - 9*ii, 9))
         if (ioerr .ne. 0) msg = 'read TYPES OF OBSERV error'
         ii = ii + 1
-      enddo
+      end do
 !
 !! type of obwrvations (3.03)
     else if (index(keyword, 'OBS TYPES') .ne. 0) then
-      if (line(1:1) .eq. " ") cycle
-      read (line(1:1), *) type_sys
-      if(type_sys == 'G') then
-        read (line, '(3x,i3,13(1x,a3))', iostat=ioerr) HD%nobstyp3_G, &
-          (HD%obstyp3_G(i), i=1, min(HD%nobstyp3_G, 13))
-        ii = 1
-        do while (HD%nobstyp3_G .gt. 13*ii)
-          read (lfn, '(6x,13(1x,a3))', iostat=ioerr, end=200) &
-            (HD%obstyp3_G(13*ii + i), i=1, min(HD%nobstyp3_G - 13*ii, 13))
-          if (ioerr .ne. 0) msg = 'read TYPES OF OBSERV error'
-          ii = ii + 1
-        enddo
-      elseif(type_sys == 'R') then
-        read (line, '(3x,i3,13(1x,a3))', iostat=ioerr) HD%nobstyp3_R, &
-          (HD%obstyp3_R(i), i=1, min(HD%nobstyp3_R, 13))
-        ii = 1
-        do while (HD%nobstyp3_R .gt. 13*ii)
-          read (lfn, '(6x,13(1x,a3))', iostat=ioerr, end=200) &
-            (HD%obstyp3_R(13*ii + i), i=1, min(HD%nobstyp3_R - 13*ii, 13))
-          if (ioerr .ne. 0) msg = 'read TYPES OF OBSERV error'
-          ii = ii + 1
-        enddo
-      elseif(type_sys == 'E') then
-        read (line, '(3x,i3,13(1x,a3))', iostat=ioerr) HD%nobstyp3_E, &
-          (HD%obstyp3_E(i), i=1, min(HD%nobstyp3_E, 13))
-        ii = 1
-        do while (HD%nobstyp3_E .gt. 13*ii)
-          read (lfn, '(6x,13(1x,a3))', iostat=ioerr, end=200) &
-            (HD%obstyp3_E(13*ii + i), i=1, min(HD%nobstyp3_E - 13*ii, 13))
-          if (ioerr .ne. 0) msg = 'read TYPES OF OBSERV error'
-          ii = ii + 1
-        enddo
-      elseif(type_sys == 'C') then
-        read (line, '(3x,i3,13(1x,a3))', iostat=ioerr) HD%nobstyp3_C, &
-          (HD%obstyp3_C(i), i=1, min(HD%nobstyp3_C, 13))
-        ii = 1
-        do while (HD%nobstyp3_C .gt. 13*ii)
-          read (lfn, '(6x,13(1x,a3))', iostat=ioerr, end=200) &
-            (HD%obstyp3_C(13*ii + i), i=1, min(HD%nobstyp3_C - 13*ii, 13))
-          if (ioerr .ne. 0) msg = 'read TYPES OF OBSERV error'
-          ii = ii + 1
-        enddo
-      elseif(type_sys == 'J') then
-        read (line, '(3x,i3,13(1x,a3))', iostat=ioerr) HD%nobstyp3_J, &
-          (HD%obstyp3_J(i), i=1, min(HD%nobstyp3_J, 13))
-        ii = 1
-        do while (HD%nobstyp3_J .gt. 13*ii)
-          read (lfn, '(6x,13(1x,a3))', iostat=ioerr, end=200) &
-            (HD%obstyp3_J(13*ii + i), i=1, min(HD%nobstyp3_J - 13*ii, 13))
-          if (ioerr .ne. 0) msg = 'read TYPES OF OBSERV error'
-          ii = ii + 1
-        enddo
-      else
-        cycle
-      endif
-      !
-      !! whether cc2nc has already been applied
+      i0 = index(GNSS_PRIO, line(1:1))
+      if (i0 .eq. 0) cycle
+      read (line, '(3x,i3,13(1x,a3))', iostat=ioerr) HD%nobstyp3_sys(i0), &
+        (HD%cobstyp3_sys(i, i0), i=1, min(HD%nobstyp3_sys(i0), 13))
+      ii = 1
+      do while (HD%nobstyp3_sys(i0) .gt. 13*ii)
+        read (lfn, '(6x,13(1x,a3))', iostat=ioerr, end=200) &
+          (HD%cobstyp3_sys(13*ii + i, i0), i=1, min(HD%nobstyp3_sys(i0) - 13*ii, 13))
+        if (ioerr .ne. 0) msg = 'read TYPES OF OBSERV error'
+        ii = ii + 1
+      end do
+!
+!! whether cc2nc has already been applied
     else if (index(keyword, 'COMMENT') .ne. 0) then
       if (index(line, 'C1 forced to P1') .ne. 0) then
         HD%lc1p1 = .true.
       else if (index(line, 'C2 forced to P2') .ne. 0) then
         HD%lc2p2 = .true.
-      endif
+      end if
 !
 !! interval
     else if (index(keyword, 'INTERVAL') .ne. 0) then
@@ -180,9 +149,9 @@ subroutine rdrnxoh(lfn, HD, ierr)
     else if (index(keyword, 'TIME OF LAST OBS') .ne. 0) then
       read (line, '(5i6,f12.6)', iostat=ioerr) (HD%t1(i), i=1, 5), HD%t1s
       if (ioerr .ne. 0) msg = ' read TIME OF LAST OBS error'
-    endif
+    end if
     if (len_trim(msg) .ne. 0) goto 100
-  enddo
+  end do
 !
 !! error
 100 continue
@@ -195,4 +164,4 @@ subroutine rdrnxoh(lfn, HD, ierr)
 200 continue
   ierr = 2
   return
-end
+end subroutine

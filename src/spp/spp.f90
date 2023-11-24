@@ -22,17 +22,18 @@ integer*4, intent(in) :: argcIn
 character(*), intent(in) :: argvIn(argcIn)  !argvIn(:)
 type(prcopt_t) prcopt
 type(solopt_t) solopt
-type(gtime_t) ts, te, tc, epoch2time  ! current time
-real*8 :: tint, es(6), ee(6), timediff
+type(gtime_t) ts, te, tc, epoch2time, timeadd  ! current time
+real*8 :: tint, es(6), ee(6), et(6), timediff
 integer*4 :: i, n, ret
 integer*4 :: irnxo, irnxn
 integer*4 :: nrnxo, nrnxn
+integer*4 :: trnxo, trnxn
 character(1024) :: infile(MAXFILE),outfile, buff(6), flntmp, flntmp2
 character(1024) :: rnxobslist(flnumlim),rnxnavlist(flnumlim), obsdir, navdir
-integer*4 argc, info, nsize, getrnxtyp, postpos, flexist  ! flnumlim
+integer*4 argc, info, nsize, getrnxtyp, getrnxmjd, postpos, flexist  ! flnumlim
 character(1024), pointer :: argv(:)
 logical*1 :: isexceed, isnext, IsDayRight, IsTimeRight
-external :: epoch2time, getrnxtyp, postpos, flexist, timediff, IsDayRight, IsTimeRight
+external :: epoch2time, getrnxtyp, getrnxmjd, postpos, flexist, timediff, timeadd, IsDayRight, IsTimeRight
 integer*4 :: mjd_s, ymd2mjd
 real*8 :: sod
 call InitGlobal()
@@ -69,7 +70,6 @@ do while(i<=argc)
         mjd_s=ymd2mjd(int(es(1:3)))
         if(mjd_s<=51666) prcopt%lsa=.true.
         read(buff(4:6),*,iostat=info) es(4),es(5),es(6); i=i+2
-        if(.not.IsDayRight (int(es(1)),int(es(2)),int(es(3)))) call exit(3)
         if(.not.IsTimeRight(int(es(4)),int(es(5)),es(6))) call exit(3)
         ts=epoch2time(es)
     elseif(argv(i)=='-te'.and.(i+2)<=argc)then
@@ -84,8 +84,6 @@ do while(i<=argc)
         read(argv(i+1),*,iostat=info) tint; i=i+1
     elseif(argv(i)=='-k'.and.(i+1)<=argc)then
         i=i+2; cycle
-!   elseif(argv(i)=='-s')then
-!       solopt%issingle=1
     elseif(argv(i)=='-trop'.and.(i+1)<=argc)then
         if(argv(i+1)=='non')  prcopt%tropopt=0
         if(argv(i+1)=='saas') prcopt%tropopt=1
@@ -110,8 +108,16 @@ endif
 do i=1,2
     call getfname(infile(i),flntmp)
     info=getrnxtyp(flntmp)
-    if(info==1 .or. info==3) rnxnavlist(1)=infile(i)  ! assuming the time is consistent
-    if(info==2 .or. info==4) rnxobslist(1)=infile(i)
+    if(mod(info,2)==1 .and. info>=1 .and. info<=8)then
+        trnxn=info
+        call getfdir(infile(i),navdir)
+        rnxnavlist(1)=flntmp  ! assuming the time is consistent
+    endif
+    if(mod(info,2)==0 .and. info>=1 .and. info<=8)then
+        trnxo=info
+        call getfdir(infile(i),obsdir)
+        rnxobslist(1)=flntmp
+    endif
 enddo
 
 isnext=.true.
@@ -121,68 +127,86 @@ if (.not. isnext .or. (rnxobslist(1) .eq. "" .and. rnxnavlist(1) .eq. "")) then
 else
     ! get rnx_obs_list
     if (rnxobslist(1) .ne. "") then
-        nrnxo = 1
-        call getfdir(rnxobslist(1),obsdir)
-        call getfname(rnxobslist(1),flntmp)
+        nrnxo=1
+        flntmp=rnxobslist(1)
         do i=1,flnumlim-1
             call getrnx_nname(flntmp,flntmp2,i)
             if(flexist(trim(obsdir)//flntmp2)==1)then
-                rnxobslist(i+1)=trim(obsdir)//flntmp2
-                nrnxo = nrnxo + 1
+                rnxobslist(i+1)=flntmp2
+                nrnxo=nrnxo+1
             else
                 exit
             endif
         enddo
         if (rnxnavlist(1) .eq. "") then
-            nrnxn = 1
-            if (rnxobslist(1) .eq. infile(1)) rnxnavlist(1) = infile(2)
-            if (rnxobslist(1) .eq. infile(2)) rnxnavlist(1) = infile(1)
+            nrnxn=1
+            call getfname(infile(1),flntmp)
+            call getfname(infile(2),flntmp2)
+            if (rnxobslist(1)==flntmp) then
+                rnxnavlist(1)=flntmp2
+                if (navdir .eq. "") call getfdir(infile(2),navdir)
+            else if (rnxobslist(1)==flntmp2) then
+                rnxnavlist(1)=flntmp
+                if (navdir .eq. "") call getfdir(infile(1),navdir)
+            endif
         endif
     endif
     ! get rnx_nav_list
     if (rnxnavlist(1) .ne. "") then
-        nrnxn = 1
-        call getfdir(rnxnavlist(1),navdir)
-        call getfname(rnxnavlist(1),flntmp)
+        nrnxn=1
+        flntmp=rnxnavlist(1)
         do i=1,flnumlim-1
             call getrnx_nname(flntmp,flntmp2,i)
             if(flexist(trim(navdir)//flntmp2)==1)then
-                rnxnavlist(i+1)=trim(navdir)//flntmp2
-                nrnxn = nrnxn + 1
+                rnxnavlist(i+1)=flntmp2
+                nrnxn=nrnxn+1
             else
                 exit
             endif
         enddo
         if (rnxobslist(1) .eq. "") then
-            nrnxo = 1
-            if (rnxnavlist(1) .eq. infile(1)) rnxobslist(1) = infile(2)
-            if (rnxnavlist(1) .eq. infile(2)) rnxobslist(1) = infile(1)
+            call getfname(infile(1),flntmp)
+            call getfname(infile(2),flntmp2)
+            if (rnxnavlist(1)==flntmp) then
+                rnxobslist(1)=flntmp2
+                if (obsdir .eq. "") call getfdir(infile(2),obsdir)
+            else if (rnxnavlist(1)==flntmp2) then
+                rnxobslist(1)=flntmp
+                if (obsdir .eq. "") call getfdir(infile(1),obsdir)
+            endif
         endif
     endif
     ! cycle calculation
-    irnxo = 0
-    irnxn = 0
+    irnxo = 1
+    irnxn = 1
     do i=1,flnumlim
-        ! compare time
         isexceed=.false.; tc=gtime_t(0,0.d0)
         if(solindex_>0) tc=allsol_(solindex_)%time
         if(timediff(te,gtime_t(0,0.d0))>0.0 .and. dabs(timediff(tc,te))<=60.0) isexceed=.true.
-        if (i .gt. nrnxo .and. i .gt. nrnxn) isexceed=.true.
-        if (nrnxo .gt. 1) then
-            irnxo = irnxo + 1
-        else
-            irnxo = 1
-        endif
-        if (nrnxn .gt. 1) then
-            irnxn = irnxn + 1
-        else
-            irnxn = 1
-        endif
-        infile(1)=rnxobslist(irnxo)
-        infile(2)=rnxnavlist(irnxn)
-        if(infile(1) .eq. "" .or. infile(2) .eq. "" .or. isexceed) exit
+        infile(1)=trim(obsdir)//rnxobslist(irnxo)
+        infile(2)=trim(navdir)//rnxnavlist(irnxn)
+        if(i>nrnxo .and. i>nrnxn) isexceed=.true.
+        if(infile(1)=="" .or. infile(2)=="" .or. isexceed) exit
+        ! avoid repeat records
+!       if(timediff(tc,ts)>0.0) ts = timeadd(tc, tint)
         ret=postpos(ts,te,tint,0.d0,prcopt,solopt,infile,n,outfile,'','')  ! 0-error, 1-right
         if(ret==0) exit
+        if ((trnxo-1)/4==(trnxn-1)/4) then
+            irnxo=irnxo+1
+            if(irnxo>nrnxo) irnxo=nrnxo
+            irnxn=irnxn+1
+            if(irnxn>nrnxn) irnxn=nrnxn
+        elseif (trnxo>4 .and. trnxn<5) then
+            irnxo=irnxo+1
+            if(irnxo>nrnxo) irnxo=nrnxo
+            irnxn=irnxn+getrnxmjd(rnxobslist(irnxo))-getrnxmjd(rnxnavlist(irnxn))
+            if(irnxn>nrnxn) irnxn=nrnxn
+        elseif (trnxo<5 .and. trnxn>4) then
+            irnxn=irnxn+1
+            if(irnxn>nrnxn) irnxn=nrnxn
+            irnxo=irnxo+getrnxmjd(rnxnavlist(irnxn))-getrnxmjd(rnxobslist(irnxo))
+            if(irnxo>nrnxo) irnxo=nrnxo
+        endif
     enddo
     ! print the final result
     call printresult(solopt,ret)

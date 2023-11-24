@@ -1,7 +1,7 @@
 !
 !! read_satclk.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,14 +9,14 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
 !! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
-!! 
+!!
 !!
 !!
 !! purpose   : read and interpolate satellite clock for rinex clock files
@@ -41,7 +41,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
   character*(*) clkfil
 !
 !! local
-  logical*1 lfirst
+  logical*1 lopened
   integer*4 i, j, k, lfn, nprn(2), ierr
   character*3 ii
   character*3 prn(maxsat, 2)
@@ -54,40 +54,49 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
   integer*4 get_valid_unit, modified_julday, pointer_string
   real*8 timdif
 
-  data lfirst/.true./
-  save lfirst, lfn, jdf, sodf, nprn, prn, a0, a1, a2, dintv
-  
+  save lfn, jdf, sodf, nprn, prn, a0, a1, a2, dintv
+
 !
 !! first enter and open clock file
   iflag = 0
-  if (lfirst) then
-    lfirst = .false.
+  inquire (file=clkfil, opened=lopened)
+  if (.not. lopened) then
     lfn = get_valid_unit(10)
     open (lfn, file=clkfil, iostat=ierr)
     if (ierr .ne. 0) then
       write (*, '(2a)') '***ERROR(read_satclk) : open file ', trim(clkfil)
       call exit(1)
-    endif
+    end if
     dintv = 30.d0
+    jdf = 0
+    sodf = 0.d0
+    nprn = 0
+    prn = ''
+    a0 = 0.d0
+    a1 = 0.d0
+    a2 = 0.d0
     line = ' '
     do while (index(line, 'END OF HEADER') .eq. 0)
       read (lfn, '(a)', end=200) line
       if (index(line, 'INTERVAL') .ne. 0) read (line, *) dintv
-    enddo
+    end do
 !
 !! read two epoch clocks
     k = 1
-    jdf = 0
-    nprn = 0
     do while (k .le. 2)
       line = ' '
       do while (line(1:3) .ne. 'AS ')
         read (lfn, '(a)', end=200, err=100) line
-      enddo
-      do while (line(1:3) .eq. 'AS ')
+      end do
+      do while (line(1:1) .eq. 'A')
+!
+!! in case of interspearsed AS and AR records
+        do while (line(1:3) .ne. 'AS ')
+          read (lfn, '(a)', end=200, err=100) line
+        end do
         c = 0.d0
         read (line(4:), *, iostat=ierr) ii, iy, imon, id, ih, im, sec, j, c(1), c(2)
-        if (isnan(c(1)) .or. isnan(c(2))) goto 202
+        if (isnan(c(1)) .or. isnan(c(2))) goto 201
 !
 !! check time tag
         call yr2year(iy)
@@ -98,8 +107,8 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
           sodf(k) = sodx
         else if (timdif(jdx, sodx, jdf(k), sodf(k)) .gt. MAXWND) then
           backspace lfn
-          goto 202
-        endif
+          goto 201
+        end if
 !
 !! read continuing lines
         if (j .eq. 4) then
@@ -108,7 +117,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
         else if (j .eq. 6) then
           read (lfn, '(a)', end=200, err=100) line
           read (line, *, iostat=ierr) c(3), c(4), c(5), c(6)
-        endif
+        end if
 !
 !! set prn and clocks
         nprn(k) = nprn(k) + 1
@@ -117,21 +126,27 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
         a1(k, nprn(k)) = c(3)
         a2(k, nprn(k)) = c(5)
         read (lfn, '(a)', end=200, err=100) line
-      enddo
-202   k = k + 1
-    enddo
+      end do
+201   k = k + 1
+    end do
     dintv = timdif(jdf(2), sodf(2), jdf(1), sodf(1))
     write (*, '(a,f7.1)') '%%%MESSAGE(read_satclk): satellite clock interval ', dintv
-  endif
+  end if
 !
 !! check time tag
-10 dt1 = timdif(jd, sod, jdf(1), sodf(1))
+10  continue
+  if (jdf(1) .ne. jd .or. &
+     (jdf(1) .eq. jdf(2) .and. sodf(1) .eq. sodf(2))) then
+    goto 202
+  end if
+  dt1 = timdif(jd, sod, jdf(1), sodf(1))
   dt2 = timdif(jd, sod, jdf(2), sodf(2))
   if (dt1 .lt. -MAXWND) then
     write (*, '(a)') '***ERROR(read_satclk) : read_satclk t < trefclk '
     iflag = 1
     return
   else if (dt2 .gt. MAXWND) then
+202 continue
 !
 !! transfer clocks
     nprn(1) = nprn(2)
@@ -140,7 +155,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
       a0(1, i) = a0(2, i)
       a1(1, i) = a1(2, i)
       a2(1, i) = a2(2, i)
-    enddo
+    end do
     jdf(1) = jdf(2)
     sodf(1) = sodf(2)
     jdf(2) = 0
@@ -150,8 +165,13 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
     line = ' '
     do while (line(1:3) .ne. 'AS ')
       read (lfn, '(a)', end=200, err=100) line
-    enddo
-    do while (line(1:3) .eq. 'AS ')
+    end do
+    do while (line(1:1) .eq. 'A')
+!
+!! in case of interspearsed AS and AR records
+      do while (line(1:3) .ne. 'AS ')
+        read (lfn, '(a)', end=200, err=100) line
+      end do
       c = 0.d0
       read (line(4:), *, iostat=ierr) ii, iy, imon, id, ih, im, sec, j, c(1), c(2)
       if (isnan(c(1)) .or. isnan(c(2))) cycle
@@ -166,7 +186,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
       else if (timdif(jdx, sodx, jdf(2), sodf(2)) .gt. MAXWND) then
         backspace lfn
         exit
-      endif
+      end if
 !
 !! read continuing lines
       if (j .eq. 4) then
@@ -175,7 +195,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
       else if (j .eq. 6) then
         read (lfn, '(a)', end=200, err=100) line
         read (line, *, iostat=ierr) c(3), c(4), c(5), c(6)
-      endif
+      end if
 !
 !! set prn and clocks
       nprn(2) = nprn(2) + 1
@@ -185,7 +205,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
       a2(2, nprn(2)) = c(5)
       read (lfn, '(a)', iostat=ierr) line
       if (ierr .ne. 0) exit
-    enddo
+    end do
     goto 10
   else
 !
@@ -201,7 +221,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
         x0 = a0(1, j)
         x1 = a1(1, j)
         return
-      endif
+      end if
     else
       jdc = jdf(2)
       sodc = sodf(2)
@@ -209,8 +229,8 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
         x0 = a0(2, k)
         x1 = a1(2, k)
         return
-      endif
-    endif
+      end if
+    end if
 !
 !! interpolation
     if (j .ne. 0 .and. k .ne. 0) then
@@ -219,8 +239,8 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
       x1 = 0.d0
     else
       iflag = 1
-    endif
-  endif
+    end if
+  end if
 
   return
 100 write (*, '(2a)') '###WARNING(read_satclk) : read file ', trim(clkfil)
@@ -228,4 +248,4 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
   return
 200 write (*, '(2a)') '***ERROR(read_satclk) : end of file ', trim(clkfil)
   call exit(1)
-end
+end subroutine

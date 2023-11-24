@@ -1,7 +1,7 @@
 !
 !! read_obsrhd.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,13 +9,13 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin
 !! 
 !!
 !!
@@ -30,6 +30,12 @@ subroutine read_obsrhd(jd, sod, nprn, prn, OB)
   include '../header/const.h'
   include '../header/rnxobs.h'
 
+!
+!! common
+  integer*4 idxfrq(MAXSYS, 2)
+  common    idxfrq
+!
+!! parameter
   integer*4 jd, nprn
   character*3 prn(1:*)
   real*8 sod
@@ -69,6 +75,19 @@ subroutine read_obsrhd(jd, sod, nprn, prn, OB)
         read (line, *, err=100) OB%ava_obs, OB%rem_obs
       else if (index(line, 'RES TIME BEG/LEN') .ne. 0) then
         read (line, *, err=100) iy, imon, id, ih, im, sec, seslen
+      else if (index(line, 'SYS / FREQUENCY BAND') .ne. 0) then
+        do i = 1, MAXSYS
+          if (line(1:3) .eq. GNSS_NAME_LEN3(i)) then
+            if (line(11:13) .ne. FREQ_NAME_SYS(idxfrq(i, 1), i) .or. &
+                line(16:18) .ne. FREQ_NAME_SYS(idxfrq(i, 2), i)) then
+              write (*,'(a)') '***ERROR(redig): inconsistent frequency band'
+              write (*,'(a,a3,7x,2(a3,2x))') 'resfil: ', GNSS_NAME_LEN3(i), &
+                FREQ_NAME_SYS(idxfrq(i, 1), i), FREQ_NAME_SYS(idxfrq(i, 2), i)
+              write (*,'(a,a3,7x,2(a3,2x))') 'logfil: ', line(1:3), line(11:13), line(16:18)
+              call exit(1)
+            endif
+          endif
+        enddo
       endif
     enddo
     if (dintv .gt. sod) then

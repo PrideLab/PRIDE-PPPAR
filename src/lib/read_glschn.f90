@@ -1,7 +1,7 @@
 !
 !! read_glschn.f90
 !!
-!!    Copyright (C) 2022 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,11 +9,11 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
 !! Contributor: Jihang Lin
 !! 
@@ -73,13 +73,13 @@ subroutine read_glschn(mjd, sod, glschn)
           write (*, '(2a)') '###WARNING(read_glschn): invalid svn ', svn
           cycle
         endif
-        mjd0 = modified_julday(doy0, 0, year0) + sod0/86400.d0
+        mjd0 = modified_julday(doy0, 0, year0) + sod0/864.d2
         if ((year1+doy1) .eq. 0) then
           mjd1 = 99999
         else
-          mjd1 = modified_julday(doy1, 0, year1) + sod1/86400.d0
+          mjd1 = modified_julday(doy1, 0, year1) + sod1/864.d2
         endif
-        if (mjd+sod/86400.d0 .lt. mjd0 .or. mjd+sod/86400.d0 .gt. mjd1) cycle
+        if (mjd+sod/864.d2 .lt. mjd0 .or. mjd+sod/864.d2 .gt. mjd1) cycle
         glschn(isat) = chn
       enddo
     endif
@@ -100,7 +100,7 @@ subroutine read_glschn(mjd, sod, glschn)
   do isat = 1, MAXSAT_R
     if (abs(glschn(isat)) .gt. 50) then
       write (*, '(a,i3)') '###WARNINF(read_glschn): invalid GLONASS channel number ', glschn(isat)
-      glschn(isat) = 999
+      glschn(isat) = 99999
     endif
   enddo
   close(lfnchn)
@@ -112,4 +112,4 @@ subroutine read_glschn(mjd, sod, glschn)
 
 300 continue
   write (*, '(a)') '***ERROR(read_glschn): no sat_parameters'
-end
+end subroutine

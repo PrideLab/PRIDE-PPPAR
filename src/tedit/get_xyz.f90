@@ -1,7 +1,7 @@
 !
 !! get_xyz.f90
 !!
-!!    Copyright (C) 2022 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,11 +9,11 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
 !! Contributor: Jianghui Geng, Songfeng Yang, Jihang Lin
 !! 
@@ -24,23 +24,25 @@ subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x
   include '../header/const.h'
   include '../header/station.h'
 
-  logical*1 use_brdeph
-  integer*4 tstart(5), nepo
-  real*8 sstart, interval, session_length, x1(nepo), x2(nepo), x3(nepo), x1_tmp,x2_tmp,x3_tmp
-
+! parameter
+  logical*1     use_brdeph
+  integer*4     tstart(5), nepo
+  real*8        sstart, interval, session_length
+  real*8        x1(nepo), x2(nepo), x3(nepo)
 ! local
   character*256 arg(50, 20), arg0, chr*1
-  integer*4 i0, i, j, ipar, nval(20), npar, narg, ioerr
-  logical*1 display_help
-  character*1 mode
-
-! function called
-  character*1 lower_string
-  integer*4 get_valid_unit, modified_julday
-  real*8 timdif
+  integer*4     i0, i, j, ipar, nval(20), npar, narg, ioerr
+  integer*4     jd, jd0, jd1, iepo
+  real*8        sod, sod0, sod1
+  real*8        x1_tmp, x2_tmp, x3_tmp
+  logical*1     display_help
+  character*1   mode
   type(station) SITE
-  integer*4 jd, jd0, jd1, iepo
-  real*8 sod, sod0, sod1
+! function called
+  character*1   lower_string
+  integer*4     get_valid_unit
+  integer*4     modified_julday
+  real*8        timdif
 
   x1_tmp = 0.d0
   x2_tmp = 0.d0
@@ -64,7 +66,7 @@ subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x
     narg = narg + 1
   else
     i0 = 1
-  endif
+  end if
   i = i0
   do while (i .le. narg .and. .not. display_help)
     call getarg(i, arg0)
@@ -79,11 +81,11 @@ subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x
         nval(npar) = 1
       else
         nval(npar) = nval(npar) + 1
-      endif
+      end if
       arg(npar, nval(npar)) = arg0
-    endif
+    end if
     i = i + 1
-  enddo
+  end do
 
 !! read arguments
   ipar = 1
@@ -107,10 +109,10 @@ subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x
             if (x1_tmp*x2_tmp*x3_tmp .eq. 0.d0) then
               write(*,'(a)') '***ERROR(get_control_parameter): no position when using brdeph '
               call exit(1)
-            endif
-          endif
+            end if
+          end if
           display_help = ioerr .ne. 0
-        elseif (nval(ipar) .eq. 2) then
+        else if (nval(ipar) .eq. 2) then
           mode = 'K'
           jd0 = modified_julday(tstart(3), tstart(2), tstart(1))
           sod0 = tstart(4)*3600.d0 + tstart(5)*60.d0 + sstart
@@ -118,20 +120,18 @@ subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x
           jd = jd0
           sod = sod0
           iepo = 0
-          SITE%ikin = 0
           SITE%kinfil = arg(ipar, 2)
           do while (timdif(jd, sod, jd1, sod1) .lt. MAXWND)
             iepo = iepo + 1
-            call read_kinpos(SITE, jd, sod, x1(iepo), x2(iepo), x3(iepo))
+            call read_kinpos(SITE, jd+sod/864.d2, jd+sod/864.d2, x1(iepo), x2(iepo), x3(iepo))
             call timinc(jd, sod, interval, jd, sod)
-          enddo
-          close (SITE%ikin)
-        endif
-      endif
-    endif
+          end do
+        end if
+      end if
+    end if
     ipar = ipar + 1
-  enddo
+  end do
 
 100 continue
   return
-end
+end subroutine

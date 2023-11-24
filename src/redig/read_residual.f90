@@ -1,7 +1,7 @@
 !
 !! read_residual.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,13 +9,13 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jing Zeng
 !! 
 !!
 !!
@@ -27,7 +27,7 @@
 !!            flag -- flag info
 !!            trsi -- time tag for each epoch
 !
-subroutine read_residual(nepo, resi, flag, trsi, RCF)
+subroutine read_residual(nepo, resi, resp, flag, trsi, RCF)
   implicit none
   include '../header/const.h'
   include 'rescfg.h'
@@ -36,7 +36,7 @@ subroutine read_residual(nepo, resi, flag, trsi, RCF)
   integer*4 nepo
   type(rescfg) RCF
   integer*4 flag(nepo, RCF%nprn)
-  real*8 resi(nepo, RCF%nprn)
+  real*8 resi(nepo, RCF%nprn), resp(nepo, RCF%nprn)
   character*27 trsi(nepo)
 !
 !! local
@@ -88,12 +88,13 @@ subroutine read_residual(nepo, resi, flag, trsi, RCF)
       endif
       read (line, '(a3)', iostat=ierr) iprn
       isat=pointer_string(RCF%nprn,RCF%prn,iprn)
-      read (line, '(3x,f10.3,42x,i3,f8.3,f9.3)', iostat=ierr) phs, flag(iepo, isat), elev, azim
+      read (line, '(3x,2f10.4,32x,i3,f8.3,f9.3)', iostat=ierr) phs, rag, flag(iepo, isat), elev, azim
       if (ierr .ne. 0) then
         flag(iepo, isat) = 4
         phs = 0.d0
       endif
-      if(index(RCF%obstyp,'LC').ne.0) resi(iepo,isat)=phs*1.d3
+      if(index(RCF%obstyp, 'LC') .ne. 0) resi(iepo,isat)=phs*1.d3
+      if(index(RCF%obstyp, 'PC') .ne. 0 .and. RCF%pcedit) resp(iepo, isat)=rag
     enddo
   enddo
   close (RCF%lfnres)

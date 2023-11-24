@@ -5,9 +5,9 @@
 !! DELBAD -4- removed because of large residual. 
 !! DELSHT -5- removed as short piece
 !! DELLOW -6- removed due to low elevations 
-!! NODATA -9- no data
+!! NODATA -10- no data
 integer*4, parameter :: GOOD=0, OLDAMB=1, NEWAMB=2
 integer*4, parameter :: NEWBAD=3, DELBAD=4
 integer*4, parameter :: DELSHT=5, DELLOW=6
-integer*4, parameter :: DELORB=7, DELCLK=8
-integer*4, parameter :: NODATA=9
+integer*4, parameter :: DELORB=7, DELCLK=8, DELBIA=9
+integer*4, parameter :: NODATA=10

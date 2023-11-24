@@ -1,7 +1,7 @@
 !
 !! troposphere_map.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,13 +9,13 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jing Zeng
 !! 
 !!
 !!
@@ -77,6 +77,9 @@ subroutine troposphere_map(jd, sod, elev, SITE, dmap, wmap)
   else if (SITE%map(1:3) .eq. 'CFA') then      ! Chao mapping function
     dmap = cfa(SITE%p0, SITE%t0, SITE%hr0, 'R', SITE%geod(1), SITE%geod(3), elev)
     wmap = dmap
+  else if (SITE%map(1:3) .eq. 'NON') then
+    dmap = 0.d0
+    wmap = 0.d0
   else
     write (*, '(2a)') '***ERROR(troposphere_map): unknow mapping function ', SITE%map(1:3)
     call exit(1)

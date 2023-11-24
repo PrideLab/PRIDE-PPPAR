@@ -1,7 +1,7 @@
 !
 !! check_for_jump.f90
 !!
-!!    Copyright (C) 2021 by Wuhan University
+!!    Copyright (C) 2023 by Wuhan University
 !!
 !!    This program belongs to PRIDE PPP-AR which is an open source software:
 !!    you can redistribute it and/or modify it under the terms of the GNU
@@ -9,13 +9,13 @@
 !!
 !!    This program is distributed in the hope that it will be useful,
 !!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 !!    GNU General Public License (version 3) for more details.
 !!
 !!    You should have received a copy of the GNU General Public License
-!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jing Zeng
 !! 
 !!
 !!
@@ -47,7 +47,7 @@ subroutine check_for_jump(string, lfnout, nepo, ti, li, flg, ndgr, niter, bias0,
   character*(*) string
 !
 !! local
-  integer*4 i, k, iter, nflg, iepo0, idgr
+  integer*4 i, k, iter, nflg, iepo0, idgr, flgtmp(nepo)
   real*8 coeff(ndgr*2), dx, ft, prerms
   logical*1 again, lwrite
 
@@ -63,6 +63,9 @@ subroutine check_for_jump(string, lfnout, nepo, ti, li, flg, ndgr, niter, bias0,
   again = .true.
   a0 = 0.d0
   do while (again)
+    do k = 1, nepo
+      flgtmp(k) = flg(k)
+    enddo
 ! polynomial fit
     call polydf(ti, li, flg, nepo, idgr, coeff, v, rms, ipt, dx, ft, ierr)
     if (ierr .ne. 0) then
@@ -74,7 +77,7 @@ subroutine check_for_jump(string, lfnout, nepo, ti, li, flg, ndgr, niter, bias0,
     nflg = 0
     do k = 1, nepo
       if (ipt(k) .ne. 0) then
-        if (dabs(v(k)) .gt. max(3*rms, bias0)) then
+        if (dabs(v(k)) .gt. max(3*rms, bias0)) then  ! flag data according to RMS
           if (flg(k) .eq. 0) then
             if (lwrite) write (lfnout, '(a,i6,f15.3,4f10.3)') string//' flagged(b):', k + iepo0, ti(k), v(k), bias0, rms
             nflg = nflg + 1
