@@ -2,22 +2,22 @@
 
 ## PRIDE-PPPAR ver. 3.0 (last updated on 2023-11-24)
 
-PRIDE PPP-AR ver. 3.0 originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
+PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
-We make this package open source with the goal of benefiting those professionals in their early career, and also advocate the geodetic and geophysical applications of GNSS PPP-AR. Especially, we hope that this package can contribute to high-precision applications in geosciences such as crustal motion and troposphere sounding studies. The entire open-source project is funded by the National Natural Science Foundation of China (No. 42025401) and is under the auspices of IAG SC 4.4 “GNSS Integrity and Quality Control”.
+We make this package open source with the goal of benefiting those professionals in their early career, and also advocate the geodetic and geophysical applications of GNSS PPP-AR. Especially, we hope that this package can contribute to high-precision applications in geosciences such as crustal motion and troposphere sounding studies. The entire open-source project is funded by the National Natural Science Foundation of China (No. 42025401) and is under the auspices of IAG SC 4.2.
 
 The GNSS products are accessible at <ftp://igs.gnsswhu.cn/pub/whu/phasebias>.
-Latest updates for Support, Training courses and FAQ can be found at <https://pride.whu.edu.cn>.
+Latest updates for Support, Training courses and FAQ can be found at <http://pride.whu.edu.cn>.
 The copyright of this package is protected by GNU General Public License (version 3). 
 
 Relevant publications are
 
-* Geng J, Zhang Q, Li G, Liu J, Liu D (2022). Observable-specific phase biases of Wuhan multi-GNSS experiment analysis center's rapid satellite products. Satellite Navigation, 3(1):1-15. doi:10.1186/s43020-022-00084-0
-* Geng J, Wen Q, Zhang Q, Li G, Zhang K (2022). GNSS observable-specific phase biases for all-frequency PPP ambiguity resolution. Journal of Geodesy, 96(11):1-18. doi:10.1007/s00190-022-01602-3
-* Geng J, Mao S (2021). Massive GNSS network analysis without baselines: Undifferenced ambiguity resolution. Journal of Geophysical Research: Solid Earth. 126(10), e2020JB021558. doi:10.1029/2020JB021558
-* Geng J, Yang S, Guo J (2021). Assessing IGS GPS/Galileo/BDS-2/BDS-3 phase bias products with PRIDE PPP-AR. Satellite Navigation, 2(1):1-15. doi:10.1186/s43020-021-00049-9
-* Geng J, Chen X, Pan Y, Zhao Q (2019). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. Journal of Geodesy, 93(10):2053-2067. doi:10.1007/s00190-019-01301-6
-* Geng J, Chen X, Pan Y, Mao S, Li C, Zhou J, Zhang K (2019). PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. GPS Solutions, 23(91):1-10. doi:10.1007/s10291-019-0888-1
+* Geng J, Zhang Q, Li G, Liu J, Liu D (2022). Observable-specific phase biases of Wuhan multi-GNSS experiment analysis center's rapid satellite products. *Satellite Navigation*, 3(1):1-15. doi:[10.1186/s43020-022-00084-0](https://doi.org/10.1186/s43020-022-00084-0)
+* Geng J, Wen Q, Zhang Q, Li G, Zhang K (2022). GNSS observable-specific phase biases for all-frequency PPP ambiguity resolution. *Journal of Geodesy*, 96(11):1-18. doi:[10.1007/s00190-022-01602-3](https://doi.org/10.1007/s00190-022-01602-3)
+* Geng J, Mao S (2021). Massive GNSS network analysis without baselines: Undifferenced ambiguity resolution. *Journal of Geophysical Research: Solid Earth*. 126(10), e2020JB021558. doi:[10.1029/2020JB021558](https://doi.org/10.1029/2020JB021558)
+* Geng J, Yang S, Guo J (2021). Assessing IGS GPS/Galileo/BDS-2/BDS-3 phase bias products with PRIDE PPP-AR. *Satellite Navigation*, 2(1):1-15. doi:[10.1186/s43020-021-00049-9](https://doi.org/10.1186/s43020-021-00049-9)
+* Geng J, Chen X, Pan Y, Zhao Q (2019). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. *Journal of Geodesy*, 93(10):2053-2067. doi:[10.1007/s00190-019-01301-6](https://doi.org/10.1007/s00190-019-01301-6)
+* Geng J, Chen X, Pan Y, Mao S, Li C, Zhou J, Zhang K (2019). PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. *GPS Solutions*, 23(91):1-10. doi:[10.1007/s10291-019-0888-1](https://doi.org/10.1007/s10291-019-0888-1)
 
 PRIDE PPP-AR ver. 3.0 is available for:
 
@@ -70,7 +70,7 @@ Release of **PRIDE PPP-AR v3.0**
   * `table`: add setting `LEO quaternions` in `config_template` to specify attitude products for LEO satellites
 * Improve capability and long-term consistency of **multi-day processing**
   * Enhance capability of multi-day processing to 108 days
-  * Enable establishing integer-ambiguity constraints across midnights with aligned GNSS products to **mitigate day-boundary discontinuities** in t
+  * Enable establishing integer-ambiguity constraints across midnights with aligned GNSS products to **mitigate day-boundary discontinuities** in the result
   * `table`: add setting `Truncate at midnight` in `config_template` to set whether to truncate ambiguities at the day boundaries
 * Provide more command-line options and models for parameter estimation
   * `pdp3`: add `-r` option to choose `WNO`/`STO` model for receiver clock estimation
