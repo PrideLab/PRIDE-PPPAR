@@ -28,17 +28,18 @@
 !!            lpos  -- .true. for position
 !!            lvel  -- .true. for velocity
 !!            lpartial -- .true. for partial derivatives
+!!            jd_obs -- MJD of the observation epoch
 !!            jd,sod  -- time of the requested point
 !!            x,v,part  -- interpolated position, velocity and partial derivatives
 !!
 !
-subroutine lagrange_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
+subroutine lagrange_interp_orbit(orbfil, lpos, lvel, jd_obs, jd, sod, iprn, x, v)
   implicit none
   include '../header/const.h'
   include '../header/orbit.h'
 
   logical*1 lpos, lvel
-  integer*4 jd
+  integer*4 jd, jd_obs
   character*3 iprn
   real*8 sod, x(1:*), v(1:*)
   character*(*) orbfil
@@ -127,7 +128,7 @@ subroutine lagrange_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
   jepo = nint(timdif(jd + 1, 0.d0, LI%jds, LI%sods)/LI%dintv + 1.d0)
   if (sepo + LI%ndgr .gt. jepo) sepo = jepo - LI%ndgr
   if (sepo .lt. iepo) sepo = iepo
-  if (epo + 1.d-1/LI%dintv .gt. jepo) sepo = jepo
+  if (jd_obs .eq. jd + 1) sepo = jepo
 
   if (sepo .lt. 1) sepo = 1
   if (sepo + LI%ndgr .gt. LI%nrec) sepo = LI%nrec - LI%ndgr

@@ -43,6 +43,7 @@ program tedit
   integer*4     mepo, nepo
   integer*4     ierr
   type(absbia)  bias(MAXSAT, MAXTYP)
+  character*3   prn0(MAXSAT)
 !! broadcast ephemerides
   integer*4     neph
   type(brdeph), pointer :: ephem(:)
@@ -80,6 +81,8 @@ program tedit
   logical*1     istrue
   integer*4     get_valid_unit
   integer*4     modified_julday
+
+  call prn_matbld(prn0)
 
 !
 !! initialize
@@ -175,7 +178,11 @@ program tedit
         ! ********************************************************************** !
         !               remove short piece and mark large gap                    !
         ! ********************************************************************** !
-        call remove_short(keep_end, trunc_dbd, mepo, tti, tmpflg(1, isat), length_short, length_gap, interval, flag_shrt, again)
+        if (prn0(isat)(1:1) .eq. 'R') then
+          call remove_short(keep_end,       'y', mepo, tti, tmpflg(1, isat), length_short, length_gap, interval, flag_shrt, again)
+        else
+          call remove_short(keep_end, trunc_dbd, mepo, tti, tmpflg(1, isat), length_short, length_gap, interval, flag_shrt, again)
+        end if
       end do
     end do
 
@@ -227,8 +234,11 @@ program tedit
       if (nused .ne. 0) then
         again = .true.
         do while (again)
-          call remove_short(keep_end, trunc_dbd, mepo, tti, tmpflg(1, isat), &
-                            length_short, length_gap, interval, flag_shrt, again)
+          if (prn0(isat)(1:1) .eq. 'R') then
+            call remove_short(keep_end,       'y', mepo, tti, tmpflg(1, isat), length_short, length_gap, interval, flag_shrt, again)
+          else
+            call remove_short(keep_end, trunc_dbd, mepo, tti, tmpflg(1, isat), length_short, length_gap, interval, flag_shrt, again)
+          end if
         end do
         if (debug_tb) then
           do iepo = 1, mepo

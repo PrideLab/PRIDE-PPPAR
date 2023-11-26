@@ -170,7 +170,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     local i s t iarg carg time_sec avail_num sys_num sys
     local rnxo_path rnxo_name rinex_dir ctrl_path ctrl_file
     local ymd_s hms_s ymd_e hms_e site mode plen interval freq_cmb AR
-    local avail_sys edt_opt rck_opt ztd_opt htg_opt ion_opt tide_mask lam_opt pco_opt tct_opt vbs_opt
+    local avail_sys edt_opt rck_opt ztd_opt htg_opt ion_opt tide_mask lam_opt pco_opt vbs_opt
     local gnss_mask map_opt rckl rckp ztdl ztdp htgp eloff
 
     local last_arg=${@: -1}
@@ -964,11 +964,6 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     [[ "$pco_opt" == "NO" ]] || pco_opt="YES"
     sedi "/^PCO on wide-lane/s/ = .*/ = $pco_opt/" "$ctrl_file"
 
-    # Truncate at midnight (default as NO)
-    [ -n "$tct_opt" ] || tct_opt=$(get_ctrl "$ctrl_file" "Truncate at midnight" | tr 'a-z' 'A-Z')
-    [[ "$tct_opt" == "Default" ]] && tct_opt="YES"
-    sedi "/^Truncate at midnight/s/ = .*/ = $tct_opt/" "$ctrl_file"
-
     # Verbose output (default as NO)
     [ -n "$vbs_opt" ] || vbs_opt=$(get_ctrl "$ctrl_file" "Verbose output" | tr 'a-z' 'A-Z')
     [[ "$vbs_opt" == "YES" ]] || vbs_opt="NO"
@@ -1438,6 +1433,13 @@ ProcessSingleSession() { # purpose : process data of a single observation sessio
         echo -e "${RED}($time)${NC} ${CYAN}$cmd${NC} execution failed"
         return 1
     fi
+
+    # Truncate at midnight (default as NO)
+    local tct_opt=$(get_ctrl "$ctrl_file" "Truncate at midnight" | tr 'a-z' 'A-Z')
+    if [[ "$tct_opt" == "DEFAULT" ]]; then
+        head -1 "$sp3" | grep -q "289   u+U IGS.. FIT  WHU" && tct_opt="NO" || tct_opt="YES"
+    fi
+    sedi "/^Truncate at midnight/s/ = .*/ = $tct_opt/" "$ctrl_file"
 
     # Process single site
     ProcessSingleSite "$rinexobs" "$rinexnav" "$ctrl_file" "$mjd_s" "$hms_s" "$mjd_e" "$hms_e" "$site" "$AR"

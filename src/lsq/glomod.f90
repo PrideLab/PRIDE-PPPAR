@@ -169,7 +169,7 @@ subroutine glomod(jd, sod, LCF, SITE, OB, SAT, IM)
       call timinc(OB%jd, OB%tsec, -drecclk - OB%delay(isat), jd_send, sod_send)
 !
 !! compute the satellite position and velocity coordinates
-      call lagrange_interp_orbit(LCF%flnorb, .true., .true., jd_send, sod_send, LCF%prn(isat), xsat_j(1, 1), xsat_j(4, 1))
+      call lagrange_interp_orbit(LCF%flnorb, .true., .true., OB%jd, jd_send, sod_send, LCF%prn(isat), xsat_j(1, 1), xsat_j(4, 1))
       if (all(xsat_j(1:6, 1) .eq. 1.d15)) exit
       xsat_j(1:6, 2) = xsat_j(1:6, 1)
 !
