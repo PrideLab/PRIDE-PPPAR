@@ -1993,6 +1993,8 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     local ymd_s=($(ydoy2ymd ${ydoy_s[*]}))
     local doy_s=${ydoy_s[1]}
 
+    local ign_priority_path="$(dirname $(which pdp3))/.ign_priority"
+
     echo -e "$MSGSTA PrepareProducts ..."
 
     if [ "$product_dir" == "Default" ]; then
@@ -2042,12 +2044,17 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 return 1
             fi
             local ydoy=($(mjd2ydoy $mjd))
+            local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+                "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01M_ORB.SP3.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
             )
             for url in ${urls[@]}; do
+                if [[ "$url" =~ igs.ign.fr ]]; then
+                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                fi
                 local cmp=$(basename "$url")
                 local sp3="${cmp/\.[gZ]*/}"
                 CopyOrDownloadProduct "$product_cmn_dir/$sp3"        && break
@@ -2136,11 +2143,16 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 return 1
             fi
             local ydoy=($(mjd2ydoy $mjd))
+            local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+                "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
             )
             for url in ${urls[@]}; do
+                if [[ "$url" =~ igs.ign.fr ]]; then
+                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                fi
                 local cmp=$(basename "$url")
                 local clk="${cmp/\.[gZ]*/}"
                 CopyOrDownloadProduct "$product_cmn_dir/$clk"        && break
@@ -2227,11 +2239,16 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 return 1
             fi
             local ydoy=($(mjd2ydoy $mjd))
+            local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+                "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/COD0R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
             )
             for url in ${urls[@]}; do
+                if [[ "$url" =~ igs.ign.fr ]]; then
+                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                fi
                 local cmp=$(basename "$url")
                 local erp="${cmp/\.[gZ]*/}"
                 CopyOrDownloadProduct "$product_cmn_dir/$erp"        && break
@@ -2318,11 +2335,16 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 return 1
             fi
             local ydoy=($(mjd2ydoy $mjd))
+            local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+                "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
             )
             for url in ${urls[@]}; do
+                if [[ "$url" =~ igs.ign.fr ]]; then
+                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                fi
                 local cmp=$(basename "$url")
                 local att="${cmp/\.[gZ]*/}"
                 CopyOrDownloadProduct "$product_cmn_dir/$att"        && break
@@ -2403,12 +2425,17 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 break
             fi
             local ydoy=($(mjd2ydoy $mjd))
+            local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+                "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ABS.BIA.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
             )
             for url in ${urls[@]}; do
+                if [[ "$url" =~ igs.ign.fr ]]; then
+                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                fi
                 local cmp=$(basename "$url")
                 local fcb="${cmp/\.[gZ]*/}"
                 CopyOrDownloadProduct "$product_cmn_dir/$fcb"        && break

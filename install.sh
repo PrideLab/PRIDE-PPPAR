@@ -95,11 +95,18 @@ else
 fi
 
 chmod 444 $install_dir/config_template
+chmod 755 ./example/*.sh
 
-# test examples
+# Select download sites
+printf "\n"
+read -p $'Would you like to download GNSS products from IGN (\e[31mrecommended for users outside China\e[0m) [Y/N]: ' test
+if [ ${#test} -ge 1 ] && ( [ ${test:0:1} == "y" ] || [ ${test:0:1} == "Y" ] ); then
+    touch $install_dir/.ign_priority
+fi
+
+# Test examples
 printf "\n"
 read -p $'Run tests or not (\e[31mstrongly recommended for the first installation !!!\e[0m) [Y/N]: ' test
-chmod 755 ./example/*.sh
 if [ ${#test} -ge 1 ] && ( [ ${test:0:1} == "y" ] || [ ${test:0:1} == "Y" ] ); then
     cd example
     if [ "$SYS" == "Darwin" ]; then
