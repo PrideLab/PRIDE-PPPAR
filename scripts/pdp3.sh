@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : Nov-24, 2023                                                    ##
+##  DATE   : Dec-08, 2023                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -2062,7 +2062,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             done
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$sp3" ]; then
-                local mjd_t=$(mjday $(date +"%j %Y"))
+                local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
                     local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_01M_ORB.SP3.gz"
                     local cmp=$(basename "$url")
@@ -2083,6 +2083,10 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     custom_pro_att="NONE"
                     local att="$custom_pro_att"
                     sedi "/Quaternions/s/Default/$att/g" "$config"
+                else
+                    [ ${ydoy[0]} -ge 2020 ] && local url="${urls[1]}" || local url="${urls[${#urls[@]}-1]}"
+                    local cmp=$(basename "$url")
+                    local sp3="${cmp/\.[gZ]*/}"
                 fi
             fi
             [ -f "$cmp" ] && gunzip -f "$cmp"
@@ -2160,7 +2164,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             done
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$clk" ]; then
-                local mjd_t=$(mjday $(date +"%j %Y"))
+                local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
                     local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                     local cmp=$(basename "$url")
@@ -2177,6 +2181,10 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     fi
                     CopyOrDownloadProduct "$product_cmn_dir/$clk"
                     [ $? -ne 0 ] && CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"
+                else
+                    [ ${ydoy[0]} -ge 2020 ] && local url="${urls[1]}" || local url="${urls[${#urls[@]}-1]}"
+                    local cmp=$(basename "$url")
+                    local clk="${cmp/\.[gZ]*/}"
                 fi
             fi
             [ -f "$cmp" ] && gunzip -f "$cmp"
@@ -2256,7 +2264,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             done
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$erp" ]; then
-                local mjd_t=$(mjday $(date +"%j %Y"))
+                local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
                     local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                     local cmp=$(basename "$url")
@@ -2273,6 +2281,10 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     fi
                     CopyOrDownloadProduct "$product_cmn_dir/$erp"
                     [ $? -ne 0 ] && CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"
+                else
+                    [ ${ydoy[0]} -ge 2020 ] && local url="${urls[1]}" || local url="${urls[${#urls[@]}-1]}"
+                    local cmp=$(basename "$url")
+                    local erp="${cmp/\.[gZ]*/}"
                 fi
             fi
             [ -f "$cmp" ] && gunzip -f "$cmp"
@@ -2352,6 +2364,9 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             done
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$att" ]; then
+                [ ${ydoy[0]} -ge 2020 ] && local url="${urls[1]}" || local url="${urls[${#urls[@]}-1]}"
+                local cmp=$(basename "$url")
+                local att="${cmp/\.[gZ]*/}"
                 echo -e "$MSGWAR PrepareProducts: failed to download satellite attitude product: $cmp"
                 echo -e "$MSGINF please download from $url to $product_cmn_dir for processing"
                 break
@@ -2443,7 +2458,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             done
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$fcb" ]; then
-                local mjd_t=$(mjday $(date +"%j %Y"))
+                local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
                     local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_05M_ABS.BIA.gz"
                     local cmp=$(basename "$url")
@@ -2460,6 +2475,10 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     fi
                     CopyOrDownloadProduct "$product_cmn_dir/$fcb"
                     [ $? -ne 0 ] && CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"
+                else
+                    [ ${ydoy[0]} -ge 2020 ] && local url="${urls[1]}" || local url="${urls[${#urls[@]}-1]}"
+                    local cmp=$(basename "$url")
+                    local fcb="${cmp/\.[gZ]*/}"
                 fi
             fi
             [ -f "$cmp" ] && gunzip -f "$cmp"

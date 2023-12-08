@@ -86,7 +86,7 @@ Special notes for compatibility with older versions of PRIDE PPP-AR:
 
 ### 2022-06-20 (v2.2)
 * `install.sh`: add warnings for improper installation operations
-* `pdp3`: add OFFLINE mode to avoid calling `wget` in a off-line computer
+* `pdp3`: add OFFLINE mode to avoid calling `wget` in an off-line computer
 * `pdp3`: fix bug for corrupting IGS ANTEX file in batch processing
 * `pdp3`: fix bug for unexpected termination in multi-day processing
 * `pdp3`: enhance capability of **multi-day processing** to 32 days
