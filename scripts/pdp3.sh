@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : Dec-08, 2023                                                    ##
+##  DATE   : Dec-10, 2023                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -299,7 +299,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                     echo "${freq_cmb[@]}" | grep -q "$sys"      && throw_conflict_opt "$2"
                     echo "$avail_num" | grep -q "${sys_num[1]}" || throw_invalid_arg "frequency number" "$2"
                     echo "$avail_num" | grep -q "${sys_num[2]}" || throw_invalid_arg "frequency number" "$2"
-                    freq_cmb+=($(echo "${sys_num[@]}" | sed "s/ //g"))
+                    freq_cmb+=($(echo "${sys_num[@]}" | sed "s/ //g" | tr 'a-z' 'A-Z'))
                     shift 1
                     check_optional_arg "$2" "$last_arg" || break
                 done
