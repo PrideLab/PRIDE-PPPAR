@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : Dec-10, 2023                                                    ##
+##  DATE   : Dec-13, 2023                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -1674,14 +1674,25 @@ ProcessSingleSite() { # purpose : process data of single site
     local vbs_opt=$(get_ctrl "$ctrl_file" "Verbose output" | tr 'a-z' 'A-Z')
 
     # Ambiguity fixing
-    if [ "$AR" == "Y" ] || [ "$AR" == "A" -a -f ?(mer)fcb_${year}${doy} ]; then
-        cmd="arsig ${config}"
-        Execute "$cmd" || return 1
-        cmd="lsq ${config} \"${rinexobs}\""
-        if [ "$vbs_opt" == "YES" ]; then
+    if [ -f ?(mer)fcb_${year}${doy} ]; then
+        if [ $(grep "# OF AMB RESOLVABLE SAT" amb_${year}${doy} | awk '{print($1)}') -ne 0 ]; then
+            cmd="arsig ${config}"
             Execute "$cmd" || return 1
+            cmd="lsq ${config} \"${rinexobs}\""
+            if [ "$vbs_opt" == "YES" ]; then
+                Execute "$cmd" || return 1
+            else
+                ExecuteWithoutOutput "$cmd" || return 1
+            fi
         else
-            ExecuteWithoutOutput "$cmd" || return 1
+            if [ "$AR" == "Y" ]; then
+                echo -e "$MSGERR no resolvable ambiguities"
+                echo -e "$MSGINF please check if all required observations and OSBs exist"
+                return 1
+            elif [ "$AR" == "A" ]; then
+                echo -e "$MSGWAR no resolvable ambiguities"
+                echo -e "$MSGINF please check if all required observations and OSBs exist"
+            fi
         fi
     fi
     echo -e "$MSGSTA Final processing done"

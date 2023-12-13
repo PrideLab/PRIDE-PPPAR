@@ -58,6 +58,7 @@ program lsq
 !
 !! local
   logical*1     lopen
+  logical*1     arsig_used(MAXSAT)
   integer*4     i0, i, j, k, jd, jd_sav, jdc, isat, iepo, ipar, iamb, id, ih
   integer*4     openid, ierr
   integer*4     lfncid, lfnobs, lfnrem, lfnres, lfnpos, lfnamb, lfnneq, iunit_next
@@ -83,6 +84,7 @@ program lsq
   end do
   LCF%attuse = .false.
   LCF%otluse = .false.
+  arsig_used = .false.
   call frequency_glonass(FREQ1_R, FREQ2_R)
 !
 !! get arguments
@@ -136,8 +138,8 @@ program lsq
   LCF%flnatx_real = ' '
   do isat = 1, LCF%nprn
     write (antnum, '(a3)') SAT(isat)%prn
-    call get_ant_ipt(LCF%jd0 + LCF%sod0/864.d2, LCF%jd1 + LCF%sod1/864.d2, &
-                     SAT(isat)%typ, antnum, SAT(isat)%iptatx, SAT(isat)%xyz,   &
+    call get_ant_ipt(LCF%jd0 + LCF%sod0/864.d2, LCF%jd1 + LCF%sod1/864.d2,   &
+                     SAT(isat)%typ, antnum, SAT(isat)%iptatx, SAT(isat)%xyz, &
                      SAT(isat)%prn(1:1), LCF%flnatx_real)
   end do
 !
@@ -258,7 +260,7 @@ program lsq
       if (iunit_next .eq. 0) goto 45
       SITE%iunit = iunit_next
       goto 50
-    endif
+    end if
 45 continue
     if (ierr .ne. 0) then
       write (*, '(a)') '###WARNING(lsq): no more data to be processed'
@@ -372,6 +374,9 @@ program lsq
           write (lfncid) 'de'
           write (lfnrem) jd, sod, isat, DELBIA
         end if
+      end if
+      if (.not. arsig_used(isat)) then
+        arsig_used(isat) = (nbias_used(isat) .eq. 4)
       end if
     end do
 !
@@ -517,9 +522,7 @@ program lsq
     if (PM(ipar)%ptype .eq. 'S' .and. PM(ipar)%iobs .gt. 0) then
       k = pointer_string(LCF%nprn, LCF%prn, LCF%prn(PM(ipar)%psat))
       if (k .eq. 0) cycle
-      if (all(BIAS(k,   1:9)%length .eq. 0) .or. all(BIAS(k, 10:18)%length .eq. 0) .or. &
-          all(BIAS(k, 19:27)%length .eq. 0) .or. all(BIAS(k, 28:36)%length .eq. 0)) cycle
-      if (pointer_string(LCF%fcbnprn, LCF%fcbprn, LCF%prn(PM(ipar)%psat)) .eq. 0) then
+      if (arsig_used(k) .and. pointer_string(LCF%fcbnprn, LCF%fcbprn, LCF%prn(PM(ipar)%psat)) .eq. 0) then
         LCF%fcbnprn = LCF%fcbnprn + 1
         LCF%fcbprn(LCF%fcbnprn) = LCF%prn(PM(ipar)%psat)
       end if

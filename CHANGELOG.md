@@ -2,9 +2,10 @@
 
 ## PRIDE PPP-AR version 3
 
-### 2023-12-06 (v3.0)
+### 2023-12-13 (v3.0)
 
 * `pdp3`: add IGN FTP site <ftp://igs.ign.fr/pub/igs/products/mgex/> to GNSS product download path
+* `pdp3`: refine the procedures for ambiguity resolution when missing code/phase biases for some satellites
 
 ### 2023-11-24 (v3.0)
 

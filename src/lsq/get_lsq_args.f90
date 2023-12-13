@@ -273,7 +273,7 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT, IM)
   read (key, *, err=200) LCF%nl_maxdev, LCF%nl_maxsig, LCF%nl_alpha
 !
 !! Remove observations without bias corrections 
-  LCF%del_nobia = LCF%fcbuse
+  LCF%del_nobia = (index(LCF%flnfcb, "WUM0MGXRTS") .gt. 0)
 !
 !! Truncate the ambiguities at day-boundary 
   msg = 'Truncate at midnight'
