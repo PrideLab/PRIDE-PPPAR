@@ -376,7 +376,7 @@ program lsq
         end if
       end if
       if (.not. arsig_used(isat)) then
-        arsig_used(isat) = (nbias_used(isat) .eq. 4)
+        arsig_used(isat) = (nbias_used(isat) .ge. 4)
       end if
     end do
 !
