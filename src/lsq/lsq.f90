@@ -365,18 +365,20 @@ program lsq
         write (lfncid) 'de'
         write (lfnrem) jd, sod, isat, DELLOW
       end if
-      if (LCF%del_nobia .and. OB%prn(isat)(1:1) .ne. 'R') then
-        if (nbias_used(isat) .eq. -1) cycle
-        if (nbias_used(isat) .lt.  4) then
-          OB%omc(isat, 1:4) = 0.d0
-          OB%var(isat, 1:4) = 0.d0
-          write (*, '(a,i5,f10.2,a,a3,i5)') '###WARNING(lsq): no bias at ', jd, sod, ' for ', OB%prn(isat), nbias_used(isat)
-          write (lfncid) 'de'
-          write (lfnrem) jd, sod, isat, DELBIA
+      if (OB%prn(isat)(1:1) .ne. 'R') then
+        if (LCF%del_nobia) then
+          if (nbias_used(isat) .eq. -1) cycle
+          if (nbias_used(isat) .lt.  4) then
+            OB%omc(isat, 1:4) = 0.d0
+            OB%var(isat, 1:4) = 0.d0
+            write (*, '(a,i5,f10.2,a,a3,i5)') '###WARNING(lsq): no bias at ', jd, sod, ' for ', OB%prn(isat), nbias_used(isat)
+            write (lfncid) 'de'
+            write (lfnrem) jd, sod, isat, DELBIA
+          end if
         end if
-      end if
-      if (.not. arsig_used(isat)) then
-        arsig_used(isat) = (nbias_used(isat) .ge. 4)
+        if (.not. arsig_used(isat)) then
+          arsig_used(isat) = (nbias_used(isat) .ge. 4)
+        end if
       end if
     end do
 !
