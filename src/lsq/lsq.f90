@@ -524,6 +524,8 @@ program lsq
     if (PM(ipar)%ptype .eq. 'S' .and. PM(ipar)%iobs .gt. 0) then
       k = pointer_string(LCF%nprn, LCF%prn, LCF%prn(PM(ipar)%psat))
       if (k .eq. 0) cycle
+      if (all(BIAS(k,   1:9)%length .eq. 0) .or. all(BIAS(k, 10:18)%length .eq. 0) .or. &
+          all(BIAS(k, 19:27)%length .eq. 0) .or. all(BIAS(k, 28:36)%length .eq. 0)) cycle
       if (arsig_used(k) .and. pointer_string(LCF%fcbnprn, LCF%fcbprn, LCF%prn(PM(ipar)%psat)) .eq. 0) then
         LCF%fcbnprn = LCF%fcbnprn + 1
         LCF%fcbprn(LCF%fcbnprn) = LCF%prn(PM(ipar)%psat)
