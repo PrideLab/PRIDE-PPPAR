@@ -31,7 +31,7 @@ PCO on wide-lane       = YES                     ! pco corrections on Melbourne-
 Widelane decision      = 0.20 0.15 1000.         ! deviation (cycle), sigma (cycle) and decision threshold for WL ambiguities
 Narrowlane decision    = 0.15 0.15 1000.         ! deviation (cycle), sigma (cycle) and decision threshold for NL ambiguities
 Critical search        = 3 4 1.8 3.0             ! highest number of ambiguities to be excluded, lowest number to be reserved, fixed/float, ratio threshold
-Truncate at midnight   = YES                     ! truncate all ambiguities at midnight to avoid day boundary discontinuity
+Truncate at midnight   = Default                 ! truncate all ambiguities at midnight to avoid day boundary discontinuity
 Verbose output         = NO                      ! output detailed information of ambiguity resolution
 
 ## Satellite list
