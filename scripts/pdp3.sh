@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : Dec-13, 2023                                                    ##
+##  DATE   : Jan-19, 2024                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -1674,7 +1674,7 @@ ProcessSingleSite() { # purpose : process data of single site
     local vbs_opt=$(get_ctrl "$ctrl_file" "Verbose output" | tr 'a-z' 'A-Z')
 
     # Ambiguity fixing
-    if [ -f ?(mer)fcb_${year}${doy} ]; then
+    if [ "$AR" != "N" ] && [ -f ?(mer)fcb_${year}${doy} ]; then
         if [ $(grep "# OF AMB RESOLVABLE SAT" amb_${year}${doy} | awk '{print($1)}') -ne 0 ]; then
             cmd="arsig ${config}"
             Execute "$cmd" || return 1
@@ -1695,6 +1695,7 @@ ProcessSingleSite() { # purpose : process data of single site
             fi
         fi
     fi
+
     echo -e "$MSGSTA Final processing done"
 
     # Rename result files

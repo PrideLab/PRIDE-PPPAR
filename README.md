@@ -1,6 +1,6 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
 
-## PRIDE-PPPAR ver. 3.0 (last updated on 2023-12-13)
+## PRIDE-PPPAR ver. 3.0 (last updated on 2024-01-19)
 
 PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -26,7 +26,7 @@ PRIDE PPP-AR ver. 3.0 is available for:
 3) High-rate GNSS data processing up to 50 Hz
 4) High-dynamic mobile platforms applicable for aerial photogrammetry, ship-borne gravimetry, etc.
 5) Kinematic orbiting for LEO satellites
-6) Multi-day processing up to 108 days without day-boundary discontinuities
+6) Multi-day processing up to 108 days (at a sampling rate of 30 s) without day-boundary discontinuities
 7) IPPP clock estimation for time and frequency transfer
 8) Troposphere modeling with Vienna Mapping Function 1/3 (VMF1/VMF3)
 9) Second-order ionospheric delay correction with GIM products
