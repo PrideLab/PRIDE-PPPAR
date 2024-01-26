@@ -177,6 +177,8 @@ else
             endif
         endif
     endif
+    if (nrnxo <= 0) nrnxo = 1
+    if (nrnxn <= 0) nrnxn = 1
     ! cycle calculation
     irnxo = 1
     irnxn = 1
