@@ -144,9 +144,11 @@ else
             call getfname(infile(2),flntmp2)
             if (rnxobslist(1)==flntmp) then
                 rnxnavlist(1)=flntmp2
+                nrnxn=nrnxn+1
                 if (navdir .eq. "") call getfdir(infile(2),navdir)
             else if (rnxobslist(1)==flntmp2) then
                 rnxnavlist(1)=flntmp
+                nrnxn=nrnxn+1
                 if (navdir .eq. "") call getfdir(infile(1),navdir)
             endif
         endif
@@ -169,9 +171,11 @@ else
             call getfname(infile(2),flntmp2)
             if (rnxnavlist(1)==flntmp) then
                 rnxobslist(1)=flntmp2
+                nrnxo=nrnxo+1
                 if (obsdir .eq. "") call getfdir(infile(2),obsdir)
             else if (rnxnavlist(1)==flntmp2) then
                 rnxobslist(1)=flntmp
+                nrnxo=nrnxo+1
                 if (obsdir .eq. "") call getfdir(infile(1),obsdir)
             endif
         endif
