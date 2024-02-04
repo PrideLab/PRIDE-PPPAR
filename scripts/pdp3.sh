@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : Jan-19, 2024                                                    ##
+##  DATE   : Feb-04, 2024                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -55,7 +55,7 @@ readonly OS="$(uname)"                  # Operation System
 readonly DEBUG=YES                      # YES/NO (uppercase!)
 readonly OFFLINE=NO                     # OFFLINE=YES will overwrite USECACHE=NO
 readonly USECACHE=YES
-readonly USERTS=NO
+readonly USERTS=YES
 
 readonly SCRIPT_NAME="pdp3"
 readonly VERSION_NUM="3.0"
@@ -2076,7 +2076,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             if [ ! -f "$sp3" ]; then
                 local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
-                    local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_01M_ORB.SP3.gz"
+                    local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                     local cmp=$(basename "$url")
                     local sp3="${cmp/\.[gZ]*/}"
                     echo -e "$MSGWAR PrepareProducts: failed to download RAP satellite orbit product $cmp, try downloading RTS products"
@@ -2178,7 +2178,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             if [ ! -f "$clk" ]; then
                 local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
-                    local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
+                    local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_05S_CLK.CLK.gz"
                     local cmp=$(basename "$url")
                     local clk="${cmp/\.[gZ]*/}"
                     echo -e "$MSGWAR PrepareProducts: failed to download RAP satellite clock product $cmp, try downloading RTS products"
@@ -2472,7 +2472,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             if [ ! -f "$fcb" ]; then
                 local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
-                    local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_05M_ABS.BIA.gz"
+                    local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_05M_OSB.BIA.gz"
                     local cmp=$(basename "$url")
                     local fcb="${cmp/\.[gZ]*/}"
                     echo -e "$MSGWAR PrepareProducts: failed to download RAP satellite code/phase bias product $cmp, try downloading RTS products"

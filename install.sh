@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : Sept-13, 2023                                                   ##
+##  DATE   : Feb-04, 2024                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -60,6 +60,15 @@ cd src && make clean && make && make install \
     && cp -f ./bin/* $install_dir \
     && chmod 755 ./scripts/*
 
+# Check python
+if which python3 > /dev/null 2>&1; then
+    sed -i 's/\#\!\/usr\/bin\/env python$/\#\!\/usr\/bin\/env python3/g' ./scripts/*.py
+elif which python > /dev/null 2>&1; then
+    sed -i 's/\#\!\/usr\/bin\/env python3$/\#\!\/usr\/bin\/env python/g' ./scripts/*.py
+else
+    printf "${YELLOW}warning:${NC} no python or python3, please install one of them before using py scripts\n"
+fi
+
 cp -f ./scripts/*py ./scripts/*sh $install_dir
 mv -f $install_dir/pdp3.sh $install_dir/pdp3
 if [ $? -eq 0 ]; then
@@ -80,7 +89,7 @@ if [ $? -eq 0 ]; then
     printf "${BLUE}::${NC} executable binaries are copy to $install_dir\n"
     printf "${BLUE}::${NC} $install_dir added to PATH\n"
 else
-    printf "${RED}errror:${NC} PRIDE-PPPAR installation failed!\n"
+    printf "${RED}error:${NC} PRIDE-PPPAR installation failed!\n"
     exit 1
 fi
 

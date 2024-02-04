@@ -83,7 +83,7 @@ subroutine read_bias(flnosb, nprn, prn, bias, osbjd0, osbjd1)
           backspace lfn
           exit
         end if
-        if (index(line, 'OSB') .eq. 0) cycle
+        if (index(line(1:5), 'OSB') .eq. 0) cycle
         if (line(16:19) .ne. '') cycle
         !
         !! read bias

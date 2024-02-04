@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jihang Lin
+!! Contributor: Maorong Ge, Jihang Lin, Yinda Deng
 !!
 !!
 !!
@@ -193,6 +193,13 @@ subroutine rdsp3h(fln, jd0, sod0, jd1, sod1, dintv, nprn, prn)
     end if
   end do
   return
+!/*=======================*/
+!
+!! rewind file
+  Entry rdsp3r()
+  rewind (lfn)
+  return
+!/*=======================*/
 !
 !! close file
   Entry rdsp3c()

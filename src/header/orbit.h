@@ -18,3 +18,13 @@ type orbhdr
 !! sp3 interval (second)
   real*8 dintv
 end type
+!
+!! orbit block
+!
+type sp3block
+    integer*4 jd
+    real*8    sod
+    real*8    x(6,MAXSAT)  ! x, y, z, vx, vy, vz
+    logical*1 flag(MAXSAT) ! lost sat : false ; have sat :true; 
+end type
+

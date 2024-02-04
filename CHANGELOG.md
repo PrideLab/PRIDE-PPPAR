@@ -2,6 +2,11 @@
 
 ## PRIDE PPP-AR version 3
 
+### 2024-02-04 (v3.0)
+
+* Employ the latest **WUM0MGXRTS** products to perform all-frequency PPP-AR on GNSS data with hours latency
+  * Real-time archived from Wuhan University GPS/Galileo/BDS phase bias stream and updated every 3 hours
+
 ### 2023-12-13 (v3.0)
 
 * `pdp3`: add IGN FTP site <ftp://igs.ign.fr/pub/igs/products/mgex/> to GNSS product download path
