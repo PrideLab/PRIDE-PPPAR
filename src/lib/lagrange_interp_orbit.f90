@@ -166,9 +166,6 @@ subroutine lagrange_interp_orbit(orbfil, lpos, lvel, jd_obs, jd, sod, iprn, x, v
     end do
     do irec = 1, LI%nrec_inmemory
       read (LI%lunit, end=300) k, lrepeat, ((DT(i)%table(irec, j), j=1, 3), i=1, nprn)
-      do while (lrepeat)
-        read (LI%lunit, end=300) k, lrepeat, ((DT(i)%table(irec, j), j=1, 3), i=1, nprn)
-      end do
     end do
   end if
 

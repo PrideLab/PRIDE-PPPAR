@@ -22,8 +22,8 @@ integer*4, intent(in) :: argcIn
 character(*), intent(in) :: argvIn(argcIn)  !argvIn(:)
 type(prcopt_t) prcopt
 type(solopt_t) solopt
-type(gtime_t) ts, te, tc, epoch2time, timeadd  ! current time
-real*8 :: tint, es(6), ee(6), et(6), timediff
+type(gtime_t) ts, te, tc, epoch2time  ! current time
+real*8 :: tint, es(6), ee(6), timediff
 integer*4 :: i, n, ret
 integer*4 :: irnxo, irnxn
 integer*4 :: nrnxo, nrnxn
@@ -113,7 +113,7 @@ do i=1,2
         call getfdir(infile(i),navdir)
         rnxnavlist(1)=flntmp  ! assuming the time is consistent
     endif
-    if(mod(info,2)==0 .and. info>=1 .and. info<=8)then
+    if(mod(info,2)==0 .and. info>=0 .and. info<=8)then
         trnxo=info
         call getfdir(infile(i),obsdir)
         rnxobslist(1)=flntmp
@@ -194,22 +194,18 @@ else
 !       if(timediff(tc,ts)>0.0) ts = timeadd(tc, tint)
         ret=postpos(ts,te,tint,0.d0,prcopt,solopt,infile,n,outfile,'','')  ! 0-error, 1-right
         if(ret==0) exit
-        if ((trnxo-1)/4==(trnxn-1)/4) then
-            irnxo=irnxo+1
-            if(irnxo>nrnxo) irnxo=nrnxo
-            irnxn=irnxn+1
-            if(irnxn>nrnxn) irnxn=nrnxn
-        elseif (trnxo>4 .and. trnxn<5) then
-            irnxo=irnxo+1
-            if(irnxo>nrnxo) irnxo=nrnxo
-            irnxn=irnxn+getrnxmjd(rnxobslist(irnxo))-getrnxmjd(rnxnavlist(irnxn))
-            if(irnxn>nrnxn) irnxn=nrnxn
-        elseif (trnxo<5 .and. trnxn>4) then
-            irnxn=irnxn+1
-            if(irnxn>nrnxn) irnxn=nrnxn
-            irnxo=irnxo+getrnxmjd(rnxnavlist(irnxn))-getrnxmjd(rnxobslist(irnxo))
-            if(irnxo>nrnxo) irnxo=nrnxo
-        endif
+        if (trnxo>0 .and. trnxo<=8) then
+          irnxo = irnxo + 1
+        end if
+        if (irnxo>nrnxo) irnxo=nrnxo
+        if (trnxn>0 .and. trnxn<=8) then
+          if (trnxo<=4) then
+            irnxn = irnxn + 1
+          else
+            irnxn = irnxn + getrnxmjd(rnxobslist(irnxo)) - getrnxmjd(rnxobslist(1))
+          end if
+        end if
+        if (irnxn>nrnxn) irnxn=nrnxn
     enddo
     ! print the final result
     call printresult(solopt,ret)

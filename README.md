@@ -1,6 +1,6 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
 
-## PRIDE-PPPAR ver. 3.0 (last updated on 2024-02-04)
+## PRIDE-PPPAR ver. 3.0 (last updated on 2024-02-08)
 
 PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -52,10 +52,11 @@ The improvements made in PRIDE PPP-AR version 3.0 include:
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.0.
 
-### 2024-02-04 (v3.0)
+### 2024-02-08 (v3.0)
 
 * Employ the latest **WUM0MGXRTS** products to perform all-frequency PPP-AR on GNSS data with hours latency
   * Real-time archived from Wuhan University GPS/Galileo/BDS phase bias stream and updated every 3 hours
+* `lib` & `spp`: fix bug for unexpected termination in multi-day processing
 
 ### 2023-12-13 (v3.0)
 
