@@ -57,7 +57,7 @@ main() {
       >&2 echo "Usage      : prepare_leodata.sh leo_code date"
       >&2 echo "  leo_name : LEO mission name      select one from: grace/grace-fo"
       >&2 echo "  date     : date                  input as year/month/day or year/doy(day of year)"
-      >&2 echo "Example    : downleo.sh grace-fo 2023/1"
+      >&2 echo "Example    : $0 grace-fo 2023/1"
       exit 1
    fi
    

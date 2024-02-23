@@ -249,9 +249,9 @@ subroutine lsq_init(LCF, SITE, OB, NM, PM)
     do i = 1, 2
       ip = ip + 1
       ipar = NM%nc + ip
-      if (LCF%ztdmod(1:3) .eq. 'STO') then
+      if (LCF%htgmod(1:3) .eq. 'STO') then
         PM(ipar)%pname = 'HTG'//htg(i:i)//'STO'
-      else if (LCF%ztdmod(1:3) .eq. 'PWC') then
+      else if (LCF%htgmod(1:3) .eq. 'PWC') then
         write (PM(ipar)%pname, '(a,i0)') 'HTG'//htg(i:i)//'PWC:', sec
       end if
       PM(ipar)%ptype = 'P'
