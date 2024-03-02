@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : Feb-04, 2024                                                    ##
+##  DATE   : Mar-02, 2024                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -1547,6 +1547,12 @@ ProcessSingleSite() { # purpose : process data of single site
         echo -e "$MSGERR ProcessSingleSite: illegal editing mode: $editing"
         return 1
     fi
+   
+    # Tighter threshold for kinematic positioning mode (loose editing mode)
+    if [ "$positioning_mode" == "P" -o "$positioning_mode" == "K" ]; then
+        local tth_opt="no"
+        [[ "$editing_mode" == "NO" ]] && tth_opt="yes"
+    fi
 
     # Truncate at midnight
     local tct_opt=$(get_ctrl "$config" "Truncate at midnight" | cut -c 1 | tr 'A-Z' 'a-z')
@@ -1561,31 +1567,31 @@ ProcessSingleSite() { # purpose : process data of single site
     if [ "$positioning_mode" == "S" -o "$positioning_mode" == "F" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
              -xyz ${xyz[*]} -short 1200 -lc_check only -rhd ${rhd_file} -pc_check 300 \
-             -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt}"
+             -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
         if [ $mjd_s -le 51666 ]; then
             cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                  -xyz ${xyz[*]} -short 1200 -lc_check no -rhd ${rhd_file} -pc_check 0 \
-                 -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt}"
+                 -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
         fi
     elif [ "$positioning_mode" == "P" -o "$positioning_mode" == "K" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
              -xyz kin_${year}${doy}_${site} -short 120 -lc_check no \
-             -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt}"
+             -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt}"
         if [ $mjd_s -le 51666 ]; then
             cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                  -xyz kin_${year}${doy}_${site} -short 120 -lc_check no \
                  -pc_check 0 -elev ${cutoff_elevation} -rhd ${rhd_file} \
-                 -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt}"
+                 -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt}"
         fi
     elif [ "$positioning_mode" == "L" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
             -xyz kin_${year}${doy}_${site} -short 120 -lc_check lm \
-            -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt}"
+            -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
         if [ $mjd_s -le 51666 ]; then
            cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                 -xyz kin_${year}${doy}_${site} -short 120 -lc_check lm \
                 -pc_check 0 -elev ${cutoff_elevation} -rhd ${rhd_file} \
-                -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt}"
+                -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
         fi
     else
         echo -e "$MSGERR ProcessSingleSite: illegal positioning mode: $positioning_mode"

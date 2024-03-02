@@ -36,7 +36,7 @@
 ! v -----------------
 subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
                            check_pc, pclimit, &
-                           cutoff_elevation, use_brdeph, neph, ephem, lm_edit, &
+                           cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
                            stanam, x, y, z, t_first_in_rinex, t_last_in_rinex, v, &
                            nepo, nsat, jd0, nobs, flagall, ti, ts, obs, bias)
   implicit none
@@ -55,7 +55,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
   logical*1     check_pc
   real*8        pclimit
   real*8        cutoff_elevation
-  logical*1     use_brdeph, lm_edit
+  logical*1     use_brdeph, lm_edit, ltighter
   integer*4     neph
   type(brdeph)  ephem(1:*)
   character*(*) stanam
@@ -78,7 +78,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
   integer*4     prn_int
   integer*4     i0, ij, j, k
   integer*1     lli_thre
-  real*8        lglimit, nwlimit
+  real*8        lglimit, nwlimit, lglimit_t
   character*3   jj
   character*3   prn(MAXSAT), prn0(MAXSAT)
   real*8        tobs, nwdif, rgdif, lgdif, elev, range, dtsat, dt, dwnd
@@ -123,6 +123,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
 
   lglimit = 50.d0
   nwlimit = 50.d0
+  if (ltighter) nwlimit = 10.d0
   lfnjmp = 0
   jumpsum = 0.d0
   obsval = 0.d0
@@ -256,9 +257,28 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
         !                       check geometry-free(lg)                    !
         ! **************************************************************** !
         if (ilast(j) .ne. 0) then
-          lgdif = dabs(obs(iepo, j, 1) - obs(ilast(j), j, 1))/(ti(iepo) - ti(ilast(j)))
-          if (lgdif .gt. lglimit) then
-            flagall(iepo, j) = set_flag(flagall(iepo, j), 'lgjump')
+          if (.not. ltighter) then
+            lgdif = dabs(obs(iepo, j, 1) - obs(ilast(j), j, 1))/(ti(iepo) - ti(ilast(j)))
+            if (lgdif .gt. lglimit) then
+              flagall(iepo, j) = set_flag(flagall(iepo, j), 'lgjump')
+            end if
+          else
+            lgdif = dabs(obs(iepo, j, 1) - obs(ilast(j), j, 1))*(lam2(i0) - lam1(i0))
+            dt = ti(iepo) - ti(ilast(j))
+            if (dt .gt. 0.d0 .and. dt .le. 1.d0) then
+              lglimit_t = 5.d-2
+            else if (dt .gt. 1.d0 .and. dt .le. 2.d1) then
+              lglimit_t = 1.d-1/2.d1*dt+5.d-2
+            else if (dt .gt. 2.d1 .and. dt .le. 6.d1) then
+              lglimit_t = 1.5d-1
+            else if (dt .gt. 6.d1 .and. dt .le. 1.d2) then
+              lglimit_t = 2.5d-1
+            else
+              lglimit_t = 3.5d-1
+            end if
+            if (lgdif .gt. lglimit_t) then
+              flagall(iepo, j) = set_flag(flagall(iepo, j), 'lgjump')
+            end if
           end if
         end if
         ! **************************************************************** ! 

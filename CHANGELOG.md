@@ -2,6 +2,10 @@
 
 ## PRIDE PPP-AR version 3
 
+### 2024-03-02 (v3.0)
+
+* `tedit`: improve implementation of loose editing for kinematic positioning
+
 ### 2024-02-08 (v3.0)
 
 * Employ the latest **WUM0MGXRTS** products to perform all-frequency PPP-AR on GNSS data with hours latency

@@ -20,7 +20,7 @@
 !!
 !
 subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
-                                 check_lc, turbo_edit, lm_edit, use_brdeph, check_pc, keep_end, trunc_dbd, &
+                                 check_lc, turbo_edit, lm_edit, ltighter, use_brdeph, check_pc, keep_end, trunc_dbd, &
                                  tstart, sstart, session_length, length_gap, length_short, &
                                  cutoff_elevation, max_mean_namb, min_percent, min_mean_nprn, &
                                  interval, lclimit, pclimit, lglimit, lgrmslimit, &
@@ -33,7 +33,7 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
   common        idxfrq
 ! parameter
   character*256 flnrnx, flneph, flnrhd
-  logical*1     check_lc, turbo_edit, lm_edit, use_brdeph, check_pc, keep_end
+  logical*1     check_lc, turbo_edit, lm_edit, ltighter, use_brdeph, check_pc, keep_end
   character*1   trunc_dbd
   integer*4     tstart(5)
   real*8        sstart, session_length
@@ -58,6 +58,7 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
   check_pc = .false.
   turbo_edit = .true.
   lm_edit = .false.
+  ltighter = .false.
   use_brdeph = .true.
   keep_end = .true.
   trunc_dbd = 'n'
@@ -179,6 +180,17 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
           display_help = .true.
         end if
       end if
+    else if (arg(ipar, 1)(1:13) .eq. '-tighter_thre') then
+      display_help = nval(ipar) .ne. 2
+      if (.not. display_help) then
+        if (arg(ipar, 2)(1:1) .eq. 'y') then
+          ltighter = .true.
+        else if (arg(ipar, 2)(1:1) .eq. 'n') then
+          ltighter = .false.
+        else
+          display_help = .true.
+        end if
+      end if
     else if (arg(ipar, 1)(1:9) .eq. '-pc_check') then
       display_help = nval(ipar) .ne. 2
       if (.not. display_help) then
@@ -280,6 +292,9 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
     write (*, '(2x,a)') '    yes = truncate'
     write (*, '(2x,a)') '     no = no special action'
     write (*, '(2x,a)') '   cont = keep continuous'
+    write (*, '(2x,a)') '-tighter_thre yes/no'
+    write (*, '(2x,a)') '    yes = more tighter threshold for MW/GF'
+    write (*, '(2x,a)') '     no = no special action'
     write (*, '(2x,a)') '-elev cutoff_elevation'
     write (*, '(2x,a)') ' cutoff_elevation in degree. Default is to use all data.'
     write (*, '(2x,a)') '-freq GNSS with frequency number'

@@ -51,7 +51,7 @@ program tedit
   logical*1     again
   logical*1     use_brdeph
   logical*1     check_pc, check_lc
-  logical*1     turbo_edit, lm_edit
+  logical*1     turbo_edit, lm_edit, ltighter
   logical*1     debug_sd, debug_tb
   logical*1     keep_end
   logical*1     lexist
@@ -92,7 +92,7 @@ program tedit
 !
 !! get input from command line
   call get_control_parameter(flnrnx, flneph, flnrhd, &
-                             check_lc, turbo_edit, lm_edit, use_brdeph, check_pc, keep_end, trunc_dbd, &
+                             check_lc, turbo_edit, lm_edit, ltighter, use_brdeph, check_pc, keep_end, trunc_dbd, &
                              tstart, sstart, session_length, length_gap, length_short, &
                              cutoff_elevation, max_mean_namb, min_percent, min_mean_nprn, &
                              interval, lclimit, pclimit, lglimit, lgrmslimit, &
@@ -167,7 +167,7 @@ program tedit
     ! read rinex observation file
     call read_rinex_file(flnrnx, tstart, sstart, interval, &
                          check_pc, pclimit, &
-                         cutoff_elevation, use_brdeph, neph, ephem, lm_edit, &
+                         cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
                          stanam, xt, yt, zt, t_first_in_rinex, t_last_in_rinex, vel, &
                          mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs, bias)
 
