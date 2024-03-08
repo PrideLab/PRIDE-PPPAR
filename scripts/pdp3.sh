@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 3.0                                                         ##
 ##                                                                           ##
-##  DATE   : Mar-02, 2024                                                    ##
+##  DATE   : Mar-08, 2024                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -1551,7 +1551,9 @@ ProcessSingleSite() { # purpose : process data of single site
     # Tighter threshold for kinematic positioning mode (loose editing mode)
     if [ "$positioning_mode" == "P" -o "$positioning_mode" == "K" ]; then
         local tth_opt="no"
+        local lcc_opt="no"
         [[ "$editing_mode" == "NO" ]] && tth_opt="yes"
+        [[ "$editing_mode" == "NO" ]] && lcc_opt="lm"
     fi
 
     # Truncate at midnight
@@ -1575,7 +1577,7 @@ ProcessSingleSite() { # purpose : process data of single site
         fi
     elif [ "$positioning_mode" == "P" -o "$positioning_mode" == "K" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
-             -xyz kin_${year}${doy}_${site} -short 120 -lc_check no \
+             -xyz kin_${year}${doy}_${site} -short 120 -lc_check ${lcc_opt} \
              -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt}"
         if [ $mjd_s -le 51666 ]; then
             cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \

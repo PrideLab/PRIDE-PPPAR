@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin, Wenyi Li
+!! Contributor: Maorong Ge, Jianghui Geng, Songfeng Yang, Jihang Lin, Wenyi Li, Jing Zeng
 !!
 !!
 !!
@@ -219,7 +219,9 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
           end if
         else if (PM(ipar)%pname(1:5) .eq. 'STAPX') then
           cid = ' '
-          if (PM(ipar)%iobs .lt. 5) cid = ' *'
+          if (PM(ipar)%iobs_G .lt. 5 .and. PM(ipar)%iobs_R .lt. 5 .and. &
+              PM(ipar)%iobs_E .lt. 5 .and. PM(ipar)%iobs_C .lt. 5 .and. &
+              PM(ipar)%iobs_3 .lt. 5 .and. PM(ipar)%iobs_J .lt. 5) cid = ' *'
           t0 = PM(ipar)%ptime(1)
           if (LCF%jd0 + LCF%sod0/864.d2 .gt. t0) t0 = LCF%jd0 + LCF%sod0/864.d2
           t1 = PM(ipar)%ptime(2)
