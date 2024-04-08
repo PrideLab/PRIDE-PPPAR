@@ -178,7 +178,7 @@ program pbopos
         end select
       end if
       if (trim(line(61:)) .eq. 'POS MODE/PRIORI (meter)') then
-        if (line(1:6) .eq. 'Static')    filtyp = 'pos'
+        if (line(1:6) .eq. 'Static' .or. line(1:11) .eq. 'Quasi-fixed') filtyp = 'pos'
       end if
       if (trim(line(61:)) .eq. 'END OF HEADER') then
         do while (.true.)

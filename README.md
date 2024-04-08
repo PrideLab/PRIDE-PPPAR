@@ -56,7 +56,7 @@ See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGEL
 
 * `lib` & `spp`: enable multi-day processing of non-consecutive daily RINEX files
 * `tedit`: improve implementation of loose editing for kinematic positioning
-* `lsq`: reduce the weight of GLONASS pseudorange observations by 10 to improve multi-GNSS positioning performance
+* `lsq`: reduce the weight of GLONASS pseudorange observations to improve multi-GNSS positioning performance
 
 ### 2024-02-08 (v3.0)
 
