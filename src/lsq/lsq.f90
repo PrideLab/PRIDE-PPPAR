@@ -256,7 +256,7 @@ program lsq
       call rdrnxoi2(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, BIAS, nbias_used, ierr)
     end if
     if (ierr .eq. 2) then
-      call next_rinex(SITE%iunit, iunit_next)
+      call next_rinex(SITE%iunit, iunit_next, LCF%jd1)
       if (iunit_next .eq. 0) goto 45
       SITE%iunit = iunit_next
       goto 50

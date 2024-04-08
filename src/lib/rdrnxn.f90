@@ -204,7 +204,7 @@ subroutine rdrnxn(flneph, fjd0, fjd1, neph, ephem)
 200 continue
     iday = iday + 1
     if (eph%jd + eph%sod/864.d2 .gt. fjd1) exit
-    call next_rinex(iunit, iunit_next)
+    call next_rinex(iunit, iunit_next, int(fjd1))
     if (iunit_next .eq. 0) exit
     close (iunit)
     iunit = iunit_next

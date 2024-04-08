@@ -34,7 +34,7 @@
 ! t_first_in_rinex --
 ! t_last_in_rinex ---
 ! v -----------------
-subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
+subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
                            check_pc, pclimit, &
                            cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
                            stanam, x, y, z, t_first_in_rinex, t_last_in_rinex, v, &
@@ -51,7 +51,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
 ! parameter
   character*(*) flnrnx
   integer*4     tstart(1:*)
-  real*8        sstart, interval
+  real*8        sstart, session_length, interval
   logical*1     check_pc
   real*8        pclimit
   real*8        cutoff_elevation
@@ -59,10 +59,9 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
   integer*4     neph
   type(brdeph)  ephem(1:*)
   character*(*) stanam
+  integer*4     nepo, nsat, jd0
   real*4        v(nepo, MAXSAT)
   real*8        x(nepo), y(nepo), z(nepo)
-  integer*4     nepo
-  integer*4     nsat, jd0
   integer*4     nobs(MAXSAT), nbias_used(MAXSAT)
   integer*4     flagall(nepo, MAXSAT)
   real*8        ti(nepo), ts(nepo)
@@ -205,8 +204,8 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, interval, &
       call rdrnxoi2(iunit, jd0, tobs, dwnd, nprn, prn, HD, OB, bias, nbias_used, ierr)
     end if
     if (ierr .eq. 2) then
-      call next_rinex(iunit, iunit_next)
-      if (iunit_next .eq. 0) continue
+      call next_rinex(iunit, iunit_next, int(jd0 + (sstart + session_length)/864.d2))
+      if (iunit_next .eq. 0) exit
       close (iunit)
       iunit = iunit_next
       goto 50

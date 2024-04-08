@@ -165,7 +165,7 @@ program tedit
     end if
 
     ! read rinex observation file
-    call read_rinex_file(flnrnx, tstart, sstart, interval, &
+    call read_rinex_file(flnrnx, tstart, sstart, tmp_session, interval, &
                          check_pc, pclimit, &
                          cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
                          stanam, xt, yt, zt, t_first_in_rinex, t_last_in_rinex, vel, &

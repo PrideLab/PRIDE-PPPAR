@@ -135,7 +135,7 @@ else
                 rnxobslist(i+1)=flntmp2
                 nrnxo=nrnxo+1
             else
-                exit
+                cycle
             endif
         enddo
         if (rnxnavlist(1) .eq. "") then
@@ -161,7 +161,7 @@ else
                 rnxnavlist(i+1)=flntmp2
                 nrnxn=nrnxn+1
             else
-                exit
+                cycle
             endif
         enddo
         if (rnxobslist(1) .eq. "") then
@@ -189,15 +189,13 @@ else
         infile(1)=trim(obsdir)//rnxobslist(irnxo)
         infile(2)=trim(navdir)//rnxnavlist(irnxn)
         if(i>nrnxo .and. i>nrnxn) isexceed=.true.
-        if(infile(1)=="" .or. infile(2)=="" .or. isexceed) exit
+        if(isexceed) exit
         ! avoid repeat records
-!       if(timediff(tc,ts)>0.0) ts = timeadd(tc, tint)
         ret=postpos(ts,te,tint,0.d0,prcopt,solopt,infile,n,outfile,'','')  ! 0-error, 1-right
-        if(ret==0) exit
+        if(ret==0 .and. infile(1).ne.trim(obsdir) .and. infile(2).ne.trim(navdir)) exit
         if (trnxo>0 .and. trnxo<=8) then
           irnxo = irnxo + 1
         end if
-        if (irnxo>nrnxo) irnxo=nrnxo
         if (trnxn>0 .and. trnxn<=8) then
           if (trnxo<=4) then
             irnxn = irnxn + 1
@@ -205,7 +203,6 @@ else
             irnxn = irnxn + getrnxmjd(rnxobslist(irnxo)) - getrnxmjd(rnxobslist(1))
           end if
         end if
-        if (irnxn>nrnxn) irnxn=nrnxn
     enddo
     ! print the final result
     call printresult(solopt,ret)

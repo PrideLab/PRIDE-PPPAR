@@ -310,8 +310,8 @@ subroutine glomod(jd, sod, LCF, SITE, OB, SAT, IM)
 !! weight of observations
     OB%var(isat, 1) = (SITE%sigp*SAT(isat)%var*(vlight/FREQ1_R(frequency_glo_nu)))**2
     OB%var(isat, 2) = (SITE%sigp*SAT(isat)%var*(vlight/FREQ1_R(frequency_glo_nu)))**2
-    OB%var(isat, 3) = (SITE%sigr*SAT(isat)%var)**2
-    OB%var(isat, 4) = (SITE%sigr*SAT(isat)%var)**2
+    OB%var(isat, 3) = (SITE%sigr*SAT(isat)%var*10)**2
+    OB%var(isat, 4) = (SITE%sigr*SAT(isat)%var*10)**2
     if (OB%elev(isat)/PI*180.d0 .le. 30.d0) then
       OB%var(isat, 1:4) = OB%var(isat, 1:4)/(2*dsin(OB%elev(isat)))**2
     end if

@@ -2,9 +2,11 @@
 
 ## PRIDE PPP-AR version 3
 
-### 2024-03-02 (v3.0)
+### 2024-04-08 (v3.0)
 
+* `lib` & `spp`: enable multi-day processing of non-consecutive daily RINEX files
 * `tedit`: improve implementation of loose editing for kinematic positioning
+* `lsq`: reduce the weight of GLONASS pseudorange observations to improve multi-GNSS positioning performance
 
 ### 2024-02-08 (v3.0)
 

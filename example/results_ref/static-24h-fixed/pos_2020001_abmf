@@ -31,7 +31,7 @@ STO                                                         TROP ZENITH
 PWC:720                                                     TROP GRADIENT
 NO                                                          IONO 2ND
 SOLID  POLE OCEAN                                           TIDES
-YES  GPS    41  GAL    25  BDS2    2  BDS3   21  QZSS    0  AMB FIXING
+YES  GPS    40  GAL    24  BDS2    2  BDS3   21  QZSS    0  AMB FIXING
   600.00                                                    AMB DURATION (sec)
    15.00                                                    AMB CUTOFF (deg)
     0.20    0.15 1000.00                                    AMB WIDELANE
@@ -55,4 +55,4 @@ Nobs                                                        NUMBER OF OBSERVATIO
 End Field Description                                       COMMENT
                                                             END OF HEADER
 *Name         Mjd               X               Y               Z                       Sx                       Sy                       Sz                      Rxy                      Rxz                      Ryz                     Sig0           Nobs
- abmf  58849.4997   2919785.78847  -5383744.95474   1774604.85936     0.49456238249922E-08     0.13959474538567E-07     0.21381651738685E-08    -0.69437004928871E-08     0.22302819179901E-08    -0.41865879443858E-08     0.25852784471762E+01          86304
+ abmf  58849.4997   2919785.79037  -5383744.95776   1774604.86017     0.44614029430553E-08     0.12351227666732E-07     0.19102362695513E-08    -0.61795082723043E-08     0.19593176441572E-08    -0.36649097622922E-08     0.27027543923810E+01          86066

@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program. If not, see <https://www.gnu.org/licenses/>.
 !!
-!! Contributor: Jihang Lin
+!! Contributor: Jihang Lin, Jing Zeng
 !! 
 !!
 !!
@@ -24,13 +24,15 @@
 !! parameter: lfn_this -- input file unit
 !!            lfn_next -- successor file unit of input lfn,
 !!                        default as 0 if no valid successor file
+!!            mjd_end  -- loop to match end date of RINEX file
 !!
 !
-subroutine next_rinex(lfn_this, lfn_next)
+subroutine next_rinex(lfn_this, lfn_next, mjd_end)
   implicit none
 
   integer*4 lfn_this
   integer*4 lfn_next
+  integer*4 mjd_end 
 !
 !! local
   character*256 rinex_dir
@@ -50,6 +52,7 @@ subroutine next_rinex(lfn_this, lfn_next)
   lfn_next = 0
   name_next = ''
   inquire(unit=lfn_this, name=name_this, exist=is_alive) 
+100 continue
   if (name_this .eq. '') return
 !
 !! split directory and base
@@ -114,6 +117,7 @@ subroutine next_rinex(lfn_this, lfn_next)
       write (*, '(2a)') '###WARNING(next_rinex): unrecognized naming of RINEX files: ', trim(name_this)
       return
   end select
+  if (mjd2 .gt. mjd_end) return
 
   name_next = trim(rinex_dir)//trim(name_next)
   
@@ -122,7 +126,8 @@ subroutine next_rinex(lfn_this, lfn_next)
   if (ierr .ne. 0) then
     write (*,'(2a)') '###WARNING(next_rinex): open ', trim(name_next)
     lfn_next = 0
-    return
+    name_this = name_next
+    goto 100
   else
     write (*,'(2a)') '%%%MESSAGE(next_rinex): open ', trim(name_next)
   end if
