@@ -188,21 +188,18 @@ else
         if(timediff(te,gtime_t(0,0.d0))>0.0 .and. dabs(timediff(tc,te))<=60.0) isexceed=.true.
         infile(1)=trim(obsdir)//rnxobslist(irnxo)
         infile(2)=trim(navdir)//rnxnavlist(irnxn)
-        if(i>nrnxo .and. i>nrnxn) isexceed=.true.
+        if(i>nrnxo.and.i>nrnxn) isexceed=.true.
         if(isexceed) exit
-        ! avoid repeat records
-        ret=postpos(ts,te,tint,0.d0,prcopt,solopt,infile,n,outfile,'','')  ! 0-error, 1-right
-        if(ret==0 .and. infile(1).ne.trim(obsdir) .and. infile(2).ne.trim(navdir)) exit
-        if (trnxo>0 .and. trnxo<=8) then
-          irnxo = irnxo + 1
-        end if
-        if (trnxn>0 .and. trnxn<=8) then
-          if (trnxo<=4) then
-            irnxn = irnxn + 1
-          else
-            irnxn = irnxn + getrnxmjd(rnxobslist(irnxo)) - getrnxmjd(rnxobslist(1))
-          end if
-        end if
+        if(infile(1).ne.trim(obsdir).and.infile(2).ne.trim(navdir)) then
+            ret=postpos(ts,te,tint,0.d0,prcopt,solopt,infile,n,outfile,'','')  ! 0-error, 1-right
+            if(ret==0) exit
+        endif
+        if(nrnxo>1.and.trnxo>0.and.trnxo<=8) then
+            irnxo=irnxo+1
+        endif
+        if(nrnxn>1.and.trnxn>0.and.trnxn<=8) then
+            irnxn=irnxn+1
+        endif
     enddo
     ! print the final result
     call printresult(solopt,ret)
