@@ -18,6 +18,7 @@ Relevant publications are
 * Geng J, Yang S, Guo J (2021). Assessing IGS GPS/Galileo/BDS-2/BDS-3 phase bias products with PRIDE PPP-AR. *Satellite Navigation*, 2(1):1-15. doi:[10.1186/s43020-021-00049-9](https://doi.org/10.1186/s43020-021-00049-9)
 * Geng J, Chen X, Pan Y, Zhao Q (2019). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. *Journal of Geodesy*, 93(10):2053-2067. doi:[10.1007/s00190-019-01301-6](https://doi.org/10.1007/s00190-019-01301-6)
 * Geng J, Chen X, Pan Y, Mao S, Li C, Zhou J, Zhang K (2019). PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. *GPS Solutions*, 23(91):1-10. doi:[10.1007/s10291-019-0888-1](https://doi.org/10.1007/s10291-019-0888-1)
+* Zeng J, Geng J, Li G, Tang W (2024). Improving cycle slip detection in ambiguity-fixed precise point positioning for kinematic LEO orbit determination. *GPS Solutions, 28(3): 135. doi:[10.1007/s10291-024-01639-1](https://doi.org/10.1007/s10291-024-01639-1) 
 
 PRIDE PPP-AR ver. 3.0 is available for:
 
@@ -51,6 +52,11 @@ The improvements made in PRIDE PPP-AR version 3.0 include:
 ## Version History
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.0.
+
+### 2024-09-01 (v3.0)
+* `lib` & `tedit`: use DOCB block in BIAS-SINEX file to decide whether reset ambiguity at midnight
+* `otl`: enable self-computed ocean tide loading correction in case of no oceanload coefficients for user stations
+* `lsq`: add a function to support random walk constraint between epochs in position domain (P mode)
 
 ### 2024-04-08 (v3.0)
 
