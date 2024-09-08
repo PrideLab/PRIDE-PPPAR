@@ -172,6 +172,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     local ymd_s hms_s ymd_e hms_e site mode plen interval freq_cmb AR
     local avail_sys edt_opt rck_opt ztd_opt htg_opt ion_opt tide_mask lam_opt pco_opt vbs_opt
     local gnss_mask map_opt rckl rckp ztdl ztdp htgp eloff
+    local posp=0
 
     local last_arg=${@: -1}
     case $last_arg in
@@ -333,6 +334,21 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 * ) throw_invalid_arg "positioning mode" "$2" ;;
                 esac
                 shift 1
+
+		posp=0
+		if check_optional_arg "$2" "$last_arg"; then
+		    if [[ $2 =~ $PNUM_REGEX  ]]              && \
+		       [[ $(echo "0.00 <= $2" |bc) -eq 1 ]]  && \
+                       [[ $(echo "$2 <= 100.0"|bc) -eq 1 ]]; then
+		       posp="$2"
+		       shift 1
+		    else
+		       posp=0
+	            fi	       
+                elif [[ "${mode:0:1}" == "P"  ]]; then
+                    posp=0.01                
+
+                fi
                 ;;
             -i | --interval )
                 [ -z "$interval" ]                              || throw_conflict_opt "$1"
@@ -1014,7 +1030,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     local poym=$(echo "$opt_lin" | awk '{print($15)}')
     local pozm=$(echo "$opt_lin" | awk '{print($16)}')
 
-    opt_lin=" $site ${mode:0:1}  $map_opt $clkm $rckp $eloff $ztdm $ztdp $htgm $htgp $ragm $phsc $plen $poxm $poym $pozm"
+    opt_lin=" $site ${mode:0:1}  $map_opt $clkm $rckp $eloff $ztdm $ztdp $htgm $htgp $ragm $phsc $plen $poxm $poym $pozm $posp"
     sedi "s/^ .... [A-Z] .*/$opt_lin/" "$ctrl_file"
 
     # Return
@@ -1085,7 +1101,7 @@ throw_require_arg() { # purpose : throw exception message and exit when option d
 CheckExecutables() { # purpose : check whether all needed executables are callable
                      # usage   : CheckExecutables
     echo -e "$MSGSTA CheckExecutables ..."
-    for exceu in "arsig" "get_ctrl" "lsq" "redig" "sp3orb" "spp" "tedit"; do
+    for exceu in "arsig" "get_ctrl" "lsq" "redig" "sp3orb" "spp" "tedit" "otl"; do
         if ! which $exceu > /dev/null 2>&1; then
             echo -e "$MSGERR PRIDE PPP-AR executable file $exceu not found"
             return 1
@@ -1434,7 +1450,7 @@ ProcessSingleSession() { # purpose : process data of a single observation sessio
         return 1
     fi
 
-    # Truncate at midnight (default as NO)
+    # Truncate (Reset) ambiguities at midnight (default as NO)
     local tct_opt=$(get_ctrl "$ctrl_file" "Truncate at midnight" | tr 'a-z' 'A-Z')
     if [[ "$tct_opt" == "DEFAULT" ]]; then
         head -1 "$sp3" | grep -q "289   u+U IGS.. FIT  WHU" && tct_opt="NO" || tct_opt="YES"
@@ -1466,7 +1482,7 @@ ProcessSingleSite() { # purpose : process data of single site
     local ydoy_s=($(mjd2ydoy $mjd_s))
     local ydoy_e=($(mjd2ydoy $mjd_e))
     local ymd_s=($(ydoy2ymd ${ydoy_s[*]}))
-    local ymd_e=($(ydoy2ymd ${ydoy_s[*]}))
+    local ymd_e=($(ydoy2ymd ${ydoy_e[*]}))
 
     local year=${ydoy_s[0]}
     local doy=${ydoy_s[1]}
@@ -1532,6 +1548,18 @@ ProcessSingleSite() { # purpose : process data of single site
         fi
     fi
 
+    # Compute oceanload according priori position
+    if [ "$mode" != "L" ]; then
+        echo -e "$MSGSTA Compute oceanload ${site} ..."
+        local xyz=($(awk -v sit=$site '{if($1==sit){print $2,$3,$4}}' sit.xyz))
+        local blh=($(xyz2blh "${xyz[@]}"))
+        local ts="${ymd_s[0]}/${ymd_s[1]}/${ymd_s[2]} $hms_s"
+        local te="${ymd_e[0]}/${ymd_e[1]}/${ymd_e[2]} $hms_e"
+        cmd="otl -b ${blh[0]} -l ${blh[1]} -h ${blh[2]} -s $ts -e $te -i $interval -o otl_${ydoy_s[0]}${ydoy_s[1]}_${site}"
+        ExecuteWithoutOutput "$cmd" || return 1
+        echo -e "$MSGSTA Compute oceanload ${site} done"
+    fi
+
     # Fill in session time
     if [ ${#session_time[@]} -ne 7 ]; then
         echo -e "$MSGERR ProcessSingleSite: no session time"
@@ -1558,8 +1586,9 @@ ProcessSingleSite() { # purpose : process data of single site
         [[ "$editing_mode" == "NO" ]] && tkshort=0
     fi
 
-    # Truncate at midnight
+    # Truncate (Reset) ambiguities at midnight
     local tct_opt=$(get_ctrl "$config" "Truncate at midnight" | cut -c 1 | tr 'A-Z' 'a-z')
+    local sinexosb="fcb_${year}${doy}"
 
     # Data preprocess
     echo -e "$MSGSTA Data pre-processing ..."
@@ -1571,31 +1600,37 @@ ProcessSingleSite() { # purpose : process data of single site
     if [ "$positioning_mode" == "S" -o "$positioning_mode" == "F" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
              -xyz ${xyz[*]} -short 1200 -lc_check only -rhd ${rhd_file} -pc_check 300 \
-             -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
+             -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" \
+             -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
         if [ $mjd_s -le 51666 ]; then
             cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                  -xyz ${xyz[*]} -short 1200 -lc_check no -rhd ${rhd_file} -pc_check 0 \
-                 -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
+                 -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" \
+                 -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
         fi
     elif [ "$positioning_mode" == "P" -o "$positioning_mode" == "K" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
              -xyz kin_${year}${doy}_${site} -short ${tkshort} -lc_check ${lcc_opt} \
-             -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt}"
+             -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" \
+             -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt}"
         if [ $mjd_s -le 51666 ]; then
             cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                  -xyz kin_${year}${doy}_${site} -short ${tkshort} -lc_check no \
                  -pc_check 0 -elev ${cutoff_elevation} -rhd ${rhd_file} \
-                 -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt}"
+                 -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" -freq ${freq_cmb} \
+                 -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt}"
         fi
     elif [ "$positioning_mode" == "L" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
             -xyz kin_${year}${doy}_${site} -short 120 -lc_check lm \
-            -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
+            -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" \
+            -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
         if [ $mjd_s -le 51666 ]; then
            cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                 -xyz kin_${year}${doy}_${site} -short 120 -lc_check lm \
                 -pc_check 0 -elev ${cutoff_elevation} -rhd ${rhd_file} \
-                -rnxn \"${rinexnav}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
+                -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" -freq ${freq_cmb} \
+                -trunc_dbd ${tct_opt} -tighter_thre no"
         fi
     else
         echo -e "$MSGERR ProcessSingleSite: illegal positioning mode: $positioning_mode"
@@ -1684,7 +1719,7 @@ ProcessSingleSite() { # purpose : process data of single site
     local vbs_opt=$(get_ctrl "$ctrl_file" "Verbose output" | tr 'a-z' 'A-Z')
 
     # Ambiguity fixing
-    if [ "$AR" != "N" ] && [ -f ?(mer)fcb_${year}${doy} ]; then
+    if [ "$AR" != "N" ] && [ -f "${sinexosb}" ]; then
         if [ $(grep "# OF AMB RESOLVABLE SAT" amb_${year}${doy} | awk '{print($1)}') -ne 0 ]; then
             cmd="arsig ${config}"
             Execute "$cmd" || return 1
@@ -1764,7 +1799,7 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
         return 1
     fi
 
-    local tables=(file_name oceanload orography_ell orography_ell_1x1 gpt3_1.grd)
+    local tables=(file_name FES2004S1.dat Love_load_cm.dat orography_ell orography_ell_1x1 gpt3_1.grd oceanload)
     for table in ${tables[*]}; do
         if [ ! -f "$table_dir/$table" ]; then
             echo -e "$MSGERR PrepareTables: no such file: $table_dir/$table"
