@@ -391,6 +391,7 @@ real*8, parameter :: P2_55 = 2.775557561562891d-17     ! 2^-55
 
 integer*4, parameter :: FPOUT  = 10                    ! solution files  (except for 1/2/5/6)
 integer*4, parameter :: FPREAD = 11                    ! obs/nav  files
+integer*4, parameter :: FPNAV  = 16                    ! obs/nav  files
 integer*4, parameter :: FPOPT  = 12                    ! option   files
 integer*4, parameter :: FPADD  = 13                    ! additional files
 integer*4, parameter :: FPCLK  = 14                    ! additional files (sat clock bias)

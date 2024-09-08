@@ -52,7 +52,7 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
   integer*4     nobs(MAXSAT)
   integer*4     flagall(nepo, MAXSAT)
   real*8        ti(nepo), ts(nepo)
-  real*8        obs(nepo, MAXSAT, 6)
+  real*8        obs(nepo, MAXSAT, 7)
 ! local
   logical*1     found, ref_ok, lwrite
   integer*4     i, i0, i1, j, k
@@ -75,6 +75,7 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
 ! function called
   logical*1     istrue
   integer*4     set_flag
+
 !
 !! initialization
   lwrite = .true.
@@ -268,7 +269,7 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
         if (nsd .gt. ndgr + 2) then
           if (lwrite) write (lfnsd, *) ' Satellite ', prn0(isat), prn0(iref)
           call check_for_jump(' LC ', lfnsd, kobs, ti(i0), lc, flglc, ndgr, niter, &
-                              0.2d0, 0.12d0, a0, rmslc(isat), vlc, ilc, ierr, interval)
+                              0.3d0, 0.15d0, a0, rmslc(isat), vlc, ilc, ierr, interval)
           if (ierr .eq. 0) then
             if (rmslc(isat) .gt. lclimit .and. lwrite) &
               write (lfnsd, '(a,f10.6)') ' LC big rms ', rmslc(isat)
@@ -346,6 +347,7 @@ subroutine check_sd(lfnsd, neph, ephem, ndgr, niter, mepo, nstep, x, y, z, inter
   if (lwrite) write (lfnsd, *) ' Not checked', j
 
 ! statistics of flags and set in 'flagall'
+
   j = 0
   do i = 1, njump
     if (istrue(flagall(jump(i, 1), jump(i, 2)), 'ok')) then

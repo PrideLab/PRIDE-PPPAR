@@ -31,11 +31,11 @@
 !!        dx  -- position correction
 !
 subroutine tide_displace(tide,jd,t,xsit_j,xsit_f,xsun,xlun,rot_f2j,rot_l2f,&
-                         lat,lon,sidtm,xpole,ypole,olc,disp)
+                         lat,lon,sidtm,xpole,ypole,olc,otlfil,disp)
 implicit none
 include '../header/const.h'
 
-character*(*) tide
+character*(*) tide,otlfil
 integer*4 jd
 real*8    xsit_j(1:*),xsit_f(1:*),xsun(1:*),xlun(1:*),disp(1:*)
 real*8    t,lat,lon,xpole,ypole,sidtm,rot_f2j(3,3),rot_l2f(3,3),olc(11,6)
@@ -91,7 +91,11 @@ endif
   !! 3. Displacement due to ocean-loading
 if(index(tide,'OCEAN').ne.0) then
   dxi(1:3)=0.d0
-  call hardisp(jdutc,tutc,olc,1,0.d0,dxi)
+  if (all(olc .ne. 0.d0)) then
+    call hardisp(jdutc,tutc,olc,1,0.d0,dxi)
+  else
+    call otldisp(jdutc,tutc,otlfil,dxi)
+  endif
   call matmpy(rot_l2f,dxi,dxi,3,3,1) 
   call matmpy(rot_f2j,dxi,dxi,3,3,1)
   do i=1,3

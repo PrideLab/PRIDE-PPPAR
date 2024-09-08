@@ -5,7 +5,7 @@ implicit none
 include 'file_para.h'
 integer*4, intent(in) :: fp
 real*8, intent(out) :: ver
-character(*), intent(out) :: mytype
+character(*), intent(inout) :: mytype
 integer*4, intent(out) :: sys, tsys, stat  ! 0-error, 1-normal
 character(3), intent(out) :: tobs(NUMSYS,MAXOBSTYPE)  !tobs(:,:)
 type(obs_t), intent(out) :: obs
@@ -57,7 +57,7 @@ do while(.true.)
     ! file type 
     select case(mytype)
     case('O')
-        call decode_obsh(fp,buff,ver,tsys,tobs,obs,nav,sta)
+        call decode_obsh(fp,buff,ver,tsys,tobs,obs,nav,sta) 
     case('N')
         call decode_navh(buff,nav)
     case('G')

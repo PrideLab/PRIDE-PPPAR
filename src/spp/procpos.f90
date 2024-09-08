@@ -15,13 +15,9 @@ character(3) satid
 integer*4 i,nobs,n,prn,sys,info
 type(sol_t), pointer :: sol_data(:)
 
-integer*4 fpclk1  ! output sat clock
-fpclk1=FPCLK
-if(clkfile_/="") open(unit=fpclk1,file=clkfile_,status='replace',iostat=info)
-
 call rtkinit(rtk,popt);
 do while(.true.)
-    call inputobs(obs,rtk%sol%stat,popt,nobs)
+    call inputobs(obs,nobs)
     if(nobs<0) exit
     ! exclude satellites 
     n=1; satrec=""
@@ -40,7 +36,7 @@ do while(.true.)
     
     if (info==0) cycle
     if(mode==0 .and. sopt%issingle==0)then ! forward/backward 
-        call outsol(fp,rtk%sol,rtk%rb,sopt)
+        call outsol(fp,rtk%sol,sopt)
     endif
     solindex_=solindex_+1
     if(solindex_<=size(allsol_))then
@@ -54,7 +50,6 @@ do while(.true.)
     endif
 enddo
 call rtkfree(rtk);
-if(clkfile_/="") close(unit=fpclk1,status='keep')  ! output sat clock
 
 if(solindex_==0)then
     write(*,*) "Info : no solution are computed, procpos()"
@@ -76,7 +71,6 @@ type(rtk_t), intent(out) :: rtk
 type(prcopt_t), intent(in) :: opt
 type(sol_t) :: sol0=sol_t(gtime_t(0,0.d0),gtime_t(0,0.d0),0.d0,0.d0,0.d0,0,0,0,0.d0)
 type(ssat_t) :: ssat0=ssat_t(0,0,0.d0,0.d0,0.d0,0.d0,0,0,0)
-integer*4 i
 
 rtk%sol=sol0; rtk%rb=0.d0; rtk%tt=0.d0
 rtk%nx=0; rtk%na=0
@@ -128,13 +122,13 @@ enddo
 nu=nu-1
 time=rtk%sol%time  ! previous epoch 
 ! rover position by single point positioning 
-call pntpos(obs,nu,nav,rtk%opt,rtk%sol,azel,rtk%ssat,msg,info)
+call pntpos(obs,n,nav,rtk%opt,rtk%sol,azel,rtk%ssat,msg,info)
 if (info==0)then
     stat=0; return
 endif
-if (time%time/=0)then
-    rtk%tt=timediff(rtk%sol%time,time)
-endif
+! if (time%time/=0)then
+!     rtk%tt=timediff(rtk%sol%time,time)
+! endif
 stat=1
 end subroutine
 

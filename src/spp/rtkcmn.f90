@@ -44,7 +44,7 @@ real*8 gpst, dwnd, timediff
 external :: timediff
 logical(1) l1, l2, l3
 call time2gpst(time,week,gpst)
-dwnd=min(tint/10.d0,0.3d0)
+dwnd=min(tint/10.d0,0.01d0)
 ! l1=(tint<=0.d0 .or. dmod(gpst+DTTOL,tint)<=DTTOL*2.d0)
 ! l1=(tint<=0.d0 .or. dmod(timediff(time,ts),tint)>=tint-DTTOL .or. dmod(timediff(time,ts),tint)<=DTTOL)
 l1=(tint<=0.d0 .or. dmod(timediff(time,ts),tint)>=tint-dwnd .or. dmod(timediff(time,ts),tint)<=dwnd)

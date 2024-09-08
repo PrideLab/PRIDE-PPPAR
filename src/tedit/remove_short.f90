@@ -29,7 +29,7 @@ subroutine remove_short(keep_end, trunc_dbd, nepo, ti, flg, len_short, len_gap, 
   integer*4     nepo, flg(1:*), len_short, flag_shrt, len_gap
   real*8        ti(1:*), interval
   logical*1     removed, keep_end
-  character*1   trunc_dbd
+  logical*1     trunc_dbd(1:*)
 ! local
   logical*1     found, remove_it, istrue
   integer*4     i, j, k, iepo, ngood, set_flag, ilast
@@ -42,10 +42,9 @@ subroutine remove_short(keep_end, trunc_dbd, nepo, ti, flg, len_short, len_gap, 
         flg(iepo) = set_flag(flg(iepo), 'gap')
       end if
 ! reset ambiguity to avoid day-boundary discontinuity
-      if (trunc_dbd .eq. 'y') then
-        if (int(ti(ilast)/86400) .ne. int(ti(iepo)/86400)) then
-          flg(iepo) = set_flag(flg(iepo), 'gap')
-        end if
+      if (trunc_dbd(int(ti(iepo)/86400)) .and. &
+        int(ti(ilast)/86400) .ne. int(ti(iepo)/86400)) then
+        flg(iepo) = set_flag(flg(iepo), 'gap')
       end if
       ilast = iepo
     end if

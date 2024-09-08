@@ -1,5 +1,5 @@
 !/* ========================================================================= */
-! name	: do lagrange interpolation
+! name	: do lagrange interpolation of sp3
 ! aim 	: do lagrange interpolation in a given time, based on blocks data
 ! args  : I  : integer   fjd  : find modified Julian day
 !         I  : real      fsod : find socond of mjd 
@@ -35,7 +35,8 @@ subroutine lagrange_interp_sp3(fjd, fsod, fprn, header, blocks, nepoch, dim, ifl
   logical*1 :: has_prn
 !
 !! function call
-  real*8 timdif
+  real*8, external :: timdif
+  real*8, external :: lagrange
   
   if (mod(dim, 2) .ne. 0) then
     write(*, *) "***WARNING(lagrange_interp_sp3): The dimension of interpolation should be even."
@@ -130,34 +131,4 @@ subroutine lagrange_interp_sp3(fjd, fsod, fprn, header, blocks, nepoch, dim, ifl
   enddo
   iflag = .true.
   return
-
-contains
-
-  real*8 function lagrange(xs, ys, ix, n)
-  implicit none
-  real*8, intent(in)    :: xs(1:n), ys(1:n)
-  real*8, intent(in)    :: ix 
-  integer*4, intent(in) :: n
-  !
-  !! local
-  real*8    :: term, res
-  integer*4 :: i, j
-  !
-  !! initial
-  term = 0.0
-  res  = 0.0
-  
-  do i = 1, n
-    term = ys(i)
-    do j = 1, n
-      if (j .ne. i) then
-        term = term * (ix - xs(j)) / (xs(i) - xs(j))
-      end if
-    end do
-    res = res + term
-  end do
-
-  lagrange = res
-  end function lagrange
-
 end subroutine

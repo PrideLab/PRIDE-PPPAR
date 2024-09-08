@@ -84,7 +84,7 @@ subroutine elevation(neph, ephem, iprn, jd0, ti, x, y, z, elev, dist, dtsat, v, 
       dist = dsqrt((xsat(1) - x)**2 + (xsat(2) - y)**2 + (xsat(3) - z)**2)
       tsend1 = ti - dist/VLIGHT
       ite = ite + 1
-      if (dabs(tsend - tsend1) .lt. 1.d-9 .or. ite .ge. 4) exit
+      if (dabs(tsend - tsend1) .lt. 1.d-11 .or. ite .ge. 100) exit
       tsend = tsend1
     end do
 !

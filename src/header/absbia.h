@@ -24,6 +24,7 @@ type absbia
   character(3) :: tna    = ''           !! type, number and attribute
   integer(4)   :: period = 0            !! period of each bias record
   integer(4)   :: length = 0            !! length of bias records
+  real(8)      :: docb   = 0.d0         !! day boundary discontinuity
   real(8), allocatable :: val(:)        !! bias estimates
   real(8), allocatable :: grd(:)        !! bias gradient/slop estimates 
 end type

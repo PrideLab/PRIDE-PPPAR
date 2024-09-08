@@ -132,9 +132,10 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
       line1 = ''; line2 = ''; line3 = ''; 
       if (index(LCF%tide, 'SOLID') .ne. 0) line1 = 'SOLID'
       if (index(LCF%tide, 'POLE') .ne. 0) line2 = 'POLE'
-      if (index(LCF%tide, 'OCEAN') .ne. 0) line3 = 'OCEAN'
-      if (.not. LCF%otluse) line3 = ''
-      write (lfn, '(3(a5,1x),42x,a)') trim(line1), trim(line2), trim(line3), 'TIDES'
+      if (index(LCF%tide, 'OCEAN') .ne. 0) line3 = 'OCEAN(Scherneck)'
+      if (index(LCF%tide, 'OCEAN') .ne. 0 .and. all(SITE%olc .eq. 0.d0)) line3 = 'OCEAN(Zhang)'
+      if (.not. LCF%otluse) line3 = '' 
+      write (lfn, '(2(a5,1x),a16,32x,a)') trim(line1), trim(line2), trim(line3), 'TIDES'
       if (LCF%nconG + LCF%nconE + LCF%nconC2 + LCF%nconC3 + LCF%nconJ .gt. 0) then
         line1 = 'GPS '
         line3 = 'GAL '
@@ -435,9 +436,10 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
       line1 = ''; line2 = ''; line3 = ''; 
       if (index(LCF%tide, 'SOLID') .ne. 0) line1 = 'SOLID'
       if (index(LCF%tide, 'POLE') .ne. 0) line2 = 'POLE'
-      if (index(LCF%tide, 'OCEAN') .ne. 0) line3 = 'OCEAN'
-      if (.not. LCF%otluse) line3 = ''
-      write (lfn, '(3(a5,1x),42x,a)') trim(line1), trim(line2), trim(line3), 'TIDES'
+      if (index(LCF%tide, 'OCEAN') .ne. 0) line3 = 'OCEAN(Scherneck)'
+      if (index(LCF%tide, 'OCEAN') .ne. 0 .and. all(SITE%olc .eq. 0.d0)) line3 = 'OCEAN(Zhang)'
+      if (.not. LCF%otluse) line3 = '' 
+      write (lfn, '(2(a5,1x),a16,32x,a)') trim(line1), trim(line2), trim(line3), 'TIDES'
       if (LCF%lioh) then
         write (lfn, '(a3,57x,a)') 'YES', 'IONO 2ND'
       else

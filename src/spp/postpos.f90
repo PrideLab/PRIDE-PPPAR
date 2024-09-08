@@ -1,73 +1,147 @@
 
 ! Post-processing positioning -----------------------------------------------
-integer*4 function postpos(ts, te, ti, tu, popt, sopt, infile, n, outfile, rov, base)
+integer*4 function postpos(ts, te, ti, popt, sopt, rnxobsfile, rnxnavs , fout)
 implicit none
 include 'file_para.h'
 type(gtime_t), intent(in) :: ts, te
-real*8, intent(in) :: ti, tu
+real*8, intent(inout) :: ti
 type(prcopt_t), intent(in) :: popt
 type(solopt_t), intent(in) :: sopt
-character(*), intent(in) :: infile(n), outfile, rov, base
-integer*4, intent(in) :: n
-integer*4 :: i,stat,myindex(MAXINFILE)
-integer*4, external :: execses
-stat=0; myindex=0
-do i=1,n
-    myindex(i)=i-1
-enddo
-! execute processing session 
-stat=execses(ts,te,ti,popt,sopt,1,infile,myindex,n,outfile)
-postpos=stat
-end function
+character(*), intent(in) :: rnxobsfile
+character(*), intent(in) :: rnxnavs(FLNUMLIM)
+integer*4, intent(in) :: fout
 
-! execute processing session ------------------------------------------------
-integer*4 function execses(ts, te, ti, popt, sopt, flag, infile, myindex, n, outfile)  ! 0-error, 1-right
-implicit none
-include 'file_para.h'
-type(gtime_t), intent(in) :: ts, te
-real*8, intent(in) :: ti
-type(prcopt_t), intent(in) :: popt
-type(solopt_t), intent(in) :: sopt
-integer*4, intent(in) :: flag, myindex(MAXINFILE), n
-character(*), intent(in) :: infile(n), outfile
-integer*4 fp, info, outhead, openfile
-external :: outhead, openfile
-type(rtk_t) rtk
-type(prcopt_t) popt_
-type(gtime_t) stamp_
-popt_=popt
+! local 
+real*8 :: ver, obs_int
+integer*4 :: nsat, i, nobs, prn, sys, stat, dobs, dlst
+character(3) :: tobs(NUMSYS,MAXOBSTYPE), satid
+type(obsd_t) obs(MAXOBS)
+character(MAXOBS*2*3) satrec
+character*128 :: msg=''
+real*8 azel(MAXOBS,2)
+type(sol_t) sol0
 
-! read obs and nav data 
-call readobsnav(ts,te,ti,infile,myindex,n,popt_,obss,navs,stas,info)
+type(ssat_t) :: ssat0(MAXSAT)
 
-if (info==0)then
-    write(*,*) "Function execution failure, readobsnav()"
-    execses=0; return
+! function
+integer*4, external :: outhead
+real*8, external :: timediff
+
+! initialize
+stat=0
+call init_sta(site)
+tobs=''
+ssat0=ssat_t(0,0,0.d0,0.d0,0.d0,0.d0,0,0,0)
+sol0=sol_t(gtime_t(0,0.d0),gtime_t(0,0.d0),0.d0,0.d0,0.d0,0,0,0,0.d0)
+
+! open rinex obs file
+open(unit=FPREAD,file=rnxobsfile,status='old',iostat=stat)
+if(stat/=0)then
+    write(*,*) "File opening error : ", trim(rnxobsfile)
+    postpos=-1; return
 endif
+
+! read rinex obs header 
+call readrnxobsh(FPREAD, ver, tobs, site, obs_int, stat)
+if (stat==0)then
+    write(*,*) "Error reading rinex header ...", trim(rnxobsfile)
+    postpos=-1; return
+endif
+! no site name in obs header
+if(site%name=='') call decodemarker(rnxobsfile, site%name)
+! don't set compute inertval
+if(ti==0) ti=obs_int
+
 ! write header to output file 
-if(flag/=0 .and. sopt%issingle==0 .and. headwritten_==0)then
-    if(outhead(outfile,infile,n,popt_,sopt,stas(1),obss)==0)then
-        call freeobsnav(obss,navs)
-        write(*,*) "Function execution failure, outhead()"
-        execses=0; return
-    endif
+if(sopt%issingle==0 .and. headwritten_==0)then
+    call outheader(fout,site,ti)
     headwritten_=1
 endif
-iobsu=0
-if(popt_%mode==PMODE_SINGLE .or. popt_%soltype==0)then
-    fp=openfile(outfile)
-    call procpos(fp,popt_,sopt,rtk,0,info)
-    if(fp/=6)then
-        if(sopt%issingle==0) close(unit=fp,status='keep')
+
+do while(.true.)
+    ! read obs epoch data
+    call get_obsepoch(FPREAD,ts,te,ti,ver,tobs,obs,nobs)
+    if(nobs<0) exit
+
+    ! check result time stamp
+    if(solindex_>0 .and. timediff(allsol_(solindex_)%time0,obs(1)%time)>=0) cycle
+
+    ! first time read rinex nav
+    if(brdm_idx==0) then
+        brdm_idx=brdm_idx+1
+        call readrnxnavfile(rnxnavs(brdm_idx),navs,stat)
+        if(stat<=0)then
+            write(*,*) "File reading error : ", trim(rnxnavs(i))
+            exit
+        endif
+    ! shift rinex nav file according day diff
+    elseif(timediff(t_prev,gtime_t(0,0.d0))>0.0)then
+        dobs=int(obs(1)%time%time/86400) 
+        dlst=int(t_prev%time/86400)
+        if((dobs-dlst)>FLNUMLIM) then
+            exit
+        elseif((dobs-dlst)>0) then
+            brdm_idx=brdm_idx+dobs-dlst
+            call freenav(navs)
+            call readrnxnavfile(rnxnavs(brdm_idx),navs,stat)
+            if(stat<=0)then
+                write(*,*) "File reading error : ", trim(rnxnavs(i))
+                exit
+            endif
+        endif
     endif
-    if(info==0)then
-        call freeobsnav(obss,navs)
-        write(*,*) "Function execution failure, procpos()"
-        execses=0; return
-    endif
+    t_prev=obs(1)%time
+    
+    ! exclude satellites 
+    nsat=0; satrec=""
+    do i=1,nobs
+        call satsys(obs(i)%sat,prn,sys)
+        if(and(sys,popt%navsys)/=0 .and. popt%exsats(obs(i)%sat)/=1)then
+            call satno2id(obs(i)%sat,satid)
+            if(index(satrec,satid)==0)then
+                obs(nsat+1)=obs(i); nsat=nsat+1
+                satrec=trim(satrec)//satid
+            endif
+        endif
+    enddo
+    if (nsat<=0) cycle
+    
+    ! single point positioning
+    call pntpos(obs,nsat,navs,popt,sol0,azel,ssat0,msg,stat)
+    if (stat==0) cycle
+
+    ! write positioning result to outfile
+    if(sopt%issingle==0) call outsol(fout,sol0,sopt)
+
+    ! add current sloution to all solutions
+    call add_sol(sol0)
+enddo
+
+close(FPREAD)
+
+if(solindex_==0)then
+    write(*,*) "Info : no solution are computed, postpos()"
+    postpos=0; return
 endif
 
-! free obs and nav data 
-call freeobsnav(obss,navs)
-execses=1
+postpos=1
 end function
+
+! add solution to all solution -------------------------------------------------------
+subroutine add_sol(sol)
+implicit none
+include 'file_para.h'
+type(sol_t), intent(in) :: sol
+type(sol_t), pointer :: sol_data(:)
+
+solindex_=solindex_+1
+if(solindex_>size(allsol_))then
+    allocate(sol_data(size(allsol_)+MAXSOLNUM))
+    sol_data(1:size(allsol_))=allsol_(1:size(allsol_))
+    deallocate(allsol_)
+    allsol_=>sol_data
+    nullify(sol_data)
+endif
+allsol_(solindex_)=sol
+
+end subroutine

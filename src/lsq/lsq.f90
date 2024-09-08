@@ -218,7 +218,7 @@ program lsq
   NM%ltpl = 0.d0
   NM%nuk = NM%nc
   NM%nobs = 0
-  dwnd = min(LCF%dintv/10.d0, 0.3d0)
+  dwnd = min(LCF%dintv/10.d0, 0.01d0)
   pdop_sum = 0.d0
   do while (timdif(jd, sod, LCF%jd1, LCF%sod1) .lt. MAXWND)
     OB%omc(1:LCF%nprn, 1:4) = 0.d0
@@ -274,7 +274,7 @@ program lsq
 !
 !! read kinematic position: if not found, use value at last epoch
     if ((count(OB%obs(1:LCF%nprn, 3) .ne. 0.d0) .gt. 0) .and. &
-        (SITE%skd(1:1) .eq. 'P' .or. SITE%skd(1:1) .eq. 'K' .or. SITE%skd(1:1) .eq. 'L')) then
+        ( SITE%skd(1:1) .eq. 'K' .or. SITE%skd(1:1) .eq. 'L')) then
       ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
       ipar = OB%ltog(ipar, 1)
       if (PM(ipar)%iepo .eq. 0) then
@@ -302,7 +302,7 @@ program lsq
     if (dmod(iepo*1.d0, dnint(300.d0/LCF%dintv)) .le. MAXWND) write (*, '(2a,i9,i7,f9.1)') run_tim(), ' Epoch ', iepo, jd, sod
 !
 !! prepare a priori information for kinematic station
-    if (SITE%skd(1:1) .eq. 'P' .or. SITE%skd(1:1) .eq. 'K' .or. SITE%skd(1:1) .eq. 'L') then
+    if ( SITE%skd(1:1) .eq. 'K' .or. SITE%skd(1:1) .eq. 'L') then
       ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
       do i = 0, 2
         SITE%x(i + 1) = PM(OB%ltog(ipar + i, 1))%xini * 1.d-3

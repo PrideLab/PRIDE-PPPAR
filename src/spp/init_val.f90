@@ -39,7 +39,6 @@ end subroutine
 subroutine InitGlobal()
 implicit none
 include 'file_para.h'
-type(sta_t) :: sta0
 chisqr=(/&  ! chi-sqr(n) (alpha=0.001)
     10.8d0, 13.8d0, 16.3d0, 18.5d0, 20.5d0, 22.5d0, 24.3d0, 26.1d0, 27.9d0, 29.6d0,&
     31.3d0, 32.9d0, 34.5d0, 36.1d0, 37.7d0, 39.3d0, 40.8d0, 42.3d0, 43.8d0, 45.3d0,&
@@ -84,8 +83,10 @@ obss=obs_t(0,0,0,null())
 navs=nav_t(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,&
            null(),null(),null(),0.d0,0.d0,0.d0,0.d0,0.d0,0.d0,0.d0,0.d0,&
            0.d0,0.d0,0.d0,0.d0,0,0.d0,0.d0,0.d0,0.d0,0.d0,'')
-stas=sta_t('','','','','','','',0,0,0,0.d0,0.d0,0.d0)
+site=sta_t('','','','','','','',0,0,0,0.d0,0.d0,0.d0)
 
 nepoch=0; revs=0
 iobsu=0; iobsr=0;
+brdm_idx=0
+t_prev=gtime_t(0,0.d0)
 end subroutine

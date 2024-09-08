@@ -368,10 +368,10 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT, IM)
     read (key(13:), *, err=200) SITE%dclk0, SITE%qrck, &
       SITE%cutoff, SITE%dztd0, &
       SITE%qztd, SITE%dhtg0, SITE%qhtg, SITE%sigr, &
-      SITE%sigp, SITE%pospd, (SITE%dx0(i), i=1, 3)
+      SITE%sigp, SITE%pospd, (SITE%dx0(i), i=1, 3), SITE%rx0
     SITE%cutoff = SITE%cutoff*PI/180.d0
     SITE%undu = 0.d0
-    SITE%rx0 = 2.d-1    ! process noise for piece-wise coordinates
+  !  SITE%rx0 = 2.d-1    ! process noise for piece-wise coordinates
     do i = 1, LCF%nprn
       SITE%first(i) = .true.
       SITE%prephi(i) = 0.d0
@@ -439,6 +439,14 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT, IM)
         call oceanload_coef(LCF%otluse, SITE%name, &
                             SITE%geod(1), SITE%geod(2), SITE%rlat, &
                             SITE%rlon, SITE%olc)
+        call file_name(.false., 'otl', 'SNAM='//SITE%name, iy, imon, id, ih,SITE%otlfil)
+        inquire(file=SITE%otlfil, exist=lexist)
+        if (.not. LCF%otluse .and. lexist) then
+          LCF%otluse = .true.
+        else if (.not. LCF%otluse .and. .not. lexist) then
+          LCF%otluse = .false.
+          write (*, '(2a)') '###WARNING(get_lsq_args): no oceanload model(Zhang) for ', SITE%name
+        end if
       end if
     end if
 !

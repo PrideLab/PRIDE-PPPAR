@@ -131,7 +131,7 @@ subroutine qzsmod(jd, sod, LCF, SITE, OB, SAT, IM)
 !
 !! tide displacement
   call tide_displace(LCF%tide, jd_recv, sod_recv, xant_j(1, 1), xant_f(1, 1), xsun, &
-                     xlun, rot_f2j, SITE%rot_l2f, SITE%geod(1), SITE%geod(2), gast, xpole, ypole, SITE%olc, dx)
+                     xlun, rot_f2j, SITE%rot_l2f, SITE%geod(1), SITE%geod(2), gast, xpole, ypole, SITE%olc, SITE%otlfil, dx)
   do j = 1, 2
     xant_j(1:3, j) = xant_j(1:3, j) + dx(1:3)
   end do

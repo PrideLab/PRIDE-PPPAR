@@ -23,14 +23,16 @@ integer*4 :: headwritten_           ! output the header (0-none, 1-written)
 character(1024) :: clkfile_
 
 ! postpos.f90 ---------------------------------------------------------------
-type(obs_t) :: obss                 ! observation data 
+type(obs_t) :: obss                ! observation data 
 type(nav_t) :: navs                 ! navigation data 
-type(sta_t) :: stas(MAXRCV)         ! station infomation 
+type(sta_t) :: site                 ! station infomation 
+type(gtime_t) :: t_prev             ! last time previous
 integer*4 :: nepoch                 ! number of observation epochs 
 integer*4 :: iobsu                  ! current rover observation data index 
 integer*4 :: iobsr                  ! current reference observation data index 
 integer*4 :: revs                   ! analysis direction (0:forward,1:backward) 
+integer*4 :: brdm_idx               ! brdm navs index
 
 common chisqr, ura_value, timeoffset_, prcopt_default, solopt_default, &
-       allsol_, solindex_, headwritten_, clkfile_, obss, navs, stas, &
-       nepoch, iobsu, iobsr, revs
+       allsol_, solindex_, headwritten_, clkfile_, obss, navs, site,t_prev, &
+       nepoch, iobsu, iobsr, revs, brdm_idx

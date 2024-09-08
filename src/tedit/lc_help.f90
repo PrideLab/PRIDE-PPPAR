@@ -30,7 +30,7 @@ subroutine lc_help(nepo, flagall)
     if (istrue(flagall(iepo), 'ok')) then
       if (.not. istrue(flagall(iepo), 'bigsd') .and. &
           .not. istrue(flagall(iepo), 'gap')) then
-        if (.not. istrue(flagall(iepo), 'lgjump') .or. &
+        if (.not. istrue(flagall(iepo), 'lgjump') .and. &
             .not. istrue(flagall(iepo), 'lwjump')) then
           flagall(iepo) = set_flag(flagall(iepo), 'lggood')
           flagall(iepo) = set_flag(flagall(iepo), 'lwgood')

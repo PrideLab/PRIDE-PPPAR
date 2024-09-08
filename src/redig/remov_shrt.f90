@@ -31,6 +31,7 @@ subroutine remov_shrt(shrt, nepo, flag, trsi)
   implicit none
   include '../header/const.h'
   include 'data_flag.h'
+  include 'rescfg.h'
 
   integer*4 nepo, shrt, flag(1:*)
   character*27 trsi(1:*)
@@ -38,6 +39,7 @@ subroutine remov_shrt(shrt, nepo, flag, trsi)
 !! local
   logical*1 lfnd
   integer*4 i, j, k, iepo, nok
+ 
 !
 !! function called
   logical*1 istrue

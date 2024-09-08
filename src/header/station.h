@@ -3,7 +3,7 @@ type station
   character*2 skd
   integer*4 iunit, lfnjmp, ikin, iion, imet, iptatx
   integer*4 pospd
-  real*8 x(6), dx0(3), rx0(3), geod(3)
+  real*8 x(6), dx0(3), rx0, geod(3)
 !
 !! LEO science reference frame
   real*8 xsrf(3), ysrf(3), zsrf(3)
@@ -39,4 +39,5 @@ type station
 !
 !! ocean load
   real*8 olc(11,6), rlat, rlon
+  character*20 otlfil
 end type 

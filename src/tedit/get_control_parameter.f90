@@ -19,8 +19,8 @@
 !!
 !!
 !
-subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
-                                 check_lc, turbo_edit, lm_edit, ltighter, use_brdeph, check_pc, keep_end, trunc_dbd, &
+subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
+                                 check_lc,check_lg, turbo_edit, lm_edit, ltighter, use_brdeph, check_pc, keep_end, trunc_dbd, &
                                  tstart, sstart, session_length, length_gap, length_short, &
                                  cutoff_elevation, max_mean_namb, min_percent, min_mean_nprn, &
                                  interval, lclimit, pclimit, lglimit, lgrmslimit, &
@@ -32,8 +32,8 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
   integer*4     idxfrq(MAXSYS, 2)
   common        idxfrq
 ! parameter
-  character*256 flnrnx, flneph, flnrhd
-  logical*1     check_lc, turbo_edit, lm_edit, ltighter, use_brdeph, check_pc, keep_end
+  character*256 flnrnx, flneph, flnosb, flnrhd
+  logical*1     check_lc, check_lg,turbo_edit, lm_edit, ltighter, use_brdeph, check_pc, keep_end
   character*1   trunc_dbd
   integer*4     tstart(5)
   real*8        sstart, session_length
@@ -55,6 +55,7 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
 !
 !! set default parameters
   check_lc = .true.
+  check_lg = .true.
   check_pc = .false.
   turbo_edit = .true.
   lm_edit = .false.
@@ -127,6 +128,9 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
         inquire (file=flneph, exist=lexist)
         display_help = .not. lexist
       end if
+    else if (arg(ipar, 1)(1:4) .eq. '-osb') then
+      display_help = nval(ipar) .lt. 1
+      if (.not. display_help) flnosb = arg(ipar, nval(ipar))
     else if (arg(ipar, 1)(1:4) .eq. '-rhd') then
       display_help = nval(ipar) .lt. 1
       if (.not. display_help) flnrhd = arg(ipar, nval(ipar))
@@ -168,13 +172,18 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
       if (.not. display_help) then
         if (arg(ipar, 2)(1:1) .eq. 'y') then
           check_lc = .true.
+          check_lg = .true.
         else if (arg(ipar, 2)(1:1) .eq. 'n') then
           check_lc = .false.
+          check_lg = .true.
+          lm_edit = .true.
         else if (arg(ipar, 2)(1:1) .eq. 'o') then
           check_lc = .true.
+          check_lg = .true.
           turbo_edit = .false.
         else if (arg(ipar, 2)(1:1) .eq. 'l') then
           check_lc = .false.
+          check_lg = .false.
           lm_edit = .true.
         else
           display_help = .true.
@@ -277,6 +286,8 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
     write (*, '(a,2a)') 'usage: ', trim(arg0), ' rinex_obs_file [option] / '
     write (*, '(2x,a)') '-rnxn filename '
     write (*, '(2x,a)') ' broadcast ephem. file. If -check_lc is active or -elev is on, this file is required'
+    write (*, '(2x,a)') '-osb [filename]'
+    write (*, '(2x,a)') ' BIAS-SINEX file. Default is no.'
     write (*, '(2x,a)') '-rhd [filename]'
     write (*, '(2x,a)') ' output rhd file. Default is no. Default name is {rinx_obs_file}.rhd'
     write (*, '(2x,a)') '-time year month day hour minut second '
@@ -288,8 +299,8 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
     write (*, '(2x,a)') '-short length_in_second'
     write (*, '(2x,a)') ' data piece shorter than this value will be removed. Default is 600s'
     write (*, '(2x,a)') '-trunc_dbd yes/no/cont'
-    write (*, '(2x,a)') ' truncated all ambiguities at day-boundary' 
-    write (*, '(2x,a)') '    yes = truncate'
+    write (*, '(2x,a)') ' truncate (reset) ambiguities at day-boundary' 
+    write (*, '(2x,a)') '    yes = truncate (reset)'
     write (*, '(2x,a)') '     no = no special action'
     write (*, '(2x,a)') '   cont = keep continuous'
     write (*, '(2x,a)') '-tighter_thre yes/no'

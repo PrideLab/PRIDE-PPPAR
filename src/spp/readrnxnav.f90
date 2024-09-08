@@ -1,3 +1,121 @@
+! read rinex nav files ------------------------------------------------------
+subroutine readrnxnavfiles(rnxnavs, nav, stat)
+implicit none
+include 'file_para.h'
+character(*), intent(in) :: rnxnavs(FLNUMLIM)
+type(nav_t), intent(out) :: nav
+integer*4, intent(out) :: stat  ! -1,0: error, 1-normal
+
+! local 
+integer*4 :: i
+character(1024) :: filetmp
+
+! read rinex navs
+nullify(nav%eph);    nav%n =0; nav%nmax =0
+nullify(nav%geph);   nav%ng=0; nav%ngmax=0
+do i=1,FLNUMLIM
+    ! check if nav file is blank
+    call getfname(rnxnavs(i),filetmp)
+    if(len_trim(filetmp)==0) cycle
+
+    ! read one rinex nav file
+    call readrnxnavfile(rnxnavs(i),navs,stat)
+    if(stat<=0) write(*,*) "File reading error : ", trim(rnxnavs(i))
+enddo
+end subroutine
+
+! read rinex nav file -------------------------------------------------------
+subroutine readrnxnavfile(filepath, nav, stat)
+implicit none
+include 'file_para.h'
+character(*), intent(in) :: filepath
+type(nav_t), intent(out) :: nav
+integer*4, intent(out) :: stat  ! -1,0: error, 1-normal
+
+! local
+integer*4 :: fp=FPNAV, info, sys, tsys, i
+real*8 :: ver
+character(MAXRNXLEN) :: buff
+character(20) :: label
+character(1) :: mytype
+
+! open rinex file 
+open(unit=fp,file=filepath,status='old',iostat=info)
+if(info/=0)then
+    write(*,*) "File opening error : ", trim(filepath)
+    stat=-1; return
+endif
+
+! read rinex nav header 
+stat=0
+do while(.true.)
+    read(fp,"(A)",iostat=info) buff
+    label=buff(61:)
+    if(info/=0) exit
+    if (len_trim(buff)<=60)then
+        cycle
+    elseif(index(label,'RINEX VERSION / TYPE')/=0)then
+        read(buff(1:9),*,iostat=info) ver
+        read(buff(21:40),"(A)",iostat=info) mytype
+        ! satellite system 
+        select case(buff(41:41))
+        case(' ','G')
+            sys=SYS_GPS; tsys=TSYS_GPS
+        case('R')
+            sys=SYS_GLO; tsys=TSYS_UTC
+        case('E')
+            sys=SYS_GAL; tsys=TSYS_GAL  ! v.2.12 
+        case('S')
+            sys=SYS_SBS; tsys=TSYS_GPS
+        case('J')
+            sys=SYS_QZS; tsys=TSYS_QZS  ! v.3.02 
+        case('C')
+            sys=SYS_CMP; tsys=TSYS_CMP  ! v.2.12 
+        case('I')
+            sys=SYS_IRN; tsys=TSYS_IRN  ! v.3.03 
+        case('M')
+            sys=SYS_NONE; tsys=TSYS_GPS  ! mixed 
+        case default
+        end select
+        cycle
+    elseif(index(label,'PGM / RUN BY / DATE')/=0)then
+        cycle
+    elseif(index(label,'COMMENT')/=0)then
+        cycle
+    endif
+    ! file type 
+    select case(mytype)
+    case('N')
+        call decode_navh(buff,nav)
+    case('G')
+        call decode_gnavh(buff,nav)
+    end select
+    if (index(label,'END OF HEADER')/=0)then
+        stat=1; exit
+    endif
+    i=i+1
+    if (i>=MAXPOSHEAD .and. mytype==' ') exit  ! no rinex file 
+enddo
+if (stat==0)then
+    write(*,*) "Error reading rinex header ..."
+    stat=0; return
+endif
+
+select case(mytype)
+case('N')
+    call readrnxnav(fp,'',ver,sys,nav,stat); call uniqnav(navs)
+    return  ! 0-error, 1-normal
+case('G')
+    call readrnxnav(fp,'',ver,SYS_GLO,nav,stat); call uniqnav(navs)
+    return
+case('L')
+    call readrnxnav(fp,'',ver,SYS_GAL,nav,stat); call uniqnav(navs)
+    return  ! extension
+end select
+
+close(unit=fp,status='keep')
+stat=0
+end subroutine
 
 ! Read rinex nav/gnav/geo nav -----------------------------------------------
 subroutine readrnxnav(fp, opt, ver, sys, nav, stat)
@@ -8,9 +126,15 @@ character(*), intent(in) :: opt
 real*8, intent(in) :: ver
 type(nav_t), intent(out) :: nav
 integer*4, intent(out) :: stat  ! 0-error, 1-normal
+
+! local
 type(eph_t) eph
 type(geph_t) geph
 integer*4 stat1, mytype
+
+! function
+real*8, external :: timediff
+integer*4, external :: screent
 
 ! read rinex navigation data body 
 do while(.true.)
@@ -24,9 +148,6 @@ do while(.true.)
         case default
             call add_eph (nav,eph, stat1)
         end select
-        if(stat1==0)then
-            stat=0; return
-        endif
     endif
 enddo
 if(nav%n>0 .or. nav%ng>0)then

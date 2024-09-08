@@ -13,32 +13,32 @@ real*8 epss(6), timespan
 real*8, external :: raver, timediff
 avexyz=0
 
-    if(solindex_==0)then
-        ret=0; return
-    endif
-    
-    allocate(rr(solindex_,3))
-    call errorfilter(allsol_(1:solindex_)%rr(1),rr(:,1),solindex_)
-    call errorfilter(allsol_(1:solindex_)%rr(2),rr(:,2),solindex_)
-    call errorfilter(allsol_(1:solindex_)%rr(3),rr(:,3),solindex_)
-    avexyz(1)=raver(rr(:,1),solindex_)
-    avexyz(2)=raver(rr(:,2),solindex_)
-    avexyz(3)=raver(rr(:,3),solindex_)
-    deallocate(rr)
-    
-    if(avexyz(1)==0 .and. avexyz(2)==0 .and. avexyz(3)==0)then
-        ret=0; return
-    endif
-    write(unit=6,fmt="(A11,3F16.4)") "Position : ", avexyz(1), avexyz(2), avexyz(3)
+if(solindex_==0)then
+    ret=0; return
+endif
 
-    ! output time stamp
-    tss=allsol_(1)%time0
-    tee=allsol_(solindex_)%time0
-    call time2epoch(tss, epss)
-    timespan=timediff(tee, tss)
-    write(unit=6,fmt="(A11,I4.4,' ',I2.2,' ',I2.2,' ',I2.2,' ',I2.2,' ',F5.2,' 'F11.2)") &
-            "Duration : ", int(epss(1)), int(epss(2)), int(epss(3)), &
-                           int(epss(4)), int(epss(5)), epss(6), timespan  !, round(timespan)
+allocate(rr(solindex_,3))
+call errorfilter(allsol_(1:solindex_)%rr(1),rr(:,1),solindex_)
+call errorfilter(allsol_(1:solindex_)%rr(2),rr(:,2),solindex_)
+call errorfilter(allsol_(1:solindex_)%rr(3),rr(:,3),solindex_)
+avexyz(1)=raver(rr(:,1),solindex_)
+avexyz(2)=raver(rr(:,2),solindex_)
+avexyz(3)=raver(rr(:,3),solindex_)
+deallocate(rr)
+
+if(avexyz(1)==0 .and. avexyz(2)==0 .and. avexyz(3)==0)then
+    ret=0; return
+endif
+write(unit=6,fmt="(A11,3F16.4)") "Position : ", avexyz(1), avexyz(2), avexyz(3)
+
+! output time stamp
+tss=allsol_(1)%time0
+tee=allsol_(solindex_)%time0
+call time2epoch(tss, epss)
+timespan=timediff(tee, tss)
+write(unit=6,fmt="(A11,I4.4,' ',I2.2,' ',I2.2,' ',I2.2,' ',I2.2,' ',F5.2,' 'F11.2)") &
+        "Duration : ", int(epss(1)), int(epss(2)), int(epss(3)), &
+                        int(epss(4)), int(epss(5)), epss(6), timespan  !, round(timespan)
 ! endif
 ret=1
 end subroutine

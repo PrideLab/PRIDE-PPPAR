@@ -18,6 +18,7 @@ end type
 type rnxobr 
   integer*4    jd
   integer*4    nprn
+  integer*4    itypuse(maxsat,4)
   character*3  typuse(maxsat,4),prn(maxsat)
   real*8       tsec,dtrcv
   real*8       obs(maxsat,6)

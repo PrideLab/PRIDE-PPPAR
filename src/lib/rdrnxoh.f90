@@ -62,7 +62,8 @@ subroutine rdrnxoh(lfn, HD, ierr)
 !! end of header
     if ((index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 200 .and.  HD%ver .lt. 300) &
         .or. (len_trim(keyword) .eq. 0 .and. HD%ver .lt. 200) &
-        .or. (index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 300 .and.  HD%ver .lt. 400)) return
+        .or. (index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 300 .and.  HD%ver .lt. 400) &
+        .or. (index(keyword, 'END OF HEADER') .ne. 0 .and. HD%ver .ge. 400 .and.  HD%ver .lt. 500)) return
 !
 !! RINEX version
     if (index(keyword, 'RINEX VERSION') .ne. 0) then

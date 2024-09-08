@@ -21,7 +21,7 @@
 !!
 !! flnrnx ------------ rinex O_file
 ! tstart,sstart ----- start time: tstart(1):year, tstart(2):month, tstart(3):day, tstart(4):hour, tstart(5):minute, sstart:second.
-! sesstion_length---- sesstion time length
+! session_length ---- sesstion time length
 ! interval ---------- Epoch interval of processing. (rinex o_file Epoch interval: OH.intv)
 ! check_pc
 ! pclimit -----------
@@ -38,7 +38,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
                            check_pc, pclimit, &
                            cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
                            stanam, x, y, z, t_first_in_rinex, t_last_in_rinex, v, &
-                           nepo, nsat, jd0, nobs, flagall, ti, ts, obs, bias)
+                           nepo, nsat, jd0, nobs, flagall, ti, ts, obs, itypuse, bias)
   implicit none
   include '../header/const.h'
   include '../header/absbia.h'
@@ -67,6 +67,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
   real*8        ti(nepo), ts(nepo)
   real*8        obs(nepo, MAXSAT, 7)
   type(absbia)  bias(MAXSAT, MAXTYP)
+  integer*4     itypuse(MAXSAT, 4)
 ! local
   type(rnxhdr)  HD
   type(rnxobr)  OB
@@ -127,8 +128,9 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
   jumpsum = 0.d0
   obsval = 0.d0
   lli_thre = 3
+  itypuse = 0
 
-  dwnd = min(interval/10.d0, 0.3d0)
+  dwnd = min(interval/10.d0, 0.01d0)
 
 ! open rinex observation file
   iunit = 10
@@ -204,7 +206,8 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
       call rdrnxoi2(iunit, jd0, tobs, dwnd, nprn, prn, HD, OB, bias, nbias_used, ierr)
     end if
     if (ierr .eq. 2) then
-      call next_rinex(iunit, iunit_next, int(jd0 + (sstart + session_length)/864.d2))
+      call next_rinex(iunit, iunit_next, &
+        int(jd0 + (tstart(4)*3600.d0 + tstart(5)*60.d0 + sstart + session_length)/864.d2))
       if (iunit_next .eq. 0) exit
       close (iunit)
       iunit = iunit_next
@@ -224,6 +227,10 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
       if (j .eq. 0) cycle
 ! nsat : largest PRN for a satellite
       if (nsat .lt. j) nsat = j
+! itypuse: index of obs type used at the day boundary
+      if ((abs(OB%tsec) .le. MAXWND .or. abs(OB%tsec - 864.d2) .le. MAXWND)) then
+        itypuse(j, 1:4) = OB%itypuse(ichn, 1:4)
+      end if
       if (use_brdeph) then
         ieph = 0
 ! range --------- the distance between satellite and reciver

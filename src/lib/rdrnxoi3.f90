@@ -295,6 +295,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
       end do
 !
 !! if one of the phases is zero, or the data is removed before
+      OB%itypuse(i0, imes) = -1
       do imes = 1, 4
         if (abs(OB%obs(i0, imes)) .lt. 1.d-9 .or. &
             abs(OB%obs(i0, imes)) .gt. 1.d12) then
@@ -304,6 +305,10 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
           if ('R' .eq. sysid(i) .and. imes .le. 2) cycle
           OB%typuse(i0, imes) = hobstyp(k)
           if (k .eq. 0) cycle
+          if (abs(OB%tsec) .le. MAXWND .or. abs(OB%tsec - 864.d2) .le. MAXWND) then
+            j = index(obs_prio_sys(isys), OB%typuse(i0, imes)(3:3))
+            if (j .gt. 0) OB%itypuse(i0, imes) = j + (imes - 1) * 9
+          end if
         end if
       end do
       if (any(abs(OB%obs(i0, 1:4)) .lt. 1.d-9) .or. &

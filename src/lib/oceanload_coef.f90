@@ -107,7 +107,7 @@ subroutine oceanload_coef(otluse, name, lat, lon, rlat, rlon, olc)
     endif
   enddo
 
-100 write (*, '(2a)') '###WARNING(oceanload_coef): no oceanload coefficients for ', name
+100 write (*, '(3a)') '###WARNING(oceanload_coef): no oceanload coefficients for ', name, ". Use oceanload model(zhang) instead."
   otluse = .false.
   return
 end

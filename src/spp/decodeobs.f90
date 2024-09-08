@@ -1,7 +1,7 @@
 
 ! Decode observation data ---------------------------------------------------
 ! decode obs header ---------------------------------------------------------
-subroutine decode_obsh(fp, buff, ver, tsys, tobs, obs, nav, sta)
+subroutine decode_obsh(fp, buff, ver, tsys, tobs, tint, sta)
 implicit none
 include 'file_para.h'
 integer*4, intent(in) :: fp
@@ -9,8 +9,7 @@ character(*), intent(inout) :: buff
 real*8, intent(in) :: ver
 integer*4, intent(out) :: tsys
 character(3), intent(out) :: tobs(NUMSYS,MAXOBSTYPE)  !tobs(:,:)
-type(obs_t), intent(out) :: obs
-type(nav_t), intent(out) :: nav
+real*8, intent(out) :: tint
 type(sta_t), intent(out) :: sta
 
 ! default codes for unknown code 
@@ -121,7 +120,7 @@ elseif(index(label,'# / TYPES OF OBSERV' )/=0)then  ! ver.2
     tobs(6,nt)='end'
 elseif(index(label,'SIGNAL STRENGTH UNIT')/=0)then
 elseif(index(label,'INTERVAL'            )/=0)then
-    read(buff(1:11),*,iostat=info) obs%tint
+    read(buff(1:11),*,iostat=info) tint
 elseif(index(label,'TIME OF FIRST OBS'   )/=0)then
     if(buff(49:51)=="GPS") tsys=TSYS_GPS
     if(buff(49:51)=="GLO") tsys=TSYS_UTC
@@ -138,7 +137,7 @@ elseif(index(label,'SYS / PHASE SHIFTS'  )/=0)then  ! ver.3.01
 elseif(index(label,'GLONASS SLOT / FRQ #')/=0)then  ! ver.3.02 
 elseif(index(label,'GLONASS COD/PHS/BIS' )/=0)then  ! ver.3.02
 elseif(index(label,'LEAP SECONDS'        )/=0)then  ! opt 
-    nav%leaps=int(str2num(buff,1,6))
+    ! nav%leaps=int(str2num(buff,1,6))
 elseif(index(label,'# OF SALTELLITES'    )/=0)then  ! opt 
 elseif(index(label,'PRN / # OF OBS'      )/=0)then  ! opt 
 endif
@@ -207,6 +206,46 @@ else  ! ver.3
     endif
 endif
 stat=n
+end subroutine
+
+! cycle obs data -----------------------------------------------------------
+subroutine cycle_obsdata(fp, ver, index_in)
+implicit none
+include 'file_para.h'
+integer*4, intent(in) :: fp
+real*8, intent(in) :: ver
+type(sigind_t), intent(in) :: index_in(7)
+! local
+character(MAXRNXLEN) :: buff
+type(sigind_t) ind
+character(8) :: satid
+integer*4 :: i,j,sys,info
+integer*4, external :: satid2no,icond
+satid=''
+! read obs data fields 
+select case(sys)
+case(SYS_GLO)
+    ind=index_in(2)
+case(SYS_GAL)
+    ind=index_in(3)
+case(SYS_QZS)
+    ind=index_in(4)
+case(SYS_SBS)
+    ind=index_in(5)
+case(SYS_CMP)
+    ind=index_in(6)
+case default
+    ind=index_in(1)
+end select
+i=1; j=icond(ver<=2.99,1,4)
+do while(i<=ind%n)
+    if(ver<=2.99.and.j>80)then  ! ver.2 
+        read(fp,"(A)",iostat=info) buff
+        if (info/=0) exit
+        j=1
+    endif
+    i=i+1; j=j+16
+enddo
 end subroutine
 
 ! decode obs data -----------------------------------------------------------

@@ -124,15 +124,15 @@ subroutine lsq_init(LCF, SITE, OB, NM, PM)
       PM(ipar)%xini = SITE%x(i)*1.d3
       PM(ipar)%ptime(1) = LCF%jd0 + LCF%sod0/864.d2 
       PM(ipar)%ptime(2) = LCF%jd0 + LCF%sod0/864.d2 + SITE%pospd/864.d2 
-      PM(ipar)%map = 0.d0
-      PM(ipar)%rw = 1.d0/SITE%rx0(i)
+      PM(ipar)%map = 1.d0
+      PM(ipar)%rw = 1.d0/(SITE%rx0*dsqrt(SITE%pospd*1.d0))
       OB%npar = OB%npar + 1
       OB%pname(OB%npar) = PM(ipar)%pname
       OB%ltog(OB%npar, 1) = ipar
       NM%norx(ipar, ipar) = 1.d0/SITE%dx0(i)**2
       NM%iptp(ipar) = ipar
     end do
-  else if (SITE%skd(1:1) .eq. 'K' .or. SITE%skd(1:1) .eq. 'L') then
+  else if (SITE%skd(1:1) .eq. 'K'.or. SITE%skd(1:1) .eq. 'L') then
     do i = 1, 3
       ip = ip + 1
       ipar = NM%nc + ip
