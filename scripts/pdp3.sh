@@ -1780,10 +1780,10 @@ ComputeInitialPos() { # purpose : compute intial postion with spp
         cmd="spp -elev  0 -trop non  -ts $ts -te $te -ti $interval -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
     else
         cmd="spp -elev 10 -trop saas -ts $ts -te $te -ti $interval -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
-		rm -f kin_${ydoy_s[0]}${ydoy_s[1]}_${site}
     fi
 
     Execute "$cmd" tmp_ComputeInitialPos || return 1
+	[ "$mode" == "S" -o "$mode" == "F" ] && rm -f kin_${ydoy_s[0]}${ydoy_s[1]}_${site}
 }
 
 PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working directory
