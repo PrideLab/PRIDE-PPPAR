@@ -1779,7 +1779,8 @@ ComputeInitialPos() { # purpose : compute intial postion with spp
     elif [ "$mode" == "L" ]; then
         cmd="spp -elev  0 -trop non  -ts $ts -te $te -ti $interval -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
     else
-        cmd="spp -elev 10 -trop saas -ts $ts -te $te -ti $interval \"$rinexobs\" \"$rinexnav\""
+        cmd="spp -elev 10 -trop saas -ts $ts -te $te -ti $interval -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
+		rm -f kin_${ydoy_s[0]}${ydoy_s[1]}_${site}
     fi
 
     Execute "$cmd" tmp_ComputeInitialPos || return 1
