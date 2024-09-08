@@ -2,7 +2,7 @@
 
 ## PRIDE PPP-AR version 3
 
-### 2024-09-01 (v3.0)
+### 2024-09-08 (v3.0)
 * `lib` & `tedit`: use DOCB block in BIAS-SINEX file to decide whether reset ambiguity at midnight
 * `otl`: enable self-computed ocean tide loading correction in case of no oceanload coefficients for user stations
 * `lsq`: add a function to support random walk constraint between epochs in position domain (P mode)
