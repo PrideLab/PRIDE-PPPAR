@@ -30,7 +30,7 @@ WNO                                                         RECEIVER CLOCK
 STO                                                         TROP ZENITH
 PWC:720                                                     TROP GRADIENT
 NO                                                          IONO 2ND
-SOLID  POLE OCEAN                                           TIDES
+SOLID  POLE OCEAN(Scherneck)                                TIDES
 YES  GPS    40  GAL    24  BDS2    2  BDS3   21  QZSS    0  AMB FIXING
   600.00                                                    AMB DURATION (sec)
    15.00                                                    AMB CUTOFF (deg)
@@ -55,4 +55,4 @@ Nobs                                                        NUMBER OF OBSERVATIO
 End Field Description                                       COMMENT
                                                             END OF HEADER
 *Name         Mjd               X               Y               Z                       Sx                       Sy                       Sz                      Rxy                      Rxz                      Ryz                     Sig0           Nobs
- abmf  58849.4997   2919785.79037  -5383744.95776   1774604.86017     0.44614029430553E-08     0.12351227666732E-07     0.19102362695513E-08    -0.61795082723043E-08     0.19593176441572E-08    -0.36649097622922E-08     0.27027543923810E+01          86066
+ abmf  58849.4997   2919785.79048  -5383744.95794   1774604.86023     0.44614855787665E-08     0.12355884946023E-07     0.19102589235422E-08    -0.61802289627462E-08     0.19594297002285E-08    -0.36655379975199E-08     0.27022088219525E+01          86066
