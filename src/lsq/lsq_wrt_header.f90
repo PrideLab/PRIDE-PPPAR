@@ -149,7 +149,7 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
         write (lfn, '(3f8.2,36x,a)') LCF%wl_maxdev, LCF%wl_maxsig, LCF%wl_alpha, 'AMB WIDELANE'
         write (lfn, '(3f8.2,36x,a)') LCF%nl_maxdev, LCF%nl_maxsig, LCF%nl_alpha, 'AMB NARROWLANE'
         write (lfn, '(2(i5,3x),2f8.2,28x,a)') LCF%maxdel, LCF%minsav, LCF%chisq, LCF%ratio, 'AMB SEARCH'
-        write (lfn, '(a15,45x,a)') LCF%amb_at_dbd, 'AMB AT DAT-BOUNDARY'
+        write (lfn, '(a15,45x,a)') LCF%amb_at_dbd, 'AMB AT DAY-BOUNDARY'
       else
         write (lfn, '(a2,58x,a)') 'NO', 'AMB FIXING'
       end if
@@ -417,7 +417,7 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
     end if
     if (write_config) then
       if (LCF%nconG + LCF%nconE + LCF%nconC2 + LCF%nconC3 + LCF%nconJ .gt. 0) then
-        write (lfn, '(a15,45x,a)') LCF%amb_at_dbd, 'AMB AT DAT-BOUNDARY'
+        write (lfn, '(a15,45x,a)') LCF%amb_at_dbd, 'AMB AT DAY-BOUNDARY'
         write (lfn, '(2(i5,3x),2f8.2,28x,a)') LCF%maxdel, LCF%minsav, LCF%chisq, LCF%ratio, 'AMB SEARCH'
         write (lfn, '(3f8.2,36x,a)') LCF%nl_maxdev, LCF%nl_maxsig, LCF%nl_alpha, 'AMB NARROWLANE'
         write (lfn, '(3f8.2,36x,a)') LCF%wl_maxdev, LCF%wl_maxsig, LCF%wl_alpha, 'AMB WIDELANE'

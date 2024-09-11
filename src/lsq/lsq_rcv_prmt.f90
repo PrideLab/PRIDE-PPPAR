@@ -283,7 +283,7 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
     LCF%sod_beg = sodr
   end if
   write (lfnres, '(60x,a)') 'END OF HEADER'
-  write (lfnres, '(a15,45x,a)') LCF%amb_at_dbd, 'AMB AT DAT-BOUNDARY'
+  write (lfnres, '(a15,45x,a)') LCF%amb_at_dbd, 'AMB AT DAY-BOUNDARY'
   do i = MAXSYS, 1, -1
     write (lfnres, '(a3,7x,2(a3,2x),40x,a)') GNSS_NAME_LEN3(i:i), &
       FREQ_NAME_SYS(idxfrq(i, 1), i), FREQ_NAME_SYS(idxfrq(i, 2), i), 'SYS / FREQUENCY BAND'
