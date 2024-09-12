@@ -41,7 +41,7 @@ P2_C2=nav%cbias(obs%sat,3)
 if(dabs(P1_P2)<=1d-20 .and. and(sys,or(SYS_GPS,or(SYS_GAL,SYS_QZS)))/=0)then
     P1_P2=(1.d0-gamma)*gettgd(obs%sat,nav)
 endif
-if(opt%ionoopt==IONOOPT_IFLC)then            ! dual-frequency 
+if(opt%ionoopt==IONOOPT_IFLC .and. dabs(P1)>1d-20 .and. dabs(P2)>1d-20)then            ! dual-frequency 
     if(dabs(P1)<=1d-20 .or. dabs(P2)<=1d-20) return
     if(obs%code(i+1)==CODE_L1C) P1=P1+P1_C1  ! C1%P1 
     if(obs%code(j+1)==CODE_L2C) P2=P2+P2_C2  ! C2%P2 
