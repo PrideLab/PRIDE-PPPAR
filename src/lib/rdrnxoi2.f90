@@ -97,6 +97,9 @@ subroutine rdrnxoi2(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
     goto 10
   end if
 !
+!! for some special event
+  if (index(line, "COMMENT") .ne. 0) goto 10
+!
 !! number of satellite
   read (line(30:32), '(i3)', iostat=ioerr) nprn
   if (ioerr .ne. 0) then
