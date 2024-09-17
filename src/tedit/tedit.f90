@@ -270,7 +270,7 @@ program tedit
       ! ********************************************************************** !
       mmepo=nint(20.0*30.0/interval)
       nstep=nint(8.0*30.0/interval)
-      call check_sd(lfnsd, neph, ephem, 2, 3, mmepo, nstep, xt, yt, zt, interval, lclimit, &
+      call check_sd(lfnsd, neph, ephem, 2, 3, 20, 8, xt, yt, zt, interval, lclimit, &
                     mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs)
     end if
     !
