@@ -233,7 +233,7 @@ program redig
     open (RCF%lfnrhd, file=RCF%flnrhd, status='old', iostat=ierr)
     write (RCF%lfnrhd, '(a20,6x,a4,30x,a)') 'RINEX health Logfile', RCF%snam, 'COMMENT'
     write (RCF%lfnrhd, '(f10.2,50x,a)') RCF%dintv, 'INTERVAL'
-    write (RCF%lfnrhd, '(a15,45x,a)') RCF%amb_at_dbd, 'AMB AT DAT-BOUNDARY'
+    write (RCF%lfnrhd, '(a15,45x,a)') RCF%amb_at_dbd, 'AMB AT DAY-BOUNDARY'
     write (RCF%lfnrhd, '(3i10,30x,a)') maxamb, totamb, newam, 'AMB MAX/TOT/NEW'
     write (RCF%lfnrhd, '(3i10,30x,a)') avaobs, remobs, newrem, 'EPO AVA/REM/NEW'
     call mjd2date(RCF%jd0, RCF%sod0, iy, imon, id, ih, im, sec)
