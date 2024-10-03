@@ -89,11 +89,11 @@ subroutine write_diag_rpt(flnrhd, nepo, nsat, stanam, jd0, ti, session_length, f
   write (lfn, '(a20,6x,a4,30x,a)') 'RINEX health Logfile', stanam, 'COMMENT'
   write (lfn, '(f10.2,50x,a)') interval, 'INTERVAL'
   if (trunc_dbd(1:1) .eq. 'y') then
-    write (lfn, '(a9,51x,a)') 'TRUNCATED', 'AMB AT DAT-BOUNDARY'
+    write (lfn, '(a9,51x,a)') 'TRUNCATED', 'AMB AT DAY-BOUNDARY'
   else if (trunc_dbd(1:1) .eq. 'c') then
-    write (lfn, '(a9,51x,a)') 'CONNECTED', 'AMB AT DAT-BOUNDARY'
+    write (lfn, '(a9,51x,a)') 'CONNECTED', 'AMB AT DAY-BOUNDARY'
   else
-    write (lfn, '(a7,53x,a)') 'DEFAULT', 'AMB AT DAT-BOUNDARY'
+    write (lfn, '(a7,53x,a)') 'DEFAULT', 'AMB AT DAY-BOUNDARY'
   end if
   write (lfn, '(3i10,30x,a)') maxamb, totamb, 0, 'AMB MAX/TOT/NEW'
   write (lfn, '(3i10,30x,a)') avaobs, remobs, 0, 'EPO AVA/REM/NEW'
