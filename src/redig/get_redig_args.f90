@@ -135,7 +135,7 @@ subroutine get_redig_args(nepo, RCF)
           exit
         end if
       end do
-    else if (index(line, 'AMB AT DAT-BOUNDARY') .ne. 0) then
+    else if (index(line, 'AMB AT DAY-BOUNDARY') .ne. 0) then
       read (line, *) RCF%amb_at_dbd
     end if
   end do
