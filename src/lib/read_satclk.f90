@@ -170,7 +170,8 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
 !
 !! in case of interspearsed AS and AR records
       do while (line(1:3) .ne. 'AS ')
-        read (lfn, '(a)', end=200, err=100) line
+        read (lfn, '(a)', iostat=ierr) line
+        if (ierr.ne.0) exit
       end do
       c = 0.d0
       read (line(4:), *, iostat=ierr) ii, iy, imon, id, ih, im, sec, j, c(1), c(2)

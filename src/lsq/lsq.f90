@@ -218,7 +218,8 @@ program lsq
   NM%ltpl = 0.d0
   NM%nuk = NM%nc
   NM%nobs = 0
-  dwnd = min(LCF%dintv/10.d0, 0.01d0)
+ ! dwnd = min(LCF%dintv/10.d0, 0.01d0)
+  dwnd=LCF%dwnd
   pdop_sum = 0.d0
   do while (timdif(jd, sod, LCF%jd1, LCF%sod1) .lt. MAXWND)
     OB%omc(1:LCF%nprn, 1:4) = 0.d0

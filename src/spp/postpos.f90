@@ -1,10 +1,10 @@
 
 ! Post-processing positioning -----------------------------------------------
-integer*4 function postpos(ts, te, ti, popt, sopt, rnxobsfile, rnxnavs , fout)
+integer*4 function postpos(ts, te, ti, twnd, popt, sopt, rnxobsfile, rnxnavs , fout)
 implicit none
 include 'file_para.h'
 type(gtime_t), intent(in) :: ts, te
-real*8, intent(inout) :: ti
+real*8, intent(inout) :: ti, twnd
 type(prcopt_t), intent(in) :: popt
 type(solopt_t), intent(in) :: sopt
 character(*), intent(in) :: rnxobsfile
@@ -60,7 +60,7 @@ endif
 
 do while(.true.)
     ! read obs epoch data
-    call get_obsepoch(FPREAD,ts,te,ti,ver,tobs,obs,nobs)
+    call get_obsepoch(FPREAD,ts,te,ti,twnd,ver,tobs,obs,nobs)
     if(nobs<0) exit
 
     ! check result time stamp

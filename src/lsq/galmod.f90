@@ -62,7 +62,7 @@ subroutine galmod(jd, sod, LCF, SITE, OB, SAT, IM)
   real*8        xsun(6), xlun(6)
   real*8        trpdel, trpart(3), stec(4)
   real*8        xant_f(6, 2), xant_j(6, 2), xsat_f(3), xsat_j(6, 2), xpco_j(3, 2)
-  real*8        rot_f2j(3, 3), rot_rat(3, 3), rot_l2j(3, 3)
+  real*8        rot_f2j(3, 3), rot_rat(3, 3), rot_l2j(3,3),azim_sat
   logical*1     flag(MAXSAT)
 ! function called
   real*8        dot
@@ -277,9 +277,13 @@ subroutine galmod(jd, sod, LCF, SITE, OB, SAT, IM)
     sitrad = dsqrt(dot(3, xant_j(1, 1), xant_j(1, 1)))
     satrad = dsqrt(dot(3, xsat_j(1, 1), xsat_j(1, 1)))
     reldel = reldel + 2.d0*GM/(VLIGHT/1.d3)**3*log((sitrad + satrad + r1leng)/(sitrad + satrad - r1leng))
+
+  
+    azim_sat=datan2(dot(3,SAT(isat)%xscf(1:3),-r1),dot(3,SAT(isat)%yscf(1:3),-r1))
+    if(azim_sat.lt.0.d0) azim_sat=azim_sat+2*pi
 !
 !! pcv correction for satellite and receiver antenna
-    call get_ant_pcv(SITE%iptatx, SAT(isat)%iptatx, PI/2.d0 - OB%elev(isat), OB%azim(isat), nadir, pcv, LCF%prn(isat)(1:1))
+    call get_ant_pcv(SITE%iptatx, SAT(isat)%iptatx, PI/2.d0 - OB%elev(isat), OB%azim(isat),azim_sat, nadir, pcv, LCF%prn(isat)(1:1))
 !
 !! antenna phase center correction (PCO + PCV)
     do j = 1, 2

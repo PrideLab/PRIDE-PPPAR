@@ -98,7 +98,6 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
       write (lfn, '(f8.2,52x,a)') SITE%sigp, 'MEASUREMENT NOISE CARRIER PHASE (1-SIGMA, cycle)'
       write (lfn, '(a60,a)') LCF%flnorb_real, 'SAT ORBIT'
       write (lfn, '(a60,a)') LCF%flnsck_real, 'SAT CLOCK'
-      write (lfn, '(a60,a)') LCF%flnerp_real, 'SAT ERP'
       if (LCF%attuse) then
         write (lfn, '(a60,a)') LCF%flnatt_real, 'SAT ATTITUDE'
       else
@@ -109,6 +108,7 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
       else
         write (lfn, '(a7,53x,a)') 'None', 'SAT BIAS'
       end if
+      write (lfn, '(a60,a)') LCF%flnerp_real, 'EARTH ROTATION PARAMETERS'
       write (lfn, '(a20,40x,a)') SITE%rectyp, 'SITE RECEIVER TYPE'
       write (lfn, '(a20,40x,a)') SITE%anttyp, 'SITE ANTENNA TYPE'
       write (lfn, '(3f14.4,18x,a)') SITE%enu0, 'SITE ANTENNA E/N/H (meter)'
@@ -460,6 +460,7 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
       write (lfn, '(3f14.4,18x,a)') SITE%enu0, 'SITE ANTENNA E/N/H (meter)'
       write (lfn, '(a20,40x,a)') SITE%anttyp, 'SITE ANTENNA TYPE'
       write (lfn, '(a20,40x,a)') SITE%rectyp, 'SITE RECEIVER TYPE'
+      write (lfn, '(a60,a)') LCF%flnerp_real, 'EARTH ROTATION PARAMETERS'
       if (LCF%fcbuse) then
         write (lfn, '(a60,a)') LCF%flnfcb_real, 'SAT BIAS'
       else
@@ -470,7 +471,6 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
       else
         write (lfn, '(a7,53x,a)') 'None', 'SAT ATTITUDE'
       end if
-      write (lfn, '(a60,a)') LCF%flnerp_real, 'SAT ERP'
       write (lfn, '(a60,a)') LCF%flnsck_real, 'SAT CLOCK'
       write (lfn, '(a60,a)') LCF%flnorb_real, 'SAT ORBIT'
       write (lfn, '(f8.2,52x,a)') SITE%sigp, 'MEASUREMENT NOISE CARRIER PHASE (1-SIGMA, cycle)'

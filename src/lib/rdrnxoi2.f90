@@ -62,7 +62,7 @@ subroutine rdrnxoi2(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
   integer*4     ii, nobstype
   integer*1     lli(MAXTYP), lli_thre
   character*3   prn(MAXSAT)
-  real*8        sec, ds, dt, obs(MAXTYP), vobs
+  real*8        sec, ds, dt, obs(MAXTYP), vobs,tmpobs
   character*1   sysid(MAXSAT)
   character*80  line, cline, msg, name
   character*512 string
@@ -272,7 +272,8 @@ subroutine rdrnxoi2(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
           if (index(HD%obstyp(j), obs_styp_gnss(imes)) .ne. 0) then
             prio_index = obs_prio_index(imes)
             if (imes .le. 2) exit
-            if (dabs(obs(j)) .gt. 1.d7) then
+            tmpobs=dabs(obs(j))
+            if (dabs(obs(j)) .gt.1.d-3) then
               if (imes .le. 4) then
                 used_codeP(imes - 2) = .true.
               else
@@ -325,12 +326,11 @@ subroutine rdrnxoi2(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
         OB%typuse(i0, imes) = HD%obstyp(j)
         if (imes .le. 2) OB%lli(i0, imes) = iand(lli(j), lli_thre)
 50      continue
-      end do
-      OB%itypuse(i0, imes) = -1
-      if (abs(OB%tsec) .le. MAXWND .or. abs(OB%tsec - 864.d2) .le. MAXWND) then
-        j = index(obs_prio_sys(isys), OB%typuse(i0, imes)(3:3))
-        if (j .gt. 0) OB%itypuse(i0, imes) = j + (imes - 1) * 9
-      end if
+        OB%itypuse(i0, imes) = -1
+        if (abs(OB%tsec) .le. MAXWND .or. abs(OB%tsec - 864.d2) .le. MAXWND) then
+          if (prio_index .gt. 0) OB%itypuse(i0, imes) = prio_index + (imes - 1) * 9
+        end if
+      enddo
 !
 !! if one of the phases is zero, or the data is removed before
       if (any(OB%obs(i0, 1:4) .eq. 0.d0)) then

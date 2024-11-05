@@ -63,7 +63,7 @@ program tedit
   character*20  string
   character*4   stanam
   integer*4     tstart(5), length_gap, length_short
-  real*8        sstart, interval, cutoff_elevation
+  real*8        sstart, interval, cutoff_elevation,dwnd
   real*8        pclimit, lclimit, lglimit, lgrmslimit
   real*8        max_mean_namb, min_percent, min_mean_nprn, session_length
 ! coefficient
@@ -81,7 +81,7 @@ program tedit
   real*4, pointer :: vel(:, :)
   real*8        t_first_in_rinex, t_last_in_rinex
   real*8        fjd0, fjd1, overlap_sec, tmp_session
-  real*8        ll_docb(4), wl_docb, nl_docb
+  real*8        ll_docb(4), wl_docb, nl_docb,ratio
   logical*1, pointer :: atrunc_dbd(:)
 ! for one or single difference
   real*8, pointer :: valpg(:), sigpg(:), respg(:)
@@ -104,7 +104,7 @@ program tedit
                              tstart, sstart, session_length, length_gap, length_short, &
                              cutoff_elevation, max_mean_namb, min_percent, min_mean_nprn, &
                              interval, lclimit, pclimit, lglimit, lgrmslimit, &
-                             stanam)
+                             stanam,dwnd)
 !
 !! assign coefficients
   do i0 = 1, MAXSYS
@@ -202,7 +202,7 @@ program tedit
                          check_pc, pclimit, &
                          cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
                          stanam, xt, yt, zt, t_first_in_rinex, t_last_in_rinex, vel, &
-                         mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs, itypuse, bias_null)
+                         mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs, itypuse, bias_null,dwnd)
 
     ! read docb records
     allocate (bias(mday, MAXSAT, MAXTYP))
@@ -305,7 +305,12 @@ program tedit
   !!                Check ionosphere observations: LG
   !!           Nov. 1, 2007. "limit" should not be too small
   !! ****************************************************************** !!
-          call check_ionosphere(mepo, tmpflg(1, isat), tti, valpg, respg, sigpg, interval, lglimit, lgrmslimit)
+          if (interval.gt.30.d0) then
+            ratio=interval/30.d0  
+          else 
+            ratio=1.d0
+          endif      
+          call check_ionosphere(mepo, tmpflg(1, isat), tti, valpg, respg, sigpg, interval, lglimit*ratio, lgrmslimit*ratio)
           call lc_help(mepo, tmpflg(1, isat))
         end if
       end if
@@ -394,6 +399,7 @@ program tedit
   if (flnrhd(1:1) .ne. ' ') then
     call write_diag_rpt(flnrhd, nepo, MAXSAT, stanam, jd0, ts, session_length, flag, interval, ctrunc_dbd)
   end if
+
 !
 !! deallocate global arrays
   deallocate (ti)

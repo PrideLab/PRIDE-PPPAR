@@ -3,7 +3,7 @@ type lsqcfg
 !! start & stop time
   integer*4 jd0, jd_beg
   integer*4 jd1, jd_end
-  real*8 dintv, seslen
+  real*8 dintv, seslen,dwnd
   real*8 sod0, sod_beg
   real*8 sod1, sod_end
 !

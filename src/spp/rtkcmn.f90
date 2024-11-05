@@ -34,17 +34,17 @@ end function
 !          double  tint  I      time interval (s) (0.0:no screen by tint)
 ! return : 1:on condition, 0:not on condition
 ! ---------------------------------------------------------------------------
-integer*4 function screent(time, ts, te, tint)
+integer*4 function screent(time, ts, te, tint, twnd)
 implicit none
 include 'file_para.h'
 type(gtime_t), intent(in) :: time, ts, te
-real*8, intent(in) :: tint
+real*8, intent(in) :: tint, twnd
 integer*4 week
 real*8 gpst, dwnd, timediff
 external :: timediff
 logical(1) l1, l2, l3
 call time2gpst(time,week,gpst)
-dwnd=min(tint/10.d0,0.01d0)
+dwnd=min(tint/10.d0,twnd)
 ! l1=(tint<=0.d0 .or. dmod(gpst+DTTOL,tint)<=DTTOL*2.d0)
 ! l1=(tint<=0.d0 .or. dmod(timediff(time,ts),tint)>=tint-DTTOL .or. dmod(timediff(time,ts),tint)<=DTTOL)
 l1=(tint<=0.d0 .or. dmod(timediff(time,ts),tint)>=tint-dwnd .or. dmod(timediff(time,ts),tint)<=dwnd)

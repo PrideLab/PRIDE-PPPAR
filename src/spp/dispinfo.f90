@@ -47,17 +47,48 @@ subroutine printhelp()
 implicit none
 include 'file_para.h'
 integer*4 i
-character(63) :: helptext(11)=(/&
+character(63) :: helptext(42)=(/&
     "                                                               ",&
-    " usage: spp [option]... file file [...]                        ",&
+    "spp version 3.0,  based on open-source software rtklib.        ",&
+    "  Wuhan University, Oct. 2024                                  ",&
     "                                                               ",&
-    " -?/-h      print help                                         ",&
-    " -o file    set output file [stdout]                           ",&
-    " -ts ds ts  start day/time (ds=y/m/d ts=h:m:s) [obs start time]",&
-    " -te de te  end day/time   (de=y/m/d te=h:m:s) [obs end time]  ",&
-    " -ti tint   time interval  (sec) [all]                         ",&
-    " -trop      trop option    (non saas) [saas]                   ",&
-    " -elev      minimum elevation (deg) [10]                       ",&
+    "Usage: spp [options] <arguments> -o outname rinexobs rinexnav  ",&
+    "                                                               ",&
+    "Description:                                                   ",&
+    "  spp is a module of PRIDE PPP-AR, used for calculating the    ",&
+    "  initial coordinates of the station using pesudo-range.       ",&
+    "                                                               ",&
+    "Required arguments:                                            ",&
+    "  -o outname                                                   ",&
+    "    output file.                                               ",&
+    "  rinexobs                                                     ",&
+    "    rinex obs file.                                            ",&
+    "  rinexnav                                                     ",&
+    "    rinex nav file.                                            ",&
+    "                                                               ",&
+    "Optional arguments:                                            ",&
+    "  -elev [mask]                                                 ",&
+    "    elevation mask. Default is 7. (Unit: degree)               ",&
+    "  -trop [model]                                                ",&
+    "    tropsphere correction model. Default is SAAS.              ",&
+    "      NON = not correct                                        ",&
+    "      SAAS = saastamoinen model                                ",&
+    "  -ts [year/month/day hour:minute:second]                      ",&
+    "    start time. Default is the start time in rinex file.       ",&
+    "  -te [year/month/day hour:minute:second]                      ",&
+    "    end time. Default is the end time in rinex file.           ",&
+    "  -ti [interval]                                               ",&
+    "    sampleing rate. Default is all records. (Unit: second)     ",&
+    "  -twnd [window]                                               ",&
+    "    processing time window in seconds, for not standard or     ",&
+    "    super high rate rinex obs. Default is 0.01. (Unit: second) ",&
+    "                                                               ",&
+    "Examples:                                                      ",&
+    "  spp -o kin_brux brux0010.24o brdm0010.24p                    ",&
+    "  spp -elev 7 -trop SAAS -o kin_brux brux0010.24o brdm0010.24p ",&
+    "                                                               ",&
+    "More details refer to PRIDE PPP-AR manual and repository       ",&
+    "  https://github.com/PrideLab/PRIDE-PPPAR/                     ",&
     "                                                               "/)
 do i=1,size(helptext,dim=1)
     write(*,*) trim(helptext(i))

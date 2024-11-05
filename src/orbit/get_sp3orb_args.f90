@@ -44,8 +44,30 @@ subroutine get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
 !! read command arguments
   nargs = iargc()
   if (nargs .eq. 0) then
-    write (*, '(a)') 'Usage: sp3orb sp3fil -cfg sescfg'
-    call exit(4)
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "sp3prb version 3.0, Wuhan University, Oct. 2024             "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Usage: sp3orb sp3file -cfg configfile                       "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Description:                                                "
+    write (*, '(a)') "  sp3prb is a module of PRIDE PPP-AR, used for transforming "
+    write (*, '(a)') "  SP3 orbit files into a self-defined binary format.        "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Required arguments:                                         "
+    write (*, '(a)') "  sp3file                                                   "
+    write (*, '(a)') "    SP3 orbit product file.                                 "
+    write (*, '(a)') "  -cfg configfile                                           "
+    write (*, '(a)') "    PRIDE PPP-AR's config file.                             "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Note: Some dependent files need to be under folders.        "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Examples:                                                   "
+    write (*, '(a)') "  sp3orb WUM0MGXRAP_20240010000_01D_05M_ORB.SP3 -cfg config "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "More details refer to PRIDE PPP-AR manual and repository    "
+    write (*, '(a)') "  https://github.com/PrideLab/PRIDE-PPPAR/                  "
+    write (*, '(a)') "                                                            "
+    call exit(1)
   endif
   sp3fil = ' '
   call getarg(1, sp3fil)

@@ -3,6 +3,7 @@
 ## Observation configuration
 Frequency combination  = Default
 Interval               = Default 
+Time window            = 0.01
 Session time           = -YYYY- -MM- -DD- -HH- -MI- -SS- -SE-
 Table directory        = Default
 
@@ -37,7 +38,7 @@ Verbose output         = NO                      ! output detailed information o
 ## Satellite list
 # Inserting `#' at the beginning of individual GNSS PRN means not to use this satellite
 +GNSS satellites
-*PN
+*PRN variance
  G01   1
  G02   1
  G03   1

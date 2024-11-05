@@ -39,12 +39,12 @@ stat=-1
 end subroutine
 
 ! Read one epoch rinex obs ----------------------------------------------------
-subroutine get_obsepoch(fp, ts, te, tint, ver, tobs, obs, stat)
+subroutine get_obsepoch(fp, ts, te, tint, twnd, ver, tobs, obs, stat)
 implicit none
 include 'file_para.h'
 integer*4, intent(in) :: fp
 type(gtime_t), intent(in) :: ts, te
-real*8, intent(in) :: tint, ver
+real*8, intent(in) :: tint, twnd, ver
 character(3), intent(in) :: tobs(NUMSYS,MAXOBSTYPE)
 type(obsd_t), intent(out) :: obs(MAXOBS)
 integer*4, intent(out) :: stat  ! 0-error, 1-normal
@@ -96,7 +96,7 @@ do while(.true.)
         obs(n)%sat=sats(line)
         obs(n)%rcv=1
         ! decode obs data 
-        if(nsat>0 .and. screent(time,ts,te,ti)==0)then
+        if(nsat>0 .and. screent(time,ts,te,ti,twnd)==0)then
             call cycle_obsdata(fp,ver,myindex)
         else
             call decode_obsdata(fp,buff,ver,SYS_ALL,myindex,obs(n),info)
@@ -106,9 +106,9 @@ do while(.true.)
         backspace fp
     endif
     line=line+1
-    if(line>nsat .and. screent(time,ts,te,ti)==0)then
+    if(line>nsat .and. screent(time,ts,te,ti,twnd)==0)then
         line=0
-    elseif(line>nsat .and. screent(time,ts,te,ti)==1)then
+    elseif(line>nsat .and. screent(time,ts,te,ti,twnd)==1)then
         stat=n-1
         return
     endif
@@ -118,12 +118,12 @@ stat=-1
 end subroutine
 
 ! Read rinex obs ------------------------------------------------------------
-subroutine readrnxobs(fp, ts, te, tint, opt, rcv, ver, tsys, tobs, obs, sta, stat)
+subroutine readrnxobs(fp, ts, te, tint, twnd, opt, rcv, ver, tsys, tobs, obs, sta, stat)
 implicit none
 include 'file_para.h'
 integer*4, intent(in) :: fp, rcv, tsys
 type(gtime_t), intent(in) :: ts, te
-real*8, intent(in) :: tint, ver
+real*8, intent(in) :: tint, twnd, ver
 character(*), intent(in) :: opt
 character(3), intent(in) :: tobs(NUMSYS,MAXOBSTYPE)  !tobs(:,:)
 type(obs_t), intent(out) :: obs
@@ -153,7 +153,7 @@ do while(.true.)
         ! save cycle-slip 
         call saveslips(slips,mydata(i))
     enddo
-    if(n>0 .and. screent(mydata(1)%time,ts,te,ti)==0) cycle
+    if(n>0 .and. screent(mydata(1)%time,ts,te,ti,twnd)==0) cycle
     do i=1,n
         ! restore cycle-slip 
         call restslips(slips,mydata(i))

@@ -172,7 +172,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     local ymd_s hms_s ymd_e hms_e site mode plen interval freq_cmb AR
     local avail_sys edt_opt rck_opt ztd_opt htg_opt ion_opt tide_mask lam_opt pco_opt vbs_opt
     local gnss_mask map_opt rckl rckp ztdl ztdp htgp eloff
-    local posp=0
+    local posp=0 twnd
 
     local last_arg=${@: -1}
     case $last_arg in
@@ -362,6 +362,18 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 fi
                 shift 1
                 ;;
+            -twnd | --time-window )
+                [ -z "$twnd" ]                                  || throw_conflict_opt "$1"
+                check_optional_arg "$2" "$last_arg"             || throw_require_arg  "$1"
+                if [[ $2 =~ $PNUM_REGEX ]]               && \
+                   [[ $(echo "0.0001 <= $2" | bc) -eq 1 ]] && \
+                   [[ $(echo "$2 <= 1.00" | bc) -eq 1 ]]; then
+                    twnd="$2" 
+                else
+                    throw_invalid_arg "cutoff elevation" "$2"
+                fi
+                shift 1
+                ;;
             -f | --float )
                 [ -z "$AR" ] && AR="N"                          || throw_conflict_opt "$1"
                 ;;
@@ -441,19 +453,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 ;;
             -r | --rck )
                 [ -z "$rck_opt" ]                               || throw_conflict_opt "$1"
-                check_optional_arg "$2" "$last_arg"             || throw_require_arg  "$1"
-                carg=$(echo "$2" | cut -c 1 | tr 'a-z' 'A-Z')   || throw_invalid_arg "clock model" "$2"
-                case $carg in
-                "S" )
-                    rck_opt="STO"
-                    ;;
-                "W" )
-                    rck_opt="WNO"
-                    ;;
-                 *  )
-                    throw_invalid_arg "clock model" "$2"
-                esac
-                shift 1
+                rck_opt="STO"
                 if check_optional_arg "$2" "$last_arg"; then
                     if [[ $2 =~ $PNUM_REGEX ]]               && \
                        [[ $(echo "0.00 <= $2" | bc) -eq 1 ]] && \
@@ -833,6 +833,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     fi
 
     sedi "/^Interval/s/ = .*/ = $interval/" "$ctrl_file"
+    [ -z "$twnd" ] && twnd=0.01
+    sedi "/^Time window/s/ = .*/ = $twnd/" "$ctrl_file"    
 
     # Piece length for PWC mode
     if [ -z "$plen" ]; then
@@ -1169,15 +1171,20 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
     >&2 echo "                                             -----+-------+-------+-------+-------+-------+-------+--------"
     >&2 echo "                                               input as: \"G12 R12 E15 C26 J12\" (default setting)"
     >&2 echo ""
-    >&2 echo "  -m <char[length]>, --mode <char[length]>   positioning mode, select one from \"S/P/K/F/L\":"
+    >&2 echo "  -m <char[length] [constraint]>, --mode <char[length] [constraint]>"   
+    >&2 echo "                                             positioning mode, select one from \"S/P/K/F/L\":"
     >&2 echo "                                             -----+--------------+-----+--------------+-----+--------------"
     >&2 echo "                                               S  |  static      |  P  | piece-wise   |  K  |  kinematic   "
     >&2 echo "                                             -----+--------------+-----+--------------+-----+--------------"
     >&2 echo "                                               F  |  fixed       |  L  | LEO sat      |     |              "
     >&2 echo "                                             -----+--------------+-----+--------------+-----+--------------"
     >&2 echo "                                               * default: kinematic mode (K)"
-    >&2 echo "                                               * length argument applied for P mode only, input in seconds"
-    >&2 echo "                                               * P mode default as P300 (PWC model with length as 300 s)"
+    >&2 echo "                                               * length and constraint arguments applied for P mode only, "
+    >&2 echo "                                                   the unit of length is seconds,  "
+    >&2 echo "                                                   and the constraint is m/sqrt(s)."
+    >&2 echo "                                               * P mode default as P300 0.001 "
+    >&2 echo "                                                   (PWC model with length as 300 s, and constraint as "
+    >&2 echo "                                                   0.001 m/sqrt(s))"
     >&2 echo ""
     >&2 echo ""
     >&2 echo "  -s <date [time]>, --start <date [time]>    start date (and time) for processing, format:"
@@ -1237,17 +1244,15 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
     >&2 echo "                                             -------+-----------------------+------+-----------------------"
     >&2 echo "                                               * default: global mapping function (G)"
     >&2 echo ""
-    >&2 echo "  -r <char[length] [num]>, --rck <char[length] [num]>"
-    >&2 echo "                                             Receiver clock model, process noise:"
-    >&2 echo "                                                  input      model     length          process noise       "
-    >&2 echo "                                             --------------+-------+-----------+---------------------------"
-    >&2 echo "                                               S    .0040  |  STO  |           |      0.0040 m/sqrt(s)     "
-    >&2 echo "                                               S           |  STO  |           |      0.0010 m/sqrt(s)     "
-    >&2 echo "                                               W           |  WNO  |           |                           "
-    >&2 echo "                                             --------------+-------+-----------+---------------------------"
+    >&2 echo "  -r [num], --rck [num]                      change receiver clock model as STO and set process noise."
     >&2 echo "                                               * STO - stochastic walk"
-    >&2 echo "                                               * WNO - white noise"
-    >&2 echo "                                               * default: WNO model (W)"
+    >&2 echo "                                               * the unit of process noise is m/sqrt(s)"
+    >&2 echo "                                               * default: 0.0010 m/sqrt(s)"
+    >&2 echo ""
+    >&2 echo "  -twnd <num>,  --time-window <num>          processing time window in seconds, for not standard or super "
+    >&2 echo "                                               high rate rinex obs."
+    >&2 echo "                                               *  0.0001 <= time-window <= 1"
+    >&2 echo "                                               * default: 0.01 seconds"
     >&2 echo ""
     >&2 echo "  -toff <char>, --tide-off <char>            disable tide correction, select one or more from \"SOP\":"
     >&2 echo "                                             -----+--------------+-----+--------------+-----+--------------"
@@ -1302,6 +1307,7 @@ ProcessSingleSession() { # purpose : process data of a single observation sessio
     local AR="$7"
 
     local interval=$(get_ctrl "$ctrl_file" "Interval")
+    local twnd=$(get_ctrl "$ctrl_file" "Time window")
     local site=$(grep "^ .... [A-Z]" "$ctrl_file" | cut -c 2-5)
     local mode=$(grep "^ .... [A-Z]" "$ctrl_file" | cut -c 7-7)
 
@@ -1497,7 +1503,9 @@ ProcessSingleSite() { # purpose : process data of single site
     # Compute a priori positions
     echo -e "$MSGSTA Prepare initial position ${site} ..."
     local interval=$(get_ctrl "$config" "Interval")
-    ComputeInitialPos "$rinexobs" "$rinexnav" "$mjd_s" "$hms_s" "$mjd_e" "$hms_e" "$site" "$interval" "$positioning_mode"
+    local twnd=$(get_ctrl "$config" "Time window") 
+    ComputeInitialPos "$rinexobs" "$rinexnav" "$mjd_s" "$hms_s" "$mjd_e" "$hms_e" "$site" "$interval" "$positioning_mode" "$twnd"
+    grep -q "Duration" tmp_ComputeInitialPos || return 1
     if grep -q " NaN " tmp_ComputeInitialPos; then
         echo -e "$MSGERR invalid initial position or sigma: $site"
         return 1
@@ -1601,36 +1609,36 @@ ProcessSingleSite() { # purpose : process data of single site
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
              -xyz ${xyz[*]} -short 1200 -lc_check only -rhd ${rhd_file} -pc_check 300 \
              -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" \
-             -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
+             -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd}"
         if [ $mjd_s -le 51666 ]; then
             cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                  -xyz ${xyz[*]} -short 1200 -lc_check no -rhd ${rhd_file} -pc_check 0 \
                  -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" \
-                 -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
+                 -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd}"
         fi
     elif [ "$positioning_mode" == "P" -o "$positioning_mode" == "K" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
              -xyz kin_${year}${doy}_${site} -short ${tkshort} -lc_check ${lcc_opt} \
              -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" \
-             -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt}"
+             -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt} -twnd ${twnd}"
         if [ $mjd_s -le 51666 ]; then
             cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                  -xyz kin_${year}${doy}_${site} -short ${tkshort} -lc_check no \
                  -pc_check 0 -elev ${cutoff_elevation} -rhd ${rhd_file} \
                  -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" -freq ${freq_cmb} \
-                 -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt}"
+                 -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt} -twnd ${twnd}"
         fi
     elif [ "$positioning_mode" == "L" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
             -xyz kin_${year}${doy}_${site} -short 120 -lc_check lm \
             -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" \
-            -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no"
+            -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd}"
         if [ $mjd_s -le 51666 ]; then
            cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                 -xyz kin_${year}${doy}_${site} -short 120 -lc_check lm \
                 -pc_check 0 -elev ${cutoff_elevation} -rhd ${rhd_file} \
                 -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" -freq ${freq_cmb} \
-                -trunc_dbd ${tct_opt} -tighter_thre no"
+                -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd}"
         fi
     else
         echo -e "$MSGERR ProcessSingleSite: illegal positioning mode: $positioning_mode"
@@ -1764,6 +1772,7 @@ ComputeInitialPos() { # purpose : compute intial postion with spp
     local site="$7"
     local interval="$8"
     local mode="$9"
+    local twnd="${10}"
 
     local ydoy_s=($(mjd2ydoy ${mjd_s}))
     local ymd_s=($(ydoy2ymd ${ydoy_s[*]}))
@@ -1773,17 +1782,18 @@ ComputeInitialPos() { # purpose : compute intial postion with spp
     local ts="${ymd_s[0]}/${ymd_s[1]}/${ymd_s[2]} $hms_s"
     local te="${ymd_e[0]}/${ymd_e[1]}/${ymd_e[2]} $hms_e"
 
+
     local cmd=""
     if [ "$mode" == "K" -o "$mode" == "P" ]; then
-        cmd="spp -elev 10 -trop saas -ts $ts -te $te -ti $interval -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
+        cmd="spp -elev 10 -trop saas -ts $ts -te $te -ti $interval -twnd $twnd -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
     elif [ "$mode" == "L" ]; then
-        cmd="spp -elev  0 -trop non  -ts $ts -te $te -ti $interval -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
+        cmd="spp -elev  0 -trop non  -ts $ts -te $te -ti $interval -twnd $twnd -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
     else
-        cmd="spp -elev 10 -trop saas -ts $ts -te $te -ti $interval -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
+        cmd="spp -elev 10 -trop saas -ts $ts -te $te -ti $interval -twnd $twnd -o kin_${ydoy_s[0]}${ydoy_s[1]}_${site} \"$rinexobs\" \"$rinexnav\""
     fi
 
     Execute "$cmd" tmp_ComputeInitialPos || return 1
-	[ "$mode" == "S" -o "$mode" == "F" ] && rm -f kin_${ydoy_s[0]}${ydoy_s[1]}_${site}
+    [ "$mode" == "S" -o "$mode" == "F" ] && rm -f kin_${ydoy_s[0]}${ydoy_s[1]}_${site}
 }
 
 PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working directory
@@ -2106,7 +2116,6 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local urls=(
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
-                "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01M_ORB.SP3.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
             )
             for url in ${urls[@]}; do
@@ -2502,7 +2511,6 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local urls=(
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
-                "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ABS.BIA.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
             )
             for url in ${urls[@]}; do
@@ -3060,10 +3068,17 @@ WgetDownload() { # purpose : download a file with wget
     local arg="-q -nv -nc -c -t 3 --connect-timeout=10 --read-timeout=60"
     [ -n "$url" ] && [ "$OFFLINE" = "NO" ] || return 1
 
-    wget --help | grep -q "\--show-progress" && arg="$arg --show-progress"
-    local cmd="wget $arg $url"
-    echo "$cmd" | bash
-
+    local wget_ver=$(wget --version | head -n 1 | awk '{print $3}')
+    if [[ $wget_ver =~ ^1(\.[0-9]+){0,2}$ ]]; then
+       wget --help | grep -q "\--show-progress" && arg="$arg --show-progress"
+       local cmd="wget $arg $url"
+       echo "$cmd" | bash
+    else
+       echo "wget version isn't 1, using curl: $url"
+       arg="--progress-bar -S -C - --retry 3 --connect-timeout 10 --max-time 60 -O"
+       local cmd="curl $arg $url"
+       echo "$cmd" | bash
+    fi
     [ -e $(basename "$url") ] && return 0  || return 1
 }
 
@@ -3122,6 +3137,8 @@ Execute() {
         return 0
     else
         echo -e "${RED}($time)${NC} ${CYAN}$cmd${NC} execution failed"
+        echo -e "$MSGINF Here is the output:\n"
+        echo "$cmd" | bash
         return 1
     fi
 }

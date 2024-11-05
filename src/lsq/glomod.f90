@@ -282,7 +282,7 @@ subroutine glomod(jd, sod, LCF, SITE, OB, SAT, IM)
     reldel = reldel + 2.d0*GM/(VLIGHT/1.d3)**3*log((sitrad + satrad + r1leng)/(sitrad + satrad - r1leng))
 !
 !! pcv correction for satellite and receiver antenna
-    call get_ant_pcv(SITE%iptatx, SAT(isat)%iptatx, PI/2.d0 - OB%elev(isat), OB%azim(isat), nadir, pcv, LCF%prn(isat)(1:1))
+    call get_ant_pcv(SITE%iptatx, SAT(isat)%iptatx, PI/2.d0 - OB%elev(isat), OB%azim(isat),0.0, nadir, pcv, LCF%prn(isat)(1:1))
 !
 !! antenna phase center correction (PCO + PCV)
     do j = 1, 2

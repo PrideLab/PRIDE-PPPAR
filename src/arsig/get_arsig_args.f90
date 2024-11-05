@@ -49,7 +49,27 @@ subroutine get_arsig_args(ACF)
 !! read arguments
   nargs = iargc()
   if (nargs .eq. 0) then
-    write (*, '(a)') 'Usage: arsig sesfil'
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "arsig version 3.0, Wuhan University, Oct. 2024              "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Usage: arsig configfile                                     "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Description:                                                "
+    write (*, '(a)') "  arsig is a module of PRIDE PPP-AR, is used for realizing  "
+    write (*, '(a)') "  wide-lane and narrow-lane ambiguity fixed.                "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Required arguments:                                         "
+    write (*, '(a)') "  configfile                                                "
+    write (*, '(a)') "    PRIDE PPP-AR's config file.                             "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Note: Some dependent files need to be under folders.        "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Examples:                                                   "
+    write (*, '(a)') "  arsig config_abmf                                         "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "More details refer to PRIDE PPP-AR manual and repository    "
+    write (*, '(a)') "  https://github.com/PrideLab/PRIDE-PPPAR/                  "
+    write (*, '(a)') "                                                            "
     call exit(4)
   endif
   call getarg(1, sesfil)

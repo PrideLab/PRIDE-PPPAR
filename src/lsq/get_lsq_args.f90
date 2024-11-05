@@ -74,7 +74,29 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT, IM)
 !! read arguments
   nargs = iargc()
   if (nargs .lt. 2) then
-    write (*, '(a)') 'Usage: lsq sesfil rinex_obs_file'
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "lsq version 3.0, Wuhan University, Oct. 2024                "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Usage: lsq configfile rinexobs                              "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Description:                                                "
+    write (*, '(a)') "  lsq is a module of PRIDE PPP-AR, is the estimator based   "
+    write (*, '(a)') "  on least-squares principle.                               "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Required arguments:                                         "
+    write (*, '(a)') "  configfile                                                "
+    write (*, '(a)') "    PRIDE PPP-AR's config file.                             "
+    write (*, '(a)') "  rinexobs                                                  "
+    write (*, '(a)') "    rinex obs file.                                         "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Note: Some dependent files need to be under folders.        "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Examples:                                                   "
+    write (*, '(a)') "  lsq config brux0010.24o                                   "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "More details refer to PRIDE PPP-AR manual and repository    "
+    write (*, '(a)') "  https://github.com/PrideLab/PRIDE-PPPAR/                  "
+    write (*, '(a)') "                                                            "
     call exit(4)
   end if
   call getarg(1, sesfil)
@@ -184,6 +206,12 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT, IM)
   key = findkey(lfn, msg, ' ')
   if (key(1:5) .eq. 'EMPTY') goto 100
   read (key, *, err=200) LCF%dintv
+
+  msg = 'Time window'
+  key = findkey(lfn, msg, ' ')
+  if (key(1:5) .eq. 'EMPTY') goto 100
+  read (key, *, err=200) LCF%dwnd
+
 !
 !!
   msg = 'Strict editing'

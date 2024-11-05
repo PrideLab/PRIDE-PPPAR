@@ -24,7 +24,7 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
                                  tstart, sstart, session_length, length_gap, length_short, &
                                  cutoff_elevation, max_mean_namb, min_percent, min_mean_nprn, &
                                  interval, lclimit, pclimit, lglimit, lgrmslimit, &
-                                 stanam)
+                                 stanam,dwnd)
   implicit none
   include '../header/const.h'
 
@@ -40,7 +40,7 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
   integer*4     length_gap, length_short
   real*8        cutoff_elevation
   real*8        max_mean_namb, min_percent, min_mean_nprn
-  real*8        interval, lclimit, pclimit, lglimit, lgrmslimit
+  real*8        interval, lclimit, pclimit, lglimit, lgrmslimit,dwnd
   character*4   stanam
 ! local
   character*256 arg(50, 20), arg0, message, chr*1
@@ -72,6 +72,7 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
   min_percent = 80.d0
   min_mean_nprn = 5.d0
   interval = 0.d0
+  dwnd=0.01
   lclimit = 1.d0
   pclimit = 250.d0
   lglimit = -10.d0
@@ -147,6 +148,12 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
       display_help = nval(ipar) .ne. 2
       if (.not. display_help) then
         read (arg(ipar, 2), *, iostat=ioerr) interval
+        if (ioerr .ne. 0) display_help = .true.
+      end if
+    else if (arg(ipar, 1)(1:5) .eq. '-twnd') then
+      display_help = nval(ipar) .ne. 2
+      if (.not. display_help) then
+        read (arg(ipar, 2), *, iostat=ioerr) dwnd
         if (ioerr .ne. 0) display_help = .true.
       end if
     else if (arg(ipar, 1)(1:4) .eq. '-len') then
@@ -282,38 +289,83 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
   if (display_help) then
     call getarg(0, arg0)
     if (arg0(1:1) .eq. ' ') call getarg(1, arg0)
-    write (*, '(/2a/)') trim(arg0), ' Version 1.0, Wuhan University, Aug. 2007 '
-    write (*, '(a,2a)') 'usage: ', trim(arg0), ' rinex_obs_file [option] / '
-    write (*, '(2x,a)') '-rnxn filename '
-    write (*, '(2x,a)') ' broadcast ephem. file. If -check_lc is active or -elev is on, this file is required'
-    write (*, '(2x,a)') '-osb [filename]'
-    write (*, '(2x,a)') ' BIAS-SINEX file. Default is no.'
-    write (*, '(2x,a)') '-rhd [filename]'
-    write (*, '(2x,a)') ' output rhd file. Default is no. Default name is {rinx_obs_file}.rhd'
-    write (*, '(2x,a)') '-time year month day hour minut second '
-    write (*, '(2x,a)') ' start time for data editing. Default is the start time in rinex file'
-    write (*, '(2x,a)') '-len length_in_second'
-    write (*, '(2x,a)') ' length of data to be edited. Default is all data in rinex file'
-    write (*, '(2x,a)') '-int interval_in_second'
-    write (*, '(2x,a)') ' sampling interval for data editing. Default is 30 seconds'
-    write (*, '(2x,a)') '-short length_in_second'
-    write (*, '(2x,a)') ' data piece shorter than this value will be removed. Default is 600s'
-    write (*, '(2x,a)') '-trunc_dbd yes/no/cont'
-    write (*, '(2x,a)') ' truncate (reset) ambiguities at day-boundary' 
-    write (*, '(2x,a)') '    yes = truncate (reset)'
-    write (*, '(2x,a)') '     no = no special action'
-    write (*, '(2x,a)') '   cont = keep continuous'
-    write (*, '(2x,a)') '-tighter_thre yes/no'
-    write (*, '(2x,a)') '    yes = more tighter threshold for MW/GF'
-    write (*, '(2x,a)') '     no = no special action'
-    write (*, '(2x,a)') '-elev cutoff_elevation'
-    write (*, '(2x,a)') ' cutoff_elevation in degree. Default is to use all data.'
-    write (*, '(2x,a)') '-freq GNSS with frequency number'
-    write (*, '(2x,a)') ' dual-frequency combination for G E C J. Default is G12 E15 C26 J12'
-    write (*, '(2x,a)') '-lc_check yes/no/only'
-    write (*, '(2x,a)') '    yes = check LC and edit WL and IONO and try to connect WL and ION'
-    write (*, '(2x,a)') '     no = edit WL and IONO and try to connect WL and ION observation'
-    write (*, '(2x,a)') '   only = check LC only'
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "tedit version 3.0, Wuhan University, Oct. 2024              "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Usage: tedit rinexobs [options] <arguments>                 "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Description:                                                "
+    write (*, '(a)') "  tedit is a module of PRIDE PPP-AR, used for detecting     "
+    write (*, '(a)') "  cycle jumps and receiver clock jumps, remove short piece  "
+    write (*, '(a)') "  of data and identify data gaps.                           "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Required arguments:                                         "
+    write (*, '(a)') "  rinexobs                                                  "
+    write (*, '(a)') "    rinex obs file.                                         "
+    write (*, '(a)') "  -xyz posx posy posz / kinfile                             "
+    write (*, '(a)') "    initial position of station, if mode is S/F, the format "
+    write (*, '(a)') "    of input is [posx posy posz], if mode is K/P/L, the     "
+    write (*, '(a)') "    input is the path of kin file which can be obtained     "
+    write (*, '(a)') "    through the spp module.                                 "
+    write (*, '(a)') "  -rnxn rinexnav                                            "
+    write (*, '(a)') "    rinex nav file.                                         "
+    write (*, '(a)') "  -time YYYY MM DD hh mm ss                                 "
+    write (*, '(a)') "    start time for data editing.                            "
+    write (*, '(a)') "  -ti interval                                              "
+    write (*, '(a)') "    sampling interval for data editing.                     "
+    write (*, '(a)') "  -len second                                               "
+    write (*, '(a)') "    length of data to be edited. (Unit: second)             "
+    write (*, '(a)') "  -rhd outputname                                           "
+    write (*, '(a)') "    output rinex health diagnosis file name                 "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Optional arguments:                                         "
+    write (*, '(a)') "  -elev [mask]                                              "
+    write (*, '(a)') "    cutoff elevation. Default is 0. (Unit: degree)          "
+    write (*, '(a)') "   -twnd [window]                                           "
+    write (*, '(a)') "    processing time window in seconds, for not standard or. "
+    write (*, '(a)') "    super high rate rinex obs. Default is 0.01. (Unit: second)"
+    write (*, '(a)') "  -osb [filename]                                           "
+    write (*, '(a)') "    BIAS-SINEX file. Default is no.                         "
+    write (*, '(a)') "  -short [second]                                           "
+    write (*, '(a)') "    data piece shorter than this value will be removed.     "
+    write (*, '(a)') "    Default is 600. (Unit: second)                          "
+    write (*, '(a)') "  -freq [GNSS with frequency number]                        "
+    write (*, '(a)') "    dual-frequency combination for G E C J.                 "
+    write (*, '(a)') "    Default is G12 E15 C26 J12.                             "
+    write (*, '(a)') "  -trunc_dbd [yes/no/cont]                                  "
+    write (*, '(a)') "    truncate (reset) ambiguities at day-boundary. Default   "
+    write (*, '(a)') "    is no.                                                  "
+    write (*, '(a)') "      yes = truncate (reset)                                "
+    write (*, '(a)') "       no = no special action                               "
+    write (*, '(a)') "     cont = keep continuous                                 "
+    write (*, '(a)') "  -tighter_thre [yes/no]                                    "
+    write (*, '(a)') "    set the magnitude of the threshold for MW/GF. Default   "
+    write (*, '(a)') "    is no.                                                  "
+    write (*, '(a)') "      yes = more tighter threshold for MW/GF                "
+    write (*, '(a)') "       no = no special action                               "
+    write (*, '(a)') "  -lc_check [yes/no/only/lm]                                "
+    write (*, '(a)') "    combination of cycle slips detection methods. Default   "
+    write (*, '(a)') "    is check all, except for LEO satellite.                 "
+    write (*, '(a)') "      yes = check LC and edit WL and IONO and try to        "
+    write (*, '(a)') "            connect WL and ION                              "
+    write (*, '(a)') "       no = edit WL and IONO and try to connect WL and ION  "
+    write (*, '(a)') "            observation                                     "
+    write (*, '(a)') "     only = check LC only                                   "
+    write (*, '(a)') "       lm = only for LEO satellite                          "
+    write (*, '(a)') "  -pc_check [limit]                                         "
+    write (*, '(a)') "    using pesudo-range to check the consistency of the      "
+    write (*, '(a)') "    receiver clock difference. Default is 250. (Unit: meter)"
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Note: Some dependent files need to be under folders.        "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "Examples:                                                   "
+    write (*, '(a,$)') "  tedit brux0010.24o -xyz 4027882.4647 306998.4014 4919500"
+    write (*, '(a,$)') ".1659 -rnxn brdm0010.24p -int 30 -time 2024 1 1 00 00 00 -"
+    write (*, '(a)') "len 86370 -rhd log_brux                                     "
+    write (*, '(a)') "                                                            "
+    write (*, '(a)') "More details refer to PRIDE PPP-AR manual and repository    "
+    write (*, '(a)') "  https://github.com/PrideLab/PRIDE-PPPAR/                  "
+    write (*, '(a)') "                                                            "
     if (message .ne. ' ') write (*, '(/a120)') message
     call exit(1)
   end if

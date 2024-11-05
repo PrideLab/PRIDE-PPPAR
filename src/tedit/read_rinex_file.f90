@@ -38,7 +38,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
                            check_pc, pclimit, &
                            cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
                            stanam, x, y, z, t_first_in_rinex, t_last_in_rinex, v, &
-                           nepo, nsat, jd0, nobs, flagall, ti, ts, obs, itypuse, bias)
+                           nepo, nsat, jd0, nobs, flagall, ti, ts, obs, itypuse, bias,dwnd)
   implicit none
   include '../header/const.h'
   include '../header/absbia.h'
@@ -130,7 +130,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
   lli_thre = 3
   itypuse = 0
 
-  dwnd = min(interval/10.d0, 0.01d0)
+  !dwnd = min(interval/10.d0, 0.01d0)
 
 ! open rinex observation file
   iunit = 10

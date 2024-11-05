@@ -67,7 +67,7 @@ subroutine rdrnxoh(lfn, HD, ierr)
 !
 !! RINEX version
     if (index(keyword, 'RINEX VERSION') .ne. 0) then
-      read (line, '(f10.2)', iostat=ioerr) ver
+      read (line(1:10), *, iostat=ioerr) ver
       HD%ver = int(ver*100)
       if (ioerr .ne. 0) msg = 'read RINEX VERSION error.'
       if (HD%ver .lt. 100 .or. HD%ver .ge. 420) &

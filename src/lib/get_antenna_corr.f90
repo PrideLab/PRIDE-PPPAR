@@ -44,7 +44,7 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, sys, atx_s
   integer*4     i0, i, j, natx, izen, iazi
   integer*4     ifq1, ifq2
   integer*4     ript, sipt
-  real*8        zeni, azim, nadir, pcv(2)
+  real*8        zeni, azim,azim_sat, nadir, pcv(2)
   real*8        rad2deg, alpha, zen, azi, nad, x1, x2
   type(antatx)  AX(1 + MAXSAT), ATX
   character*60  atx_snxcode
@@ -123,7 +123,7 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, sys, atx_s
 !!             nadir -- nadir angle in radian
 !!    output : pcv   -- phase center variation
 !
-  Entry get_ant_pcv(ript, sipt, zeni, azim, nadir, pcv, sys) ! add multisys-GREC
+  Entry get_ant_pcv(ript, sipt, zeni, azim, azim_sat,  nadir, pcv, sys) ! add multisys-GREC
 
   rad2deg = 180.d0/PI
   pcv = 0.d0
@@ -201,18 +201,32 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu, sys, atx_s
 !! satellite antenna PCVs
   if (AX(sipt)%dzen .eq. 0.d0) return
   nad = nadir*rad2deg
+  azi = azim_sat*rad2deg
   if (nad .gt. AX(sipt)%zen2) nad = AX(sipt)%zen2
   if (nad .lt. AX(sipt)%zen1) nad = AX(sipt)%zen1
 
+  iazi=0
+  if (AX(sipt)%dazi .ne. 0.d0) iazi = int(azi/AX(sipt)%dazi) + 1  
+
   izen = int((nad - AX(sipt)%zen1)/AX(sipt)%dzen) + 1
 
-  x1 = AX(sipt)%pcv(izen,   0, ifq1, i0)
-  x2 = AX(sipt)%pcv(izen+1, 0, ifq1, i0)
+  x1 = AX(sipt)%pcv(izen,   iazi, ifq1, i0)
+  x2 = AX(sipt)%pcv(izen+1, iazi, ifq1, i0)
+  if (iazi.ne.0) then
+    alpha = azi/AX(sipt)%dazi - iazi +1
+    x1 = x1 + (AX(sipt)%pcv(izen, iazi + 1, ifq1, i0) - AX(sipt)%pcv(izen, iazi, ifq1, i0))*alpha
+    x2 = x2 + (AX(sipt)%pcv(izen + 1, iazi + 1, ifq1, i0) - AX(sipt)%pcv(izen + 1, iazi, ifq1, i0))*alpha
+  endif
   alpha = (nad - AX(sipt)%zen1)/AX(sipt)%dzen - izen + 1
   pcv(1) = pcv(1) + x1 + (x2 - x1)*alpha
   
-  x1 = AX(sipt)%pcv(izen,   0, ifq2, i0)
-  x2 = AX(sipt)%pcv(izen+1, 0, ifq2, i0)
+  x1 = AX(sipt)%pcv(izen,   iazi, ifq2, i0)
+  x2 = AX(sipt)%pcv(izen+1, iazi, ifq2, i0)
+  if (iazi .ne.0 ) then
+    alpha = azi/AX(sipt)%dazi - iazi + 1
+    x1 = x1 + (AX(sipt)%pcv(izen, iazi + 1, ifq2, i0) - AX(sipt)%pcv(izen, iazi, ifq2, i0))*alpha
+    x2 = x2 + (AX(sipt)%pcv(izen + 1, iazi + 1, ifq2, i0) - AX(sipt)%pcv(izen + 1, iazi, ifq2, i0))*alpha
+  endif
   alpha = (nad - AX(sipt)%zen1)/AX(sipt)%dzen - izen + 1
   pcv(2) = pcv(2) + x1 + (x2 - x1)*alpha
 

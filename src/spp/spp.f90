@@ -4,7 +4,7 @@ program spp
 implicit none
 include 'file_para.h'
 type(gtime_t) :: ts, te
-real*8 :: tint
+real*8 :: tint, twnd
 type(prcopt_t) :: prcopt
 type(solopt_t) :: solopt
 integer*4 :: nrnxo, nrnxn
@@ -24,18 +24,18 @@ nrnxn=0
 nrnxo=0
 
 ! Get command line arguments
-call get_spp_args(ts, te, tint, prcopt, rnxobslist, nrnxo, rnxnavlist, nrnxn, outfile)
+call get_spp_args(ts, te, tint, twnd, prcopt, rnxobslist, nrnxo, rnxnavlist, nrnxn, outfile)
 
-call rnx2rtkp(ts, te, tint, prcopt, solopt, rnxobslist, nrnxo, rnxnavlist, nrnxn, outfile)
+call rnx2rtkp(ts, te, tint, twnd, prcopt, solopt, rnxobslist, nrnxo, rnxnavlist, nrnxn, outfile)
 
 end program spp
 
 ! rnx2rtkp ------------------------------------------------------------------
-subroutine rnx2rtkp(ts, te, tint, prcopt, solopt, rnxobslist, nrnxo, rnxnavlist, nrnxn, outfile)
+subroutine rnx2rtkp(ts, te, tint, twnd, prcopt, solopt, rnxobslist, nrnxo, rnxnavlist, nrnxn, outfile)
 implicit none
 include 'file_para.h'
 type(gtime_t),intent(in) :: ts, te
-real*8,intent(in) :: tint
+real*8,intent(in) :: tint, twnd
 type(prcopt_t),intent(in) :: prcopt
 type(solopt_t),intent(in) :: solopt
 character(1024),intent(in) :: rnxobslist(FLNUMLIM)
@@ -69,7 +69,7 @@ do i=1,FLNUMLIM
     call getfname(rnxobslist(i),filetmp)
     if(len_trim(filetmp)==0) cycle
 
-    ret=postpos(ts,te,tint,prcopt,solopt,rnxobslist(i),rnxnavlist,FPOUT)  ! 0-error, 1-right
+    ret=postpos(ts,te,tint,twnd,prcopt,solopt,rnxobslist(i),rnxnavlist,FPOUT)  ! 0-error, 1-right
     if(ret==0) exit
 
     if (timediff(te,gtime_t(0,0.d0))>0.0 .and. timediff(allsol_(solindex_)%time,te) >= 0)then

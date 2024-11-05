@@ -1,8 +1,8 @@
-subroutine get_spp_args(ts,te,ti,prcopt,rnxolist,nrnxo,rnxnlist,nrnxn,outfile)
+subroutine get_spp_args(ts,te,ti,twnd,prcopt,rnxolist,nrnxo,rnxnlist,nrnxn,outfile)
   implicit none
   include 'file_para.h'
   type(gtime_t),intent(out) :: ts, te
-  real*8,intent(out) :: ti
+  real*8,intent(out) :: ti,twnd
   type(prcopt_t),intent(out) :: prcopt
   character(1024),intent(out) :: rnxolist(FLNUMLIM)
   integer*4,intent(out) :: nrnxo
@@ -25,6 +25,7 @@ subroutine get_spp_args(ts,te,ti,prcopt,rnxolist,nrnxo,rnxnlist,nrnxn,outfile)
   es=(/2000,1,1,0,0,0/); ee=(/2000,12,31,23,59,59/)
   infile=''; flntmp=""; flntmp2=""
   obsdir=""; navdir=""
+  twnd=0.01d0
 
   ! read cmd arguments
   argc=iargc()
@@ -65,6 +66,8 @@ subroutine get_spp_args(ts,te,ti,prcopt,rnxolist,nrnxo,rnxnlist,nrnxn,outfile)
       te=epoch2time(ee)
     elseif(argv(i)=='-ti'.and.(i+1)<=argc)then
       read(argv(i+1),*,iostat=info) ti; i=i+1
+    elseif(argv(i)=='-twnd'.and.(i+1)<=argc)then
+      read(argv(i+1),*,iostat=info) twnd; i=i+1
     elseif(argv(i)=='-k'.and.(i+1)<=argc)then
       i=i+2; cycle
     elseif(argv(i)=='-trop'.and.(i+1)<=argc)then

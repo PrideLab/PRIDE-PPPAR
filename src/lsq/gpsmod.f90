@@ -279,7 +279,7 @@ subroutine gpsmod(jd, sod, LCF, SITE, OB, SAT, IM)
     reldel = reldel + 2.d0*GM/(VLIGHT/1.d3)**3*log((sitrad + satrad + r1leng)/(sitrad + satrad - r1leng))
 !
 !! pcv correction for satellite and receiver antenna
-    call get_ant_pcv(SITE%iptatx, SAT(isat)%iptatx, PI/2.d0 - OB%elev(isat), OB%azim(isat), nadir, pcv, LCF%prn(isat)(1:1))
+    call get_ant_pcv(SITE%iptatx, SAT(isat)%iptatx, PI/2.d0 - OB%elev(isat), OB%azim(isat),0.0, nadir, pcv, LCF%prn(isat)(1:1))
 !
 !! antenna phase center correction (PCO + PCV)
     do j = 1, 2
@@ -338,7 +338,7 @@ subroutine gpsmod(jd, sod, LCF, SITE, OB, SAT, IM)
     if (dabs(drecclk) .gt. 1.d-6 .or. (k .ge. 1 .and. SITE%rclock_G .eq. 0.d0)) then
       SITE%rclock_G = SITE%rclock_G + drecclk*VLIGHT
       drecclk = SITE%rclock_G/VLIGHT
-      if (dabs(drecclk) .lt. 1.d-1) goto 100
+      if (dabs(drecclk) .lt. 2.d-1) goto 100
       write (*, '(a,i7,f9.2,e15.4)') '***ERROR(gpsmod): abnormal drecclk at ', jd, sod, drecclk
       call exit(1)
     end if
