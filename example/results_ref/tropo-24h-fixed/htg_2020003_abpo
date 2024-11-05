@@ -2,16 +2,16 @@ abpo                                                        STATION
 Quasi-fixed  0.001019  0.001149  0.000604                   POS MODE/PRIORI (meter)
 YES                                                         OBS STRICT EDITING
 2020  1  3  0  0  0.00                                      OBS FIRST EPOCH
-2020  1  3 23 59  0.00                                      OBS LAST EPOCH
+2020  1  3 23 59 30.00                                      OBS LAST EPOCH
    30.00                                                    OBS INTERVAL (sec)
     7.00                                                    OBS MASK ANGLE (deg)
     0.30                                                    MEASUREMENT NOISE PSEUDORANGE (1-SIGMA, meter)
     0.01                                                    MEASUREMENT NOISE CARRIER PHASE (1-SIGMA, cycle)
-WUM0MGXRAP_20200030000_01D_01M_ORB.SP3                      SAT ORBIT
+WUM0MGXRAP_20200030000_01D_05M_ORB.SP3                      SAT ORBIT
 WUM0MGXRAP_20200030000_01D_30S_CLK.CLK                      SAT CLOCK
-WUM0MGXRAP_20200030000_01D_01D_ERP.ERP                      SAT ERP
 WUM0MGXRAP_20200030000_01D_30S_ATT.OBX                      SAT ATTITUDE
-WUM0MGXRAP_20200030000_01D_01D_ABS.BIA                      SAT BIAS
+WUM0MGXRAP_20200030000_01D_01D_OSB.BIA                      SAT BIAS
+WUM0MGXRAP_20200030000_01D_01D_ERP.ERP                      EARTH ROTATION PARAMETERS
 SEPT POLARX5                                                SITE RECEIVER TYPE
 ASH701945G_M    SCIT                                        SITE ANTENNA TYPE
         0.0000        0.0000        0.0083                  SITE ANTENNA E/N/H (meter)
@@ -25,19 +25,19 @@ C  B1I  2      -0.43      0.76     89.24                    SITE ANTENNA PCO E/N
 C  B3I  6      -0.46     -0.39    117.85                    SITE ANTENNA PCO E/N/H (millimeter)
 J  L1   1      -0.43      0.76     89.24                    SITE ANTENNA PCO E/N/H (millimeter)
 J  L2   2      -0.46     -0.39    117.85                    SITE ANTENNA PCO E/N/H (millimeter)
-IGS14_2136                                                  TABLE ANTEX
+IGS14_2247                                                  TABLE ANTEX
 WNO                                                         RECEIVER CLOCK
 STO                                                         TROP ZENITH
 PWC:720                                                     TROP GRADIENT
 NO                                                          IONO 2ND
 SOLID  POLE OCEAN(Scherneck)                                TIDES
-YES  GPS    41  GAL    28  BDS2   12  BDS3   21  QZSS    0  AMB FIXING
+YES  GPS    41  GAL    26  BDS2   12  BDS3   21  QZSS    0  AMB FIXING
   600.00                                                    AMB DURATION (sec)
    15.00                                                    AMB CUTOFF (deg)
     0.20    0.15 1000.00                                    AMB WIDELANE
     0.15    0.15 1000.00                                    AMB NARROWLANE
     3       4       1.80    3.00                            AMB SEARCH
-TRUNCATED                                                   AMB AT DAT-BOUNDARY
+DEFAULT                                                     AMB AT DAY-BOUNDARY
 Start Field Description                                     COMMENT
 YearS                                                       START YEAR (GPS TIME)
 MonS                                                        START MONTH (GPS TIME)
@@ -58,5 +58,5 @@ HTGScor                                                     E-W TROPOSPHERE GRAD
 End Field Description                                       COMMENT
                                                             END OF HEADER
 *YearS  MonS  DayS HourS  MinS      SecS YearE  MonE  DayE HourE  MinE      SecE    HTGCini    HTGCcor    HTGSini    HTGScor
-  2020     1     3     0     0  0.000000  2020     1     3    12     0  0.000000   0.000000   0.000433   0.000000   0.000877
-  2020     1     3    12     0  0.000000  2020     1     4     0     0  0.000000   0.000000   0.000712   0.000000   0.000530
+  2020     1     3     0     0  0.000000  2020     1     3    12     0  0.000000   0.000000   0.000536   0.000000   0.000889
+  2020     1     3    12     0  0.000000  2020     1     4     0     0  0.000000   0.000000   0.000571   0.000000   0.000443

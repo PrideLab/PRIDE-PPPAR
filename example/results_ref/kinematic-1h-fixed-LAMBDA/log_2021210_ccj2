@@ -1,6 +1,6 @@
 RINEX health Logfile      ccj2                              COMMENT
      30.00                                                  INTERVAL
-TRUNCATED                                                   AMB AT DAT-BOUNDARY
+DEFAULT                                                     AMB AT DAY-BOUNDARY
         21        24         0                              AMB MAX/TOT/NEW
       2210       428         0                              EPO AVA/REM/NEW
  2021  7 29  0  0  0.0000000     3570.00                    RES TIME BEG/LEN

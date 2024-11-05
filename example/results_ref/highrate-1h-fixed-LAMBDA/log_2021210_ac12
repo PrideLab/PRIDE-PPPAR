@@ -1,6 +1,6 @@
 RINEX health Logfile      ac12                              COMMENT
       1.00                                                  INTERVAL
-TRUNCATED                                                   AMB AT DAT-BOUNDARY
+DEFAULT                                                     AMB AT DAY-BOUNDARY
         11        12         0                              AMB MAX/TOT/NEW
      36774      2734         0                              EPO AVA/REM/NEW
  2021  7 29  6  0  0.0000000     3600.00                    RES TIME BEG/LEN
