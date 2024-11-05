@@ -53,6 +53,11 @@ The improvements made in PRIDE PPP-AR version 3.0 include:
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.0.
 
+### 2024-11-05 (v3.0.5)
+* `pdp3` : add a new argument '-twnd' to specify the processing time window for not standard rinex obs
+* `lib` : enable correction for satellite PCVs varying with azimuth
+* Other routine maintenance
+
 ### 2024-09-08 (v3.0)
 * `lib` & `tedit`: use DOCB block in BIAS-SINEX file to decide whether reset ambiguity at midnight
 * `otl`: enable self-computed ocean tide loading correction in case of no oceanload coefficients for user stations
