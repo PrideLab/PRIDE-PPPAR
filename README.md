@@ -55,6 +55,7 @@ See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGEL
 
 ### 2024-11-05 (v3.0.5)
 * `pdp3` : add a new argument '-twnd' to specify the processing time window for not standard rinex obs
+* `pdp3` : add 'curl' as an alternative download tool in Linux version
 * `lib` : enable correction for satellite PCVs varying with azimuth
 * Other routine maintenance
 
