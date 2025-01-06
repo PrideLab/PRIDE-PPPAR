@@ -53,7 +53,7 @@ The improvements made in PRIDE PPP-AR version 3.1 include:
 
 ## Version History
 
-See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.0.
+See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.1.
 
 ### 2025-01-06 (v3.1.0)
 * `mhm`: a new module enabling multipath delay compensation based on Multipath Hemispherical Map model (MHM)
