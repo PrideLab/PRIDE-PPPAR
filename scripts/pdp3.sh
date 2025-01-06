@@ -58,7 +58,7 @@ readonly USECACHE=YES
 readonly USERTS=YES
 
 readonly SCRIPT_NAME="pdp3"
-readonly VERSION_NUM="3.0"
+readonly VERSION_NUM="3.1.0"
 
 ######################################################################
 ##                     System-specific Command                      ##
@@ -100,6 +100,7 @@ main() {
     local    hour_e=$(echo "$args" | sed -n 7p)       # hh:mi:ss
     local      mode=$(echo "$args" | sed -n 8p)       # S/P/K/F/L, upper case
     local        AR=$(echo "$args" | sed -n 9p)       # A/Y/N, upper case
+    local   mul_use=$(echo "$args" | sed -n 10p)      # MHM modeling duration
 
     local interval=$(get_ctrl "$ctrl_file" "Interval")
     local freq_cmb=$(get_ctrl "$ctrl_file" "Frequency combination")
@@ -108,6 +109,7 @@ main() {
     local rinex_dir=$(dirname  "$rnxo_path")
     local rnxo_name=$(basename "$rnxo_path")
 
+    local mul=$(get_ctrl "$ctrl_file" "Multipath")
     # Output processing infomation
     echo -e "$MSGINF Processing time range: $date_s $hour_s <==> $date_e $hour_e"
     echo -e "$MSGINF Processing interval: $interval"
@@ -146,6 +148,17 @@ main() {
         exit 1
     fi
 
+    local mhm_dir="$work_dir/mhm"
+    if [[ "$mul" == "YES" ]]; then
+        mkdir -p "$mhm_dir" && cd "$mhm_dir"
+        if [ $? -eq 0 ]; then
+            PrepareMhmModel "$mjd_s" "$rnxo_path" "$ctrl_file" "$mhm_dir" "$mul_use" "$work_dir"\
+                || echo -e "$MSGERR from $ymd_s $doy_s to $ymd_e $doy_e preparing mhm model failed"
+        else
+            echo -e "$MSGERR no such directory: $mhm_dir"
+        fi
+    fi
+
     mkdir -p "$work_dir" && cd "$work_dir"
     if [ $? -eq 0 ]; then
         ProcessSingleSession "$rnxo_path" "$ctrl_file" "$date_s" "$hour_s" "$date_e" "$hour_e" "$AR" \
@@ -172,6 +185,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     local ymd_s hms_s ymd_e hms_e site mode plen interval freq_cmb AR
     local avail_sys edt_opt rck_opt ztd_opt htg_opt ion_opt tide_mask lam_opt pco_opt vbs_opt
     local gnss_mask map_opt rckl rckp ztdl ztdp htgp eloff
+    local mul_use=0
     local posp=0 twnd
 
     local last_arg=${@: -1}
@@ -401,6 +415,15 @@ ParseCmdArgs() { # purpose : parse command line into arguments
             -hion | --high-ion )
                 [ -z "$ion_opt" ]                               || throw_conflict_opt "$1"
                 ion_opt="YES"
+                ;;
+            -mp | --multipath)
+                mul_opt="YES"
+                if [[ $2 =~ ^-?[0-9]+$ ]]; then
+                    mul_use=$2
+                    shift 1
+                else
+                    mul_use=0
+                fi
                 ;;
             -h | --htg )
                 [ -z "$htg_opt" ]                               || throw_conflict_opt "$1"
@@ -965,6 +988,11 @@ ParseCmdArgs() { # purpose : parse command line into arguments
 
     sedi "/^Tides/s/ = .*/ = ${tide_mode//\//\\/}/" "$ctrl_file"
 
+    # Multipath correction (default as NO)
+    [ -n "$mul_opt" ] || mul_opt=$(get_ctrl "$ctrl_file" "Multipath")
+    [[ "$mul_opt" == "YES" ]] || mul_opt="NO"
+    sedi "/^Multipath/s/ = .*/ = $mul_opt/" "$ctrl_file"
+
     # Ambiguity resolution
     [ -n "$AR" ] || AR="A"
 
@@ -1045,6 +1073,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     echo "${hms_e:0:12}"
     echo "$mode"
     echo "$AR"
+    echo "$mul_use"
 }
 
 check_optional_arg() { # purpose : check if optional argument is existing
@@ -1103,7 +1132,7 @@ throw_require_arg() { # purpose : throw exception message and exit when option d
 CheckExecutables() { # purpose : check whether all needed executables are callable
                      # usage   : CheckExecutables
     echo -e "$MSGSTA CheckExecutables ..."
-    for exceu in "arsig" "get_ctrl" "lsq" "redig" "sp3orb" "spp" "tedit" "otl"; do
+    for exceu in "arsig" "get_ctrl" "lsq" "redig" "sp3orb" "spp" "tedit" "otl" "mhm"; do
         if ! which $exceu > /dev/null 2>&1; then
             echo -e "$MSGERR PRIDE PPP-AR executable file $exceu not found"
             return 1
@@ -1234,6 +1263,21 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
     >&2 echo "                                                   for static and fixed mode, NON for the other modes"
     >&2 echo ""
     >&2 echo "  -hion, --high-ion                          use 2nd ionospheric delay model with CODE's GIM products"
+    >&2 echo ""
+    >&2 echo "  -mp [num], --multipath [num]               use the multipath correction model (MHM)"
+    >&2 echo "                                               * default: 0 day"
+    >&2 echo "                                                   additional modeling time in day beyond one sidereal cycle"
+    >&2 echo "                                               * NOTE"
+    >&2 echo "                                                   observation files for the sidereal cycle are required at least"
+    >&2 echo "                                                                constellation        sidereal cycle(day)   "
+    >&2 echo "                                                              -----------------+---------------------------"
+    >&2 echo "                                                                     GPS       |             1             "
+    >&2 echo "                                                                   Galileo     |             10            "
+    >&2 echo "                                                                     BDS       |             7             "
+    >&2 echo "                                                                   GLONASS     |             8             "
+    >&2 echo "                                                                     QZSS      |             1             "
+    >&2 echo "                                                              -----------------+---------------------------"
+    >&2 echo "                                                   all observation files need to be placed in the same folder"    
     >&2 echo ""
     >&2 echo "  -l, --loose-edit                           disable strict editing"
     >&2 echo ""
@@ -1725,6 +1769,13 @@ ProcessSingleSite() { # purpose : process data of single site
     echo -e "$MSGSTA Data cleaning done"
 
     local vbs_opt=$(get_ctrl "$ctrl_file" "Verbose output" | tr 'a-z' 'A-Z')
+    
+    local mul_opt=$(get_ctrl "$ctrl_file" "Multipath")
+
+    # Multipath compensation
+    if [[ "$mul_opt" == "YES" ]]; then
+        ApplyMhmModel "$ctrl_file" "$rinexobs" "$mjd_s"  
+    fi
 
     # Ambiguity fixing
     if [ "$AR" != "N" ] && [ -f "${sinexosb}" ]; then
@@ -3155,6 +3206,134 @@ ExecuteWithoutOutput() {
         echo -e "$MSGINF Here is the output:\n"
         echo "$cmd" | bash
         return 1
+    fi
+}
+
+PrepareMhmModel() { # purpose : determine the number of days required for modeling and calculate the corresponding residual file to establish an MHM model
+                    # usage   : mjd_s rnxo_path ctrl_file mhm_dir mul_use work_dir  
+    local mjd_use="$1"
+    local rnxo_path="$2"
+    local ctrl_file="$3"
+    local mhm_dir="$4"
+    local mul_use="$5"
+    local work_dir="$6”"
+
+    local mul_day=10
+    local tmpydoy tmpfobs
+    local rnxo_name=$(basename "$rnxo_path")
+    local rinex_dir=$(dirname  "$rnxo_path")
+    local site=$(grep "^ .... [A-Z]" "$ctrl_file" | cut -c 2-5)     
+
+    local sat_line=$(awk '/\+GNSS satellites/,/-GNSS satellites/' $ctrl_file | grep -v '^[*#]' | awk '{print substr($1, 1, 1)}' | sort | uniq)
+    local sys_use=$(echo "$sat_line" | tr -d '\n')
+    echo -e "$MSGSTA PrepareMhmModel ..."
+    rm -f "$work_dir/mhm_${rnxo_name:0:4}"
+    if [[ $sys_use == *G* ]]; then
+        mul_day=1
+    fi
+    if [[ $sys_use == *C* ]]; then
+        mul_day=7
+    fi    
+    if [[ $sys_use == *R* ]]; then
+        mul_day=8
+    fi
+    if [[ $sys_use == *E* ]]; then
+        mul_day=10
+    fi
+    tmpydoy=($(mjd2ydoy ${mjd_use}))
+
+    readonly local RNXO2D_GLOB="${rnxo_name:0:4}${tmpydoy[1]}0.${tmpydoy[0]:2:2}@(o|O)"
+    readonly local RNXO3D_GLOB="${rnxo_name:0:9}_?_${tmpydoy[0]}${tmpydoy[1]}0000_01D_???_?O.@(rnx|RNX)"
+
+    local res_dir="$mhm_dir/${tmpydoy[0]}${tmpydoy[1]}/resfile"
+    rm -rf "$res_dir"
+    mkdir -p "$res_dir"
+    if [ $mul_use -ge 0 ]; then
+        local mjd_s=$(($mjd_use - $mul_day-$mul_use))
+        local mjd_e=$(($mjd_use - 1))
+    else
+        local mjd_s=$(($mjd_use + 1))
+        local mjd_e=$(($mjd_use + $mul_day-$mul_use))
+    fi
+    sedi "/^Multipath/s/ = .*/ = NO/" "$ctrl_file"
+    for mjd in $(seq $mjd_s $mjd_e); 
+    do
+        tmpydoy=($(mjd2ydoy ${mjd}))
+        tmpfres="$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/res_${tmpydoy[0]}${tmpydoy[1]}_${site}"
+        case "$rnxo_name" in
+        $RNXO2D_GLOB )
+            tmpfobs="$rinex_dir/${rnxo_name:0:4}${tmpydoy[1]}0.${tmpydoy[0]:2:2}${rnxo_name:11}"
+            ;;
+        $RNXO3D_GLOB )
+            tmpfobs="$rinex_dir/${rnxo_name:0:12}${tmpydoy[0]}${tmpydoy[1]}${rnxo_name:19}"
+            ;;
+        * )
+            tmpfobs="$rinex_dir/$rnxo_name"
+            >&2 echo -e "$MSGWAR illegal naming convention: $tmpfobs"
+            exit 1
+            ;;
+        esac
+        
+        mkdir -p "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}" 		
+        [ -f "$tmpfres" ] \
+            || (pdp3 -f -m S -cfg $ctrl_file $tmpfobs  \
+            && find "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/" -type f ! -name "res_${tmpydoy[0]}${tmpydoy[1]}_${site}" -exec rm -f {} \;)      
+        if [ -f "$tmpfres" ]; then
+            cp -f "$tmpfres" "$res_dir"
+            echo -e "$MSGSTA PrepareResfile ${tmpydoy[0]} ${tmpydoy[1]} done"
+        else
+            >&2 echo -e "$MSGWAR $tmpfres doesn't exist"
+        fi 
+    done
+    lack_flag=0
+    echo -e "$MSGSTA The data used for MHM modeling is as follows:"
+    for mjd in $(seq $mjd_s $mjd_e);
+    do
+        tmpydoy=($(mjd2ydoy ${mjd}))
+        tmpfres="$res_dir/res_${tmpydoy[0]}${tmpydoy[1]}_${site}"
+        if [ -f "$tmpfres" ]; then
+            echo -e "    ${tmpydoy[0]}    ${tmpydoy[1]}    res_${tmpydoy[0]}${tmpydoy[1]}_${site}"
+        else
+            lack_flag=1
+        fi
+    done
+    if [ $lack_flag -eq 1 ]; then
+        >&2 echo -e "$MSGWAR The lacking data is as follows:"
+        for mjd in $(seq $mjd_s $mjd_e);
+        do
+            tmpydoy=($(mjd2ydoy ${mjd}))
+            tmpfres="$res_dir/res_${tmpydoy[0]}${tmpydoy[1]}_${site}"
+            if [ ! -f "$tmpfres" ]; then
+                echo -e "    ${tmpydoy[0]}    ${tmpydoy[1]}    res_${tmpydoy[0]}${tmpydoy[1]}_${site}"
+            fi        
+        done
+    fi
+    sedi "/^Multipath/s/ = .*/ = YES/" "$ctrl_file"
+    tmpydoy=($(mjd2ydoy ${mjd_use}))
+    cd "$mhm_dir/${tmpydoy[0]}${tmpydoy[1]}"
+    mhm resfile 
+    cd "$mhm_dir" 
+    echo -e "$MSGSTA PrepareMhmModel done"
+}
+
+ApplyMhmModel() { # purpose : apply the MHM model to the last lsq for multipath correction
+                  # usage   : ctrl_file rnxo_path mjd_use
+    local ctrl_file="$1"
+    local rinexobs="$2"
+    local mjd_use="$3"
+
+    local cmd=""
+    local tmpydoy
+    ctrl_file=$(basename "$ctrl_file")
+    local site=$(grep "^ .... [A-Z]" "$ctrl_file" | cut -c 2-5)
+    tmpydoy=($(mjd2ydoy ${mjd_use}))
+
+    mv "mhm/${tmpydoy[0]}${tmpydoy[1]}/mhm_${site}" . 
+    rm -rf "mhm/${tmpydoy[0]}${tmpydoy[1]}"
+    cmd="lsq \"${ctrl_file}\" \"${rinexobs}\""
+    ExecuteWithoutOutput "$cmd" || return 1
+    if [ $? -ne 0 ]; then
+        echo -e "$MSGERR apply MHM model failed"
     fi
 }
 
