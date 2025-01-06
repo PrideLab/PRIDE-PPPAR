@@ -19,7 +19,7 @@ Relevant publications are
 * Geng J, Chen X, Pan Y, Zhao Q (2019). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. *Journal of Geodesy*, 93(10):2053-2067. doi:[10.1007/s00190-019-01301-6](https://doi.org/10.1007/s00190-019-01301-6)
 * Geng J, Chen X, Pan Y, Mao S, Li C, Zhou J, Zhang K (2019). PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. *GPS Solutions*, 23(91):1-10. doi:[10.1007/s10291-019-0888-1](https://doi.org/10.1007/s10291-019-0888-1)
 * Zeng J, Geng J, Li G, Tang W (2024). Improving cycle slip detection in ambiguity-fixed precise point positioning for kinematic LEO orbit determination. *GPS Solutions*, 28(3): 135. doi:[10.1007/s10291-024-01639-1](https://doi.org/10.1007/s10291-024-01639-1) 
-* Geng J, Zhang H, Li G, Aoki Y (2024). Multipath mitigation for GPS/Galileo/BDS-3 precise point positioning with overlap-frequency signals. *Satellite Navigation*,22(5). doi:[10.1186/s43020-024-00144-7]
+* Geng J, Zhang H, Li G, Aoki Y (2024). Multipath mitigation for GPS/Galileo/BDS-3 precise point positioning with overlap-frequency signals. *Satellite Navigation*,22(5). doi:[10.1186/s43020-024-00144-7](https://doi.org/10.1186/s43020-024-00144-7)
 
 PRIDE PPP-AR ver. 3.1 is available for:
 
@@ -55,7 +55,7 @@ The improvements made in PRIDE PPP-AR version 3.1 include:
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.0.
 
-### 2025-01-06 (v3.1)
+### 2025-01-06 (v3.1.0)
 * `mhm`: a new module enabling multipath delay compensation based on Multipath Hemispherical Map model (MHM)
 * `gui`: add support for RINEX versions greater than 4.0 
 
