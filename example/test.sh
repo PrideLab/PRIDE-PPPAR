@@ -74,7 +74,11 @@ echo -e "\n${BLUE}(5) troposphere daily"
 pdp3 -m F ./data/2020/003/abpo0030.20o
 MvDir 2020/003 ./results/tropo-24h-fixed
 
-rm -rf 2020 2021
+echo -e "\n${BLUE}(6} multipath daily"
+pdp3 -m K -sys g -mp ./data/2023/wuh20020.23o
+MvDir 2023/002 ./results/multipath-24h-fixed
+
+rm -rf 2020 2021 2023
 
 # Output
 printf "${BLUE}::${NC} computation results are put in %s\n" ./results/

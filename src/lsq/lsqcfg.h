@@ -40,6 +40,10 @@ type lsqcfg
   logical*1 lioh
   character*20 flntec
 !
+!! mhm model
+  logical*1 mhmuse
+  character*20 flnmhm
+!
 !! tide displacement
   logical*1 otluse
   character*60 tide

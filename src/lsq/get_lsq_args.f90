@@ -443,6 +443,12 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT, IM)
         SITE%obsfil(:i - 12)//upper_string(SITE%name)//"00"//"XXX"//"_R_"//yyyy//ddd//"0000_01D_30S_MO.rnx"
       call exit(1)
     end if
+!
+!! mhm model
+  LCF%flnmhm = 'mhm_' // trim(SITE%name)
+  inquire (file=LCF%flnmhm, exist=LCF%mhmuse)
+  print *, 'File name: ', LCF%flnmhm
+  print *, 'Does the file exist? ', LCF%mhmuse
 !! receiver clock jump file
 50  SITE%lfnjmp = 0
     path = '.'//SITE%name//'.jmp'

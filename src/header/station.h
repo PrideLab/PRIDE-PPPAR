@@ -17,6 +17,9 @@ type station
   real*8 enu_sys(3,2,MAXSYS)
   character*20 rectyp, anttyp
 !
+!! mhm model
+  real*8 mhm(360, 90, 2, 5)
+!
 !! clock correction
   real*8 dclk0, rclock_G, rclock_R, rclock_E, rclock_C, rclock_3, rclock_J, qrck
 !

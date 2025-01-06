@@ -129,6 +129,11 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
       else
         write (lfn, '(a2,58x,a)') 'NO', 'IONO 2ND'
       end if
+      if (LCF%mhmuse) then
+        write (lfn, '(a3,57x,a)') 'MHM', 'MULTIPATH MODEL'
+      else
+        write (lfn, '(a3,57x,a)') 'NON', 'MULTIPATH MODEL'
+      end if
       line1 = ''; line2 = ''; line3 = ''; 
       if (index(LCF%tide, 'SOLID') .ne. 0) line1 = 'SOLID'
       if (index(LCF%tide, 'POLE') .ne. 0) line2 = 'POLE'
@@ -432,6 +437,11 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
           line4, LCF%nconC2, line5, LCF%nconC3, line6, LCF%nconJ, 'AMB FIXING'
       else
         write (lfn, '(a2,58x,a)') 'NO', 'AMB FIXING'
+      end if
+      if (LCF%mhmuse) then
+        write (lfn, '(a3,57x,a)') 'MHM', 'MULTIPATH MODEL'
+      else
+        write (lfn, '(a3,57x,a)') 'NON', 'MULTIPATH MODEL'
       end if
       line1 = ''; line2 = ''; line3 = ''; 
       if (index(LCF%tide, 'SOLID') .ne. 0) line1 = 'SOLID'

@@ -84,6 +84,7 @@ program lsq
   end do
   LCF%attuse = .false.
   LCF%otluse = .false.
+  LCF%mhmuse = .false.
   arsig_used = .false.
   call frequency_glonass(FREQ1_R, FREQ2_R)
 !
@@ -142,6 +143,12 @@ program lsq
                      SAT(isat)%typ, antnum, SAT(isat)%iptatx, SAT(isat)%xyz, &
                      SAT(isat)%prn(1:1), LCF%flnatx_real)
   end do
+!
+!! get multipath model
+  if (LCF%mhmuse) then
+    print *, 1
+    call read_mhm(SITE%mhm,SITE%name)  
+  end if
 !
 !! site antenna
 !! observation
@@ -275,7 +282,7 @@ program lsq
 !
 !! read kinematic position: if not found, use value at last epoch
     if ((count(OB%obs(1:LCF%nprn, 3) .ne. 0.d0) .gt. 0) .and. &
-        ( SITE%skd(1:1) .eq. 'K' .or. SITE%skd(1:1) .eq. 'L')) then
+        (SITE%skd(1:1) .eq. 'K' .or. SITE%skd(1:1) .eq. 'L')) then
       ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
       ipar = OB%ltog(ipar, 1)
       if (PM(ipar)%iepo .eq. 0) then
@@ -303,7 +310,7 @@ program lsq
     if (dmod(iepo*1.d0, dnint(300.d0/LCF%dintv)) .le. MAXWND) write (*, '(2a,i9,i7,f9.1)') run_tim(), ' Epoch ', iepo, jd, sod
 !
 !! prepare a priori information for kinematic station
-    if ( SITE%skd(1:1) .eq. 'K' .or. SITE%skd(1:1) .eq. 'L') then
+    if (SITE%skd(1:1) .eq. 'K' .or. SITE%skd(1:1) .eq. 'L') then
       ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
       do i = 0, 2
         SITE%x(i + 1) = PM(OB%ltog(ipar + i, 1))%xini * 1.d-3

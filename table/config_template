@@ -23,6 +23,7 @@ ZTD model              = Default                 ! zenith troposphere delay (PWC
 HTG model              = Default                 ! horizontal troposphere gradient (PWC/STO/NON)
 Iono 2nd               = Default                 ! change to YES if correcting 2-order ionospheric delays
 Tides                  = SOLID/OCEAN/POLE        ! remove any to shut it down, or changed to NON if not correcting tidal errors
+Multipath              = Default                 ! use the multipath correction model (YES/NO)
 
 ## Ambiguity fixing options
 Ambiguity co-var       = Default                 ! change to YES if the Ambiguity fixing method is LAMBDA
