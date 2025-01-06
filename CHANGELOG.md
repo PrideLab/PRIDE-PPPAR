@@ -1,6 +1,11 @@
 # Change Log
 
-## PRIDE PPP-AR version 3
+## PRIDE PPP-AR version 3.1.0
+
+### 2025-01-06 (v3.1)
+* `mhm`: a new module enabling multipath delay compensation based on Multipath Hemispherical Map model (MHM)
+* `gui`: add support for RINEX versions greater than 4.0 
+
 
 ### 2024-09-08 (v3.0)
 * `lib` & `tedit`: use DOCB block in BIAS-SINEX file to decide whether reset ambiguity at midnight

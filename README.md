@@ -1,6 +1,6 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
 
-## PRIDE-PPPAR ver. 3.0.5 (last updated on 2024-11-05)
+## PRIDE-PPPAR ver. 3.1.0 (last updated on 2025-01-06)
 
 PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -19,8 +19,9 @@ Relevant publications are
 * Geng J, Chen X, Pan Y, Zhao Q (2019). A modified phase clock/bias model to improve PPP ambiguity resolution at Wuhan University. *Journal of Geodesy*, 93(10):2053-2067. doi:[10.1007/s00190-019-01301-6](https://doi.org/10.1007/s00190-019-01301-6)
 * Geng J, Chen X, Pan Y, Mao S, Li C, Zhou J, Zhang K (2019). PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. *GPS Solutions*, 23(91):1-10. doi:[10.1007/s10291-019-0888-1](https://doi.org/10.1007/s10291-019-0888-1)
 * Zeng J, Geng J, Li G, Tang W (2024). Improving cycle slip detection in ambiguity-fixed precise point positioning for kinematic LEO orbit determination. *GPS Solutions*, 28(3): 135. doi:[10.1007/s10291-024-01639-1](https://doi.org/10.1007/s10291-024-01639-1) 
+* Geng J, Zhang H, Li G, Aoki Y (2024). Multipath mitigation for GPS/Galileo/BDS-3 precise point positioning with overlap-frequency signals. *Satellite Navigation*,22(5). doi:[10.1186/s43020-024-00144-7]
 
-PRIDE PPP-AR ver. 3.0 is available for:
+PRIDE PPP-AR ver. 3.1 is available for:
 
 1) Multi-GNSS data processing with GPS, GLONASS, Galileo, BDS-2/3 and QZSS
 2) All-frequency PPP-AR on any dual-frequency ionosphere-free combinations of GPS, Galileo, and BDS-2/3
@@ -36,8 +37,9 @@ PRIDE PPP-AR ver. 3.0 is available for:
 12) User-friendly operation and visualization for early-career researchers with lite-version GUI
 13) Ambiguity-float PPP with backward compatibility from 1994 when selective availablity (SA) was on
 14) Timely data processing with rapid (RAP) products and real-time archived (RTS) products
+15) Multipath delay compensation based on Multipath Hemispherical Map model
 
-The improvements made in PRIDE PPP-AR version 3.0 include:
+The improvements made in PRIDE PPP-AR version 3.1 include:
 
 * Enable all-frequency PPP-AR on any dual-frequency ionosphere-free combinations
 * Employ the latest WUM0MGXRAP products to resolve ambiguities on new GNSS signals (L5/E6/E5b/E5B/B1C/B2a/B2)
@@ -52,6 +54,10 @@ The improvements made in PRIDE PPP-AR version 3.0 include:
 ## Version History
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.0.
+
+### 2025-01-06 (v3.1)
+* `mhm`: a new module enabling multipath delay compensation based on Multipath Hemispherical Map model (MHM)
+* `gui`: add support for RINEX versions greater than 4.0 
 
 ### 2024-11-05 (v3.0.5)
 * `pdp3` : add a new argument '-twnd' to specify the processing time window for not standard rinex obs
