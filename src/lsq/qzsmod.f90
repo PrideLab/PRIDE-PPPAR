@@ -343,7 +343,7 @@ subroutine qzsmod(jd, sod, LCF, SITE, OB, SAT, IM)
     if (dabs(drecclk) .gt. 1.d-6 .or. (k .ge. 1 .and. SITE%rclock_J .eq. 0.d0)) then
       SITE%rclock_J = SITE%rclock_J + drecclk*VLIGHT
       drecclk = SITE%rclock_J/VLIGHT
-      if (dabs(drecclk) .lt. 1.d-1) goto 100
+    !!  if (dabs(drecclk) .lt. 1.d-1) goto 100
       write (*, '(a,i7,f9.2,e15.4)') '***ERROR(qzsmod): abnormal drecclk at ', jd, sod, drecclk
       call exit(1)
     end if

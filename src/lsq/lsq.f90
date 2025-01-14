@@ -145,11 +145,12 @@ program lsq
   end do
 !
 !! get multipath model
+  SITE%mhm = 0.0d0
   if (LCF%mhmuse) then
     print *, 1
     call read_mhm(SITE%mhm,SITE%name)  
   end if
-!
+
 !! site antenna
 !! observation
   SITE%iunit = get_valid_unit(10)

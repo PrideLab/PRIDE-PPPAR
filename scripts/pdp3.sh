@@ -6,7 +6,7 @@
 ##                                                                           ##
 ##  AUTHOR : PRIDE LAB      pride@whu.edu.cn                                 ##
 ##                                                                           ##
-##  VERSION: ver 3.0                                                         ##
+##  VERSION: ver 3.1                                                         ##
 ##                                                                           ##
 ##  DATE   : Apr-08, 2024                                                    ##
 ##                                                                           ##
@@ -992,6 +992,10 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     [ -n "$mul_opt" ] || mul_opt=$(get_ctrl "$ctrl_file" "Multipath")
     [[ "$mul_opt" == "YES" ]] || mul_opt="NO"
     sedi "/^Multipath/s/ = .*/ = $mul_opt/" "$ctrl_file"
+    if [ "$mode" == "L" ] && [ "$mul_opt" == "YES" ]; then
+        >&2 echo -e "$MSGERR mhm cannot be applied to LEO satellite"
+        exit 1
+    fi
 
     # Ambiguity resolution
     [ -n "$AR" ] || AR="A"
@@ -1541,6 +1545,7 @@ ProcessSingleSite() { # purpose : process data of single site
     local freq_cmb=$(get_ctrl "$ctrl_file" "Frequency combination")
     local positioning_mode=$(grep "^ $site [A-Z]" "$config" | awk '{print $2}') # S/P/K/F/L
     local cutoff_elevation=$(grep "^ $site [A-Z]" "$config" | awk '{print $6}') # int, degree
+    local mul_opt=$(get_ctrl "$ctrl_file" "Multipath")
 
     echo -e "$MSGSTA ProcessSingleSite ${site} from ${ydoy_s[@]} to ${ydoy_e[@]} ..."
 
@@ -1769,8 +1774,14 @@ ProcessSingleSite() { # purpose : process data of single site
     echo -e "$MSGSTA Data cleaning done"
 
     local vbs_opt=$(get_ctrl "$ctrl_file" "Verbose output" | tr 'a-z' 'A-Z')
-    
-    local mul_opt=$(get_ctrl "$ctrl_file" "Multipath")
+
+    # Determine whether it is a mobile platform 
+    if [ "$positioning_mode" == "K" ] || [ "$positioning_mode" == "P" ]; then
+        local max_distance=$(GetMaxDistance "kin_${ydoy_s[0]}${ydoy_s[1]}_${site}")
+        if [[ "$mul_opt" == "YES" && $(echo "$max_distance > 10" | bc) -eq 1 ]]; then
+            echo -e "$MSGWAR mhm cannot be applied to mobile platforms"
+        fi
+    fi
 
     # Multipath compensation
     if [[ "$mul_opt" == "YES" ]]; then
@@ -2487,6 +2498,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local att="${cmp/\.[gZ]*/}"
                 echo -e "$MSGWAR PrepareProducts: failed to download satellite attitude product: $cmp"
                 echo -e "$MSGINF please download from $url to $product_cmn_dir for processing"
+				sed -i "/Quaternions/s/Default/NONE/" "$config"
                 break
             fi
             sedi "/Quaternions/s/Default/$att &/" "$config"
@@ -2607,13 +2619,14 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 else
                     echo -e "$MSGWAR PrepareProducts: failed to download satellite code/phase bias lock product: $cmp"
                     echo -e "$MSGINF please download from $url to $product_cmn_dir for processing"
+					sed -i "/Code\/phase bias/s/Default/NONE/" "$config"
                 fi
                 break
             fi
             sedi "/Code\/phase bias/s/Default/$fcb &/" "$config"
             custom_pro_fcb="$custom_pro_fcb $fcb"
         done
-        sedi "/Code\/phase bias/s/Default//g" "$config"
+        sedi "/Code\/phase bias/s/Default//g" "$config" 
         local argnum="$(echo $custom_pro_fcb | wc -w)"
         if [ $argnum -gt 1 ]; then
             fcb="merfcb_${ymd_s}${doy_s}"
@@ -3335,6 +3348,31 @@ ApplyMhmModel() { # purpose : apply the MHM model to the last lsq for multipath 
     if [ $? -ne 0 ]; then
         echo -e "$MSGERR apply MHM model failed"
     fi
+}
+
+GetMaxDistance() { # purpose : get max distance from file
+                   # usage   : filename
+    local filename="$1"
+    local start_line=$(grep -n "END OF HEADER" "$filename" | cut -d: -f1)
+    ((start_line++))
+    read min_x max_x min_y max_y min_z max_z < <(awk "NR>$start_line {
+        if (NR == $start_line + 1) {
+            min_x = max_x = \$3;
+            min_y = max_y = \$4;
+            min_z = max_z = \$5;
+        }
+        if (\$3 < min_x) min_x = \$3;
+        if (\$3 > max_x) max_x = \$3;
+        if (\$4 < min_y) min_y = \$4;
+        if (\$4 > max_y) max_y = \$4;
+        if (\$5 < min_z) min_z = \$5;
+        if (\$5 > max_z) max_z = \$5;
+    }
+    END {
+        print min_x, max_x, min_y, max_y, min_z, max_z
+    }" "$filename")
+    distance=$(echo "sqrt(($max_x - $min_x)^2 + ($max_y - $min_y)^2 + ($max_z - $min_z)^2)" | bc -l)
+    echo "$distance"
 }
 
 snx2sit() {

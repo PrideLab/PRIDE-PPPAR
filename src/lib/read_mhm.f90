@@ -40,7 +40,6 @@ subroutine read_mhm(mhm,sit_name)
   integer*4 :: get_valid_unit, lfn
   character*4 sit_name
 
-  mhm=0.0d0
   end_of_file = .false.
 !
   lfn = get_valid_unit(600)
@@ -52,18 +51,18 @@ subroutine read_mhm(mhm,sit_name)
   if (ios /= 0) then
     write (*, '(2a)') '###WARNING(read_mhm): open file ', trim(flnmhm)
     end_of_file = .true.
-	return
+    return
   endif
 
   line_num=0
   do while (.not. end_of_file)
     read(lfn, '(A)', iostat=ios) line
     
-	if (ios /= 0) then
+    if (ios /= 0) then
         end_of_file = .true.
         exit
     end if
-	
+
     line_num = line_num + 1
     if (index(line, "START OF") > 0 .and. index(line, "GPS") > 0 ) then
       gps_s = line_num

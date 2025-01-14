@@ -83,20 +83,21 @@ subroutine lsq_add_obs(lfncid, lfnobs, lfnrem, jd, sod, LCF, OB, PM, NM, SAT, SI
     phase = 0.d0; wphs = 0.d0
 !
 !! get az and el	
-	if(OB%azim(isat) .le. 0.d0) then
-	  az=floor(OB%azim(isat)*180.d0/PI)+1
-	else
-	  az=floor(OB%azim(isat)*180.d0/PI)+360+1
-	end if
-	el=floor(OB%elev(isat)*180.d0/PI)+1
+    if(OB%azim(isat) .ge. 0.d0) then
+      az = floor(OB%azim(isat)*180.d0/PI)
+    else
+      az = floor(OB%azim(isat)*180.d0/PI)+360
+    end if
+    el = floor(OB%elev(isat)*180.d0/PI)
+
 !
 !! right hand side
     NM%nobs = NM%nobs + 1
     wrng = 1.d0/(OB%var(isat, 3) + OB%var(isat, 4))
-    range = (OB%omc(isat, 3)*r2(i0) - OB%omc(isat, 4))/(r2(i0) - 1.d0)-SITE%mhm(az,el,1,i0)
+    range = (OB%omc(isat, 3)*r2(i0) - OB%omc(isat, 4))/(r2(i0) - 1.d0) - SITE%mhm(az+1,el+1,1,i0)
     NM%nobs = NM%nobs + 1
     wphs = 1.d0/(OB%var(isat, 1) + OB%var(isat, 2))
-    phase = (OB%omc(isat, 1)*r2(i0) - OB%omc(isat, 2))/(r2(i0) - 1.d0)-SITE%mhm(az,el,2,i0)
+    phase = (OB%omc(isat, 1)*r2(i0) - OB%omc(isat, 2))/(r2(i0) - 1.d0) - SITE%mhm(az+1,el+1,2,i0)
 !
 !! observation equations
     nelem = 0

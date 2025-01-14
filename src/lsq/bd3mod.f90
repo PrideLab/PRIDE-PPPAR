@@ -343,7 +343,7 @@ subroutine bd3mod(jd, sod, LCF, SITE, OB, SAT, IM)
     if (dabs(drecclk) .gt. 1.d-6 .or. (k .ge. 1 .and. SITE%rclock_3 .eq. 0.d0)) then
       SITE%rclock_3 = SITE%rclock_3 + drecclk*VLIGHT
       drecclk = SITE%rclock_3/VLIGHT
-      if (dabs(drecclk) .lt. 1.d-1) goto 100
+    !!  if (dabs(drecclk) .lt. 1.d-1) goto 100
       write (*, '(a,i7,f9.2,e15.4)') '***ERROR(bd3mod): abnormal drecclk at ', jd, sod, drecclk
       call exit(1)
     end if
