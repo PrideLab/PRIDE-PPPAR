@@ -344,8 +344,8 @@ subroutine glomod(jd, sod, LCF, SITE, OB, SAT, IM)
       SITE%rclock_R = SITE%rclock_R + drecclk*VLIGHT
       drecclk = SITE%rclock_R/VLIGHT
     !!  if (dabs(drecclk) .lt. 1.d-1) goto 100
-      write (*, '(a,i7,f9.2,e15.4)') '***ERROR(glomod): abnormal drecclk at ', jd, sod, drecclk
-      call exit(1)
+    !!  write (*, '(a,i7,f9.2,e15.4)') '***ERROR(glomod): abnormal drecclk at ', jd, sod, drecclk
+    !!  call exit(1)
     end if
   end if
 

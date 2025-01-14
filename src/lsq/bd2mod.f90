@@ -349,8 +349,8 @@ subroutine bd2mod(jd, sod, LCF, SITE, OB, SAT, IM)
       SITE%rclock_C = SITE%rclock_C + drecclk*VLIGHT
       drecclk = SITE%rclock_C/VLIGHT
     !!  if (dabs(drecclk) .lt. 1.d-1) goto 100
-      write (*, '(a,i7,f9.2,e15.4)') '***ERROR(bd2mod): abnormal drecclk at ', jd, sod, drecclk
-      call exit(1)
+    !!  write (*, '(a,i7,f9.2,e15.4)') '***ERROR(bd2mod): abnormal drecclk at ', jd, sod, drecclk
+    !!  call exit(1)
     end if
   end if
 
