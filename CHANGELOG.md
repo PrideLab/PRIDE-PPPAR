@@ -1,6 +1,9 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.1.0
+## PRIDE PPP-AR version 3.1.1
+
+### 2025-01-19 (v3.1.1)
+* `pdp3`: Disable the use of RTS products in MHM modeling
 
 ### 2025-01-06 (v3.1)
 * `mhm`: a new module enabling multipath delay compensation based on Multipath Hemispherical Map model (MHM)

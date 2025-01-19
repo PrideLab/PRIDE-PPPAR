@@ -58,7 +58,7 @@ readonly USECACHE=YES
 readonly USERTS=YES
 
 readonly SCRIPT_NAME="pdp3"
-readonly VERSION_NUM="3.1.0"
+readonly VERSION_NUM="3.1.1"
 
 ######################################################################
 ##                     System-specific Command                      ##
@@ -2715,6 +2715,25 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
         sedi "/LEO quaternions/s/Default/$lat/" "$config"
     fi
 
+    # Check Multipath and RTS product
+    custom_pro_sp3=$(get_ctrl "$config" "satellite orbit")
+    custom_pro_clk=$(get_ctrl "$config" "satellite clock")
+    custom_pro_erp=$(get_ctrl "$config" "ERP")
+    custom_pro_att=$(get_ctrl "$config" "Quaternions")
+    custom_pro_fcb=$(get_ctrl "$config" "Code/phase bias")
+
+    if [[ ( "$custom_pro_sp3" == *"RTS"* ) || \
+          ( "$custom_pro_clk" == *"RTS"* ) || \
+          ( "$custom_pro_erp" == *"RTS"* ) || \
+          ( "$custom_pro_att" == *"RTS"* ) || \
+          ( "$custom_pro_fcb" == *"RTS"* ) ]] && \
+       [[ "$mul" == "YES" ]]; then
+        echo -e "$MSGERR PrepareProducts: RTS products cannot be used for multipath correction"
+        return 1
+    fi
+
+
+
     # Check satellite orbit
     if [ -f "$sp3" ]; then
         head -1 "$sp3" | grep -q "^#a"
@@ -3273,6 +3292,7 @@ PrepareMhmModel() { # purpose : determine the number of days required for modeli
     do
         tmpydoy=($(mjd2ydoy ${mjd}))
         tmpfres="$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/res_${tmpydoy[0]}${tmpydoy[1]}_${site}"
+		tmppos="$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/pos_${tmpydoy[0]}${tmpydoy[1]}_${site}" 
         case "$rnxo_name" in
         $RNXO2D_GLOB )
             tmpfobs="$rinex_dir/${rnxo_name:0:4}${tmpydoy[1]}0.${tmpydoy[0]:2:2}${rnxo_name:11}"
@@ -3290,13 +3310,33 @@ PrepareMhmModel() { # purpose : determine the number of days required for modeli
         mkdir -p "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}" 		
         [ -f "$tmpfres" ] \
             || (pdp3 -f -m S -cfg $ctrl_file $tmpfobs  \
-            && find "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/" -type f ! -name "res_${tmpydoy[0]}${tmpydoy[1]}_${site}" -exec rm -f {} \;)      
+             && find "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/" -type f \
+                 -not -name "res_${tmpydoy[0]}${tmpydoy[1]}_${site}" \
+                 -not -name "pos_${tmpydoy[0]}${tmpydoy[1]}_${site}" \
+                 -exec rm -f {} \;)     
         if [ -f "$tmpfres" ]; then
+             if [ -f "$tmppos" ]; then  
+                custom_pro_sp3=$(grep -i "SAT ORBIT" "$tmppos" | awk '{print $1}')
+                custom_pro_clk=$(grep -i "SAT CLOCK" "$tmppos" | awk '{print $1}')
+                custom_pro_erp=$(grep -i "SAT ATTITUDE" "$tmppos" | awk '{print $1}')
+                custom_pro_att=$(grep -i "SAT BIAS" "$tmppos" | awk '{print $1}')
+                custom_pro_fcb=$(grep -i "EARTH ROTATION PARAMETERS" "$tmppos" | awk '{print $1}')
+             if [[ ( "$custom_pro_sp3" == *"RTS"* ) || \
+     	  	   ( "$custom_pro_clk" == *"RTS"* ) || \
+        	   ( "$custom_pro_erp" == *"RTS"* ) || \
+      		   ( "$custom_pro_att" == *"RTS"* ) || \
+      		   ( "$custom_pro_fcb" == *"RTS"* ) ]]; then
+                 echo -e "$MSGERR PrepareProducts: RTS products cannot be used for multipath correction"
+                  rm  "$tmpfres"  "$tmppos"
+                 exit 1
+             fi
+                rm  "$tmppos"
+            fi
             cp -f "$tmpfres" "$res_dir"
             echo -e "$MSGSTA PrepareResfile ${tmpydoy[0]} ${tmpydoy[1]} done"
         else
             >&2 echo -e "$MSGWAR $tmpfres doesn't exist"
-        fi 
+        fi
     done
     lack_flag=0
     echo -e "$MSGSTA The data used for MHM modeling is as follows:"
