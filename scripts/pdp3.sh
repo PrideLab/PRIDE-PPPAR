@@ -2123,6 +2123,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     local ymd_s=($(ydoy2ymd ${ydoy_s[*]}))
     local doy_s=${ydoy_s[1]}
 
+    local mul=$(get_ctrl "$config" "Multipath")
     local ign_priority_path="$(dirname $(which pdp3))/.ign_priority"
 
     echo -e "$MSGSTA PrepareProducts ..."
@@ -3273,7 +3274,7 @@ PrepareMhmModel() { # purpose : determine the number of days required for modeli
         mul_day=10
     fi
     tmpydoy=($(mjd2ydoy ${mjd_use}))
-
+    tmpydoy_td=($(mjd2ydoy ${mjd_use}))
     readonly local RNXO2D_GLOB="${rnxo_name:0:4}${tmpydoy[1]}0.${tmpydoy[0]:2:2}@(o|O)"
     readonly local RNXO3D_GLOB="${rnxo_name:0:9}_?_${tmpydoy[0]}${tmpydoy[1]}0000_01D_???_?O.@(rnx|RNX)"
 
@@ -3287,12 +3288,12 @@ PrepareMhmModel() { # purpose : determine the number of days required for modeli
         local mjd_s=$(($mjd_use + 1))
         local mjd_e=$(($mjd_use + $mul_day-$mul_use))
     fi
-    sedi "/^Multipath/s/ = .*/ = NO/" "$ctrl_file"
     for mjd in $(seq $mjd_s $mjd_e); 
     do
         tmpydoy=($(mjd2ydoy ${mjd}))
         tmpfres="$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/res_${tmpydoy[0]}${tmpydoy[1]}_${site}"
-		tmppos="$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/pos_${tmpydoy[0]}${tmpydoy[1]}_${site}" 
+        tmpfpos="$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/pos_${tmpydoy[0]}${tmpydoy[1]}_${site}"
+        tmpfcon="$mhm_dir/config_mhm_${tmpydoy[0]}${tmpydoy[1]}" 
         case "$rnxo_name" in
         $RNXO2D_GLOB )
             tmpfobs="$rinex_dir/${rnxo_name:0:4}${tmpydoy[1]}0.${tmpydoy[0]:2:2}${rnxo_name:11}"
@@ -3306,37 +3307,63 @@ PrepareMhmModel() { # purpose : determine the number of days required for modeli
             exit 1
             ;;
         esac
-        
+        cp "$ctrl_file" "$tmpfcon"
+        sedi "/^Interval/s/ = .*/ = Default/" "$tmpfcon"
+        sedi "/^Multipath/s/ = .*/ = NO/" "$tmpfcon"
+ 
+        mhm_pro_opts=("Satellite orbit" "Satellite clock" "ERP" "Quaternions" "Code/phase bias")
+        for mhm_pro_opt in "${mhm_pro_opts[@]}"; do
+            mhm_pro_flag=0
+            mhm_pro_gets=$(get_ctrl "$ctrl_file" "$mhm_pro_opt")
+            mhm_pro_opt=$(printf '%s\n' "$mhm_pro_opt" | sed 's/[\/&]/\\&/g')
+            if [[ "$mhm_pro_gets" != "NONE" && "$mhm_pro_gets" != "Default" ]]; then
+                for mhm_pro_get in $mhm_pro_gets; do
+                     if [[ "$mhm_pro_get" == *"${tmpydoy_td[0]}${tmpydoy_td[1]}"* ]]; then
+                         mhm_pro_flag=1
+                         mhm_pro_set="${mhm_pro_get//${tmpydoy_td[0]}${tmpydoy_td[1]}/${tmpydoy[0]}${tmpydoy[1]}}"
+                         sedi "/^$mhm_pro_opt/s/ = .*/ = $mhm_pro_set/" "$tmpfcon"
+                     fi 
+                done   
+                if [ "$mhm_pro_flag" -eq 0 ]; then      
+                    >&2 echo -e "$MSGERR illegal naming product: $mhm_pro_gets"
+                    exit 1
+                fi
+            fi    
+        done
+
         mkdir -p "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}" 		
         [ -f "$tmpfres" ] \
-            || (pdp3 -f -m S -cfg $ctrl_file $tmpfobs  \
+            || (pdp3 -f -m S -cfg $tmpfcon $tmpfobs  \
              && find "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/" -type f \
                  -not -name "res_${tmpydoy[0]}${tmpydoy[1]}_${site}" \
                  -not -name "pos_${tmpydoy[0]}${tmpydoy[1]}_${site}" \
                  -exec rm -f {} \;)     
-        if [ -f "$tmpfres" ]; then
-             if [ -f "$tmppos" ]; then  
-                custom_pro_sp3=$(grep -i "SAT ORBIT" "$tmppos" | awk '{print $1}')
-                custom_pro_clk=$(grep -i "SAT CLOCK" "$tmppos" | awk '{print $1}')
-                custom_pro_erp=$(grep -i "SAT ATTITUDE" "$tmppos" | awk '{print $1}')
-                custom_pro_att=$(grep -i "SAT BIAS" "$tmppos" | awk '{print $1}')
-                custom_pro_fcb=$(grep -i "EARTH ROTATION PARAMETERS" "$tmppos" | awk '{print $1}')
-             if [[ ( "$custom_pro_sp3" == *"RTS"* ) || \
-     	  	   ( "$custom_pro_clk" == *"RTS"* ) || \
-        	   ( "$custom_pro_erp" == *"RTS"* ) || \
-      		   ( "$custom_pro_att" == *"RTS"* ) || \
-      		   ( "$custom_pro_fcb" == *"RTS"* ) ]]; then
-                 echo -e "$MSGERR PrepareProducts: RTS products cannot be used for multipath correction"
-                  rm  "$tmpfres"  "$tmppos"
-                 exit 1
-             fi
-                rm  "$tmppos"
+      
+        if [ -f "$tmpfpos" ]; then
+            custom_pro_sp3=$(grep -i "SAT ORBIT" "$tmpfpos" | awk '{print $1}')
+            custom_pro_clk=$(grep -i "SAT CLOCK" "$tmpfpos" | awk '{print $1}')
+            custom_pro_erp=$(grep -i "EARTH ROTATION PARAMETERS" "$tmpfpos" | awk '{print $1}')
+            custom_pro_att=$(grep -i "SAT ATTITUDE" "$tmpfpos" | awk '{print $1}')
+            custom_pro_fcb=$(grep -i "SAT BIAS" "$tmpfpos" | awk '{print $1}')
+            if [[ ( "$custom_pro_sp3" == *"RTS"* ) || \
+                  ( "$custom_pro_clk" == *"RTS"* ) || \
+                  ( "$custom_pro_erp" == *"RTS"* ) || \
+                  ( "$custom_pro_att" == *"RTS"* ) || \
+                  ( "$custom_pro_fcb" == *"RTS"* ) ]]; then
+                >&2 echo -e "$MSGERR PrepareProducts: RTS products cannot be used for multipath correction"
+                rm "$tmpfres" "$tmpfpos"
+                exit 1
             fi
+            rm "$tmpfpos"
+        fi
+
+        if [ -f "$tmpfres" ]; then
             cp -f "$tmpfres" "$res_dir"
             echo -e "$MSGSTA PrepareResfile ${tmpydoy[0]} ${tmpydoy[1]} done"
         else
             >&2 echo -e "$MSGWAR $tmpfres doesn't exist"
         fi
+        rm "$tmpfcon"
     done
     lack_flag=0
     echo -e "$MSGSTA The data used for MHM modeling is as follows:"
@@ -3361,7 +3388,6 @@ PrepareMhmModel() { # purpose : determine the number of days required for modeli
             fi        
         done
     fi
-    sedi "/^Multipath/s/ = .*/ = YES/" "$ctrl_file"
     tmpydoy=($(mjd2ydoy ${mjd_use}))
     cd "$mhm_dir/${tmpydoy[0]}${tmpydoy[1]}"
     mhm resfile 
