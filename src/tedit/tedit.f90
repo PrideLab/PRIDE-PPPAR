@@ -188,7 +188,7 @@ program tedit
     allocate (respg(1:mepo), stat=ierr)
 
     ! read a priori xyz
-    call get_xyz(use_brdeph, tstart, sstart, tmp_session, mepo, interval, xt, yt, zt)
+    call get_xyz(use_brdeph, tstart, sstart, tmp_session, mepo, interval, xt, yt, zt, dwnd)
 
     ! read broadcast ephemerids
     if (use_brdeph) then
