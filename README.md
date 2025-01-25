@@ -10,13 +10,6 @@ The GNSS products are accessible at <ftp://igs.gnsswhu.cn/pub/whu/phasebias>.
 Latest updates for Support, Training courses and FAQ can be found at <http://pride.whu.edu.cn>.
 The copyright of this package is protected by GNU General Public License (version 3). 
 
-Contributors
-
-Here is a list of current and past contributors:
-
-Jianghui Geng, Qiang Wen, Maorong Ge, Songfeng Yang, Honghai Zhang, Kunlun Zhang, Jihang Lin, Wenyi Li, Shuyin Mao, Yuanxin Pan, Jing Zeng, Yingda Deng, Yahao Zhang,
-Zhaoyan Liu, Qi Zhang, Bingqing Li, Yiwei Feng, Bingchen Fu, Xun Ma
-
 Relevant publications are
 
 * Geng J, Zhang Q, Li G, Liu J, Liu D (2022). Observable-specific phase biases of Wuhan multi-GNSS experiment analysis center's rapid satellite products. *Satellite Navigation*, 3(1):1-15. doi:[10.1186/s43020-022-00084-0](https://doi.org/10.1186/s43020-022-00084-0)
@@ -57,6 +50,15 @@ The improvements made in PRIDE PPP-AR version 3.1 include:
 * Refine the data format of result files and the output information of program runs
 
 `Notes: The all-frequency satellite orbit/clock/bias/ERP/quaternion products from Wuhan University are required by PRIDE PPP-AR`
+
+## Contributors
+
+### Developers
+* Jianghui Geng, Qiang Wen, Maorong Ge, Songfeng Yang, Honghai Zhang, Kunlun Zhang, Jihang Lin, Wenyi Li, Shuyin Mao, Yuanxin Pan, Jing Zeng, Yingda Deng
+
+### Testers
+* Zhaoyan Liu, Qi Zhang, Bingqing Li, Yiwei Feng, Bingchen Fu, Yahao Zhang, Xun Ma
+
 
 ## Version History
 
