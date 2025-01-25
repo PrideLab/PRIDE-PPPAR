@@ -25,12 +25,12 @@
 !!            fjd0,fjd1 -- requested time period
 !!    output: x,y,z  -- kinematic position in m
 !
-subroutine read_kinpos(SITE, fjd0, fjd1, x, y, z)
+subroutine read_kinpos(SITE, fjd0, fjd1, x, y, z, dwnd)
   implicit none
   include '../header/const.h'
   include '../header/station.h'
 
-  real*8 fjd0, fjd1, x, y, z
+  real*8 fjd0, fjd1, x, y, z, dwnd
   type(station) SITE
 !
 !! local
@@ -80,15 +80,15 @@ subroutine read_kinpos(SITE, fjd0, fjd1, x, y, z)
     read (line(:15), *, err=200) jdx, sodx
     read (line(18:), *, err=200) (xt(i), i = 1, 3)
     fjdx = jdx + sodx/864.d2
-    if ((fjdx - fjd0) * 864.d2 .gt. - MAXWND) then
-      if ((fjdx - fjd1) * 864.d2 .lt. - MAXWND) then
+    if ((fjdx - fjd0) * 864.d2 .gt. - dwnd) then
+      if ((fjdx - fjd1) * 864.d2 .lt. - dwnd) then
         x = x + xt(1)
         y = y + xt(2)
         z = z + xt(3)
         iepo = iepo + 1
       else
         if ((iepo .eq. 0) .and. &
-            (fjdx - fjd1) * 864.d2 .lt. + MAXWND) then
+            (fjdx - fjd1) * 864.d2 .lt. + dwnd) then
           x = xt(1)
           y = xt(2)
           z = xt(3)

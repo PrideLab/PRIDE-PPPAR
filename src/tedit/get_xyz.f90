@@ -19,7 +19,7 @@
 !! 
 !!
 !
-subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x1, x2, x3)
+subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x1, x2, x3, dwnd)
   implicit none
   include '../header/const.h'
   include '../header/station.h'
@@ -28,7 +28,7 @@ subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x
   logical*1     use_brdeph
   integer*4     tstart(5), nepo
   real*8        sstart, interval, session_length
-  real*8        x1(nepo), x2(nepo), x3(nepo)
+  real*8        x1(nepo), x2(nepo), x3(nepo), dwnd
 ! local
   character*256 arg(50, 20), arg0, chr*1
   integer*4     i0, i, j, ipar, nval(20), npar, narg, ioerr
@@ -123,7 +123,7 @@ subroutine get_xyz(use_brdeph, tstart, sstart, session_length, nepo, interval, x
           SITE%kinfil = arg(ipar, 2)
           do while (timdif(jd, sod, jd1, sod1) .lt. MAXWND)
             iepo = iepo + 1
-            call read_kinpos(SITE, jd+sod/864.d2, jd+sod/864.d2, x1(iepo), x2(iepo), x3(iepo))
+            call read_kinpos(SITE, jd+sod/864.d2, jd+sod/864.d2, x1(iepo), x2(iepo), x3(iepo), dwnd)
             call timinc(jd, sod, interval, jd, sod)
           end do
         end if

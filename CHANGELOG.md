@@ -1,6 +1,9 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.1.1
+## PRIDE PPP-AR version 3.1.2
+
+### 2025-01-25 (v3.1.2)
+* `lsq`: enable the processing of RINEX files with non-standard time label
 
 ### 2025-01-19 (v3.1.1)
 * `pdp3`: Disable the use of RTS products in MHM modeling

@@ -1,6 +1,6 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
 
-## PRIDE-PPPAR ver. 3.1.1 (last updated on 2025-01-19)
+## PRIDE-PPPAR ver. 3.1.2(last updated on 2025-01-25)
 
 PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -9,6 +9,13 @@ We make this package open source with the goal of benefiting those professionals
 The GNSS products are accessible at <ftp://igs.gnsswhu.cn/pub/whu/phasebias>.
 Latest updates for Support, Training courses and FAQ can be found at <http://pride.whu.edu.cn>.
 The copyright of this package is protected by GNU General Public License (version 3). 
+
+Contributors
+
+Here is a list of current and past contributors:
+
+Jianghui Geng, Qiang Wen, Maorong Ge, Songfeng Yang, Honghai Zhang, Kunlun Zhang, Jihang Lin, Wenyi Li, Shuyin Mao, Yuanxin Pan, Jing Zeng, Yingda Deng, Yahao Zhang,
+Zhaoyan Liu, Qi Zhang, Bingqing Li, Yiwei Feng, Bingchen Fu, Xun Ma
 
 Relevant publications are
 
@@ -54,6 +61,9 @@ The improvements made in PRIDE PPP-AR version 3.1 include:
 ## Version History
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.1.
+
+### 2025-01-25 (v3.1.2)
+* `lsq`: enable the processing of RINEX files with non-standard time label
 
 ### 2025-01-19 (v3.1.1)
 * `pdp3`: Disable the use of RTS products in MHM modeling

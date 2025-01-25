@@ -287,7 +287,7 @@ program lsq
       ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
       ipar = OB%ltog(ipar, 1)
       if (PM(ipar)%iepo .eq. 0) then
-        call read_kinpos(SITE, PM(ipar)%ptime(1), PM(ipar)%ptime(2), deltax(1), deltax(2), deltax(3))
+        call read_kinpos(SITE, PM(ipar)%ptime(1), PM(ipar)%ptime(2), deltax(1), deltax(2), deltax(3), dwnd)
         if (all(deltax(1:3) .eq. 1.d0) .or. &
             all(deltax(1:3) .eq. 0.d0)) then
           goto 40
