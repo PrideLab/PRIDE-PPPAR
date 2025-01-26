@@ -2717,8 +2717,8 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     fi
 
     # Check Multipath and RTS product
-    custom_pro_sp3=$(get_ctrl "$config" "satellite orbit")
-    custom_pro_clk=$(get_ctrl "$config" "satellite clock")
+    custom_pro_sp3=$(get_ctrl "$config" "Satellite orbit")
+    custom_pro_clk=$(get_ctrl "$config" "Satellite clock")
     custom_pro_erp=$(get_ctrl "$config" "ERP")
     custom_pro_att=$(get_ctrl "$config" "Quaternions")
     custom_pro_fcb=$(get_ctrl "$config" "Code/phase bias")
