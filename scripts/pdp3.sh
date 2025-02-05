@@ -3421,22 +3421,38 @@ GetMaxDistance() { # purpose : get max distance from file
     local filename="$1"
     local start_line=$(grep -n "END OF HEADER" "$filename" | cut -d: -f1)
     ((start_line++))
-    read min_x max_x min_y max_y min_z max_z < <(awk "NR>$start_line {
-        if (NR == $start_line + 1) {
-            min_x = max_x = \$3;
-            min_y = max_y = \$4;
-            min_z = max_z = \$5;
+    read min_x max_x min_y max_y min_z max_z < <(awk -v start_line="$start_line" '
+    BEGIN {
+        found_valid_line = 0;
+    }
+    NR > start_line {
+        if ($0 ~ /\*/) next;
+        if (found_valid_line == 0) {
+            min_x = max_x = $3;
+            min_y = max_y = $4;
+            min_z = max_z = $5;
+            found_valid_line = 1;
+        } else {
+            if ($3 < min_x) min_x = $3;
+            if ($3 > max_x) max_x = $3;
+            if ($4 < min_y) min_y = $4;
+            if ($4 > max_y) max_y = $4;
+            if ($5 < min_z) min_z = $5;
+            if ($5 > max_z) max_z = $5;
         }
-        if (\$3 < min_x) min_x = \$3;
-        if (\$3 > max_x) max_x = \$3;
-        if (\$4 < min_y) min_y = \$4;
-        if (\$4 > max_y) max_y = \$4;
-        if (\$5 < min_z) min_z = \$5;
-        if (\$5 > max_z) max_z = \$5;
     }
     END {
-        print min_x, max_x, min_y, max_y, min_z, max_z
-    }" "$filename")
+        if (found_valid_line == 0) {
+            print "NaN NaN NaN NaN NaN NaN";
+        } else {
+            print min_x, max_x, min_y, max_y, min_z, max_z;
+        }
+    }' "$filename")
+    
+    if [[ "$min_x" == "NaN" ]]; then
+        echo -e "$MSGERR there are no valid lines in $filename"
+        exit 1 
+    fi
     distance=$(echo "sqrt(($max_x - $min_x)^2 + ($max_y - $min_y)^2 + ($max_z - $min_z)^2)" | bc -l)
     echo "$distance"
 }
