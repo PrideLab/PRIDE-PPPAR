@@ -2,6 +2,9 @@
 
 ## PRIDE PPP-AR version 3.1.2
 
+### 2025-02-25 (v3.1.2)
+* `lib`: update IGRF12.F
+
 ### 2025-01-25 (v3.1.2)
 * `lsq`: enable the processing of RINEX files with non-standard time label
 
