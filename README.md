@@ -64,6 +64,9 @@ The improvements made in PRIDE PPP-AR version 3.1 include:
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.1.
 
+### 2025-04-11 (v3.1.3)
+* `lib` & `orbit` : Optimize reading RINEX-2.12 data and orbit product code, respectively
+
 ### 2025-01-25 (v3.1.2)
 * `lsq`: enable the processing of RINEX files with non-standard time label
 
