@@ -34,7 +34,7 @@ program sp3orb
 !! for lagrange interpolation used
   integer*4,parameter :: INTDEG=10  ! interpolation degree
   integer*4 nepoch
-  logical*1 lflag
+  logical*1 lflag, rts
   type(sp3block),allocatable :: BK(:)
 
   integer*4 i, j, k, iflag
@@ -52,7 +52,13 @@ program sp3orb
 !
 !! get arguements
   call get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
+  if (OH%nprn .eq. 0) then
+    write (*, '(a)') '***ERROR(sp3orb): read satellite prn fail, please check the sp3 product '
+    call exit(1)
+  end if
   write (*, '(a,190a3)') ' GNSS Satellite: ', (OH%prn(i), i=1, OH%nprn)
+  rts = .false.
+  rts = sp3fil(8:10) .eq. 'RTS'
 !
 !! open temp orbit file
   lfnorb = get_valid_unit(10)
@@ -60,39 +66,41 @@ program sp3orb
 !
 !! write header of orbit file
   write (lfnorb) OH
+  if (rts) then
 !
 !! assigning sp3 block variables
-  lflag = .false.
-  nepoch = floor(((OH%jd1 - OH%jd0) * 86400 + OH%sod1 - OH%sod0) / OH%dintv) + 1
-  allocate(BK(nepoch))
-  do i = 1, nepoch
-    BK(i)%jd = 0
-    BK(i)%sod = 0.0
-    BK(i)%x(1:6, 1:MAXSAT) = 0.0
-    BK(i)%flag(1:MAXSAT) = .false.
-  enddo
+    lflag = .false.
+    nepoch = floor(((OH%jd1 - OH%jd0) * 86400 + OH%sod1 - OH%sod0) / OH%dintv) + 1
+    allocate(BK(nepoch))
+    do i = 1, nepoch
+      BK(i)%jd = 0
+      BK(i)%sod = 0.0
+      BK(i)%x(1:6, 1:MAXSAT) = 0.0
+      BK(i)%flag(1:MAXSAT) = .false.
+    enddo
 !
 !! read sp3 block variables
-  k = 1
-  jd = OH%jd0
-  sod = OH%sod0
-  do while (timdif(jd, sod, OH%jd1, OH%sod1) .lt. MAXWND)
-    call rdsp3i(jd, sod, OH%nprn, OH%prn, BK(k)%x, iflag)
-    BK(k)%jd = jd
-    BK(k)%sod = sod
-    do i = 1, OH%nprn
-      if (BK(k)%x(1, i) .eq. 1.d15) then
-        BK(k)%flag(i) = .false.
-      else
-        BK(k)%flag(i) = .true.
-      end if
-    enddo
-    call timinc(jd, sod, OH%dintv, jd, sod)
-    k = k + 1
-  end do
+    k = 1
+    jd = OH%jd0
+    sod = OH%sod0
+    do while (timdif(jd, sod, OH%jd1, OH%sod1) .lt. MAXWND)
+      call rdsp3i(jd, sod, OH%nprn, OH%prn, BK(k)%x, iflag)
+      BK(k)%jd = jd
+      BK(k)%sod = sod
+      do i = 1, OH%nprn
+        if (BK(k)%x(1, i) .eq. 1.d15) then
+          BK(k)%flag(i) = .false.
+        else
+          BK(k)%flag(i) = .true.
+        end if
+      enddo
+      call timinc(jd, sod, OH%dintv, jd, sod)
+      k = k + 1
+    end do
 !
 !! read position from sp3 file
-  call rdsp3r()
+    call rdsp3r()
+  end if
   k = 1
   jd = OH%jd0
   sod = OH%sod0
@@ -102,24 +110,31 @@ program sp3orb
     call rdsp3i(jd, sod, OH%nprn, OH%prn, x, iflag)
     if (iflag .eq. 1) then
       if (lrepeat) goto 102
-      call ef2int(erpfil, jd, sod, mate2j, rmte2j, gast, xpole, ypole)
-      do i = 1, OH%nprn
-        call lagrange_interp_sp3(jd, sod, OH%prn(i), OH, BK, nepoch, INTDEG, lflag, x(1:3, i))
-        if (lflag .eqv. .false.) then
-          write (*, '(3a,i6,f9.2)') '###WARNING(sp3orb): epoch lost and lagrange interpolation of ', OH%prn(i),' failed', jd, sod
-          cycle
-        endif
-        call matmpy(mate2j, x(1, i), x(1, i), 3, 3, 1)
-      enddo
+      if (rts) then
+        call ef2int(erpfil, jd, sod, mate2j, rmte2j, gast, xpole, ypole)
+        do i = 1, OH%nprn
+          call lagrange_interp_sp3(jd, sod, OH%prn(i), OH, BK, nepoch, INTDEG, lflag, x(1:3, i))
+          if (lflag .eqv. .false.) then
+            write (*, '(3a,i6,f9.2)') '###WARNING(sp3orb): epoch lost and lagrange interpolation of ', OH%prn(i),' failed', jd, sod
+            cycle
+          endif
+          call matmpy(mate2j, x(1, i), x(1, i), 3, 3, 1)
+        enddo
+      else
+        write (*, '(a,i6,f8.2)') '###WARNING(sp3orb): epoch lost ', jd, sod
+      endif
     else
       call ef2int(erpfil, jd, sod, mate2j, rmte2j, gast, xpole, ypole)
       do i = 1, OH%nprn
-        if (x(1, i) .eq. 1.d15) then
+        if (x(1, i) .eq. 1.d15 .and. rts) then
           call lagrange_interp_sp3(jd, sod, OH%prn(i), OH, BK, nepoch, INTDEG, lflag, x(1:3, i))
           if (lflag .eqv. .false.) then
             write (*, '(a,i6,f9.2,a4)') '###WARNING(sp3orb): satellite lost and lagrange interpolation failed', jd, sod, OH%prn(i)
             cycle
           endif
+        elseif (x(1, i) .eq. 1.d15 .and. .not. rts) then
+          write (*, '(a,i6,f9.2,a4)') '###WARNING(sp3orb): satellite lost ', jd, sod, OH%prn(i)
+          cycle
         end if
         call matmpy(mate2j, x(1, i), x(1, i), 3, 3, 1)
       end do
@@ -135,8 +150,9 @@ program sp3orb
     call timinc(jd, sod, OH%dintv, jd, sod)
     k = k + 1
   end do
-  
-  deallocate(BK)
+  if (rts) then
+    deallocate(BK)
+  end if
   call rdsp3c()
   close (lfnorb)
 end program

@@ -72,6 +72,7 @@ subroutine rdrnxoi2(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
   integer*4     imes, ityp
   integer*4     obs_prio_index(6)       !! RINEX-3 signal code of each measurement type
   character*2   obs_styp_gnss(6)        !! measurement type (L/P) + frequency number(1-9)
+  character*2   ctyp
   real*8        lambda(4)
 ! function used
   integer*4     modified_julday
@@ -265,11 +266,29 @@ subroutine rdrnxoi2(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
     if (i0 .ne. 0) then
       nbias_used(i0) = 0
       used_codeP = .false.
+      ! write(*, '(A)') "asda"
       do j = 1, HD%nobstyp
         !
+        ctyp = HD%obstyp(j)(1:2)
+        
+        if (dabs(obs(j)) .lt. MAXWND .or. dabs(obs(j)) .gt. 1.d12) cycle
         !! check the index of prior signal & measurement type (L/C)
+     
         do imes = 1, 6
-          if (index(HD%obstyp(j), obs_styp_gnss(imes)) .ne. 0) then
+         
+           if ((index(HD%obstyp(j), obs_styp_gnss(imes)) .ne. 0) .or. &
+              (ctyp(1:2) .eq. 'LA' .and. imes == 1 ) .or. &
+              (ctyp(1:2) .eq. 'LB' .and. imes == 1 ) .or. &
+              (ctyp(1:2) .eq. 'LC' .and. imes == 2 ) .or. &
+              (ctyp(1:2) .eq. 'CA' .and. imes == 5 ) .or. &
+              (ctyp(1:2) .eq. 'CB' .and. imes == 5 ) .or. &
+              (ctyp(1:2) .eq. 'CC' .and. imes == 6 )) then
+            ! write(*, '(A, I5)') ctyp, isys
+            if (ctyp(2:2) == 'A') then
+                obs_prio_index(imes) = index(obs_prio_G, 'C') 
+            elseif (ctyp(2:2) == 'B' .or. ctyp(2:2) == 'C') then
+                obs_prio_index(imes) = index(obs_prio_G, 'L')  
+            end if
             prio_index = obs_prio_index(imes)
             if (imes .le. 2) exit
             tmpobs=dabs(obs(j))
