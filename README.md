@@ -1,6 +1,6 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
 
-## PRIDE-PPPAR ver. 3.1.3 (last updated on 2025-04-11)
+## PRIDE-PPPAR ver. 3.1.4 (last updated on 2025-05-17)
 
 PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -64,14 +64,17 @@ The improvements made in PRIDE PPP-AR version 3.1 include:
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.1.
 
+### 2025-05-17 (v3.1.4)
+* `gui`: update rinex2 reading function and high-order ionosphere correction function
+
 ### 2025-04-11 (v3.1.3)
-* `lib` & `orbit` : Optimize reading RINEX-2.12 data and orbit product code, respectively
+* `lib` & `orbit` : optimize reading RINEX-2.12 data and orbit product code, respectively
 
 ### 2025-01-25 (v3.1.2)
 * `lsq`: enable the processing of RINEX files with non-standard time label
 
 ### 2025-01-19 (v3.1.1)
-* `pdp3`: Disable the use of RTS products in MHM modeling
+* `pdp3`: disable the use of RTS products in MHM modeling
 
 ### 2025-01-06 (v3.1.0)
 * `mhm`: a new module enabling multipath delay compensation based on Multipath Hemispherical Map model (MHM)
