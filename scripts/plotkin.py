@@ -146,7 +146,7 @@ if dt < 86400:
        hour_intv=int(math.ceil((mint_intv)/60))
        intvs = mdates.HourLocator(interval=hour_intv)
 else:
-    nintv = int(12/len(mjd))
+    nintv = max(1, int(12 / len(mjd)))
     hour_intv = int(math.ceil(24/nintv))
     if hour_intv%2 != 0:
         hour_intv = hour_intv+1
@@ -176,7 +176,7 @@ if len(mjd) > 1:
     newax.tick_params(axis='x', which='minor', direction='in', length=0)
     newax.tick_params(axis='both', which='both', labelsize=16, pad=20)
     newax.xaxis.set_major_locator(days)
-    newax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+    newax.xaxis.set_major_formatter(mdates.DateFormatter("%m-%d"))
 
 maxv = math.ceil(np.nanmax(enu[:,0:2]))*1.5
 minv = math.floor(np.nanmin(enu[:,0:2]))-1
