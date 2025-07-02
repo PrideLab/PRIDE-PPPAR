@@ -1598,7 +1598,7 @@ ProcessSingleSite() { # purpose : process data of single site
     if [ -n "$xyz" -a "$positioning_mode" != "L" ]; then
         local blh=($(xyz2blh "${xyz[@]}"))
         if [[ $(echo "${blh[2]} <= -4000" | bc) -eq 1 ]] || \
-           [[ $(echo "${blh[2]} >= 20000" | bc) -eq 1 ]]; then
+           [[ $(echo "${blh[2]} >= 40000" | bc) -eq 1 ]]; then
             local blh=$(echo "${blh[2]}/1000" | bc)
             echo -e "$MSGERR ProcessSingleSite: invalid site elevation (out of range from -4 km to +20 km): $site $blh km"
             return 1
