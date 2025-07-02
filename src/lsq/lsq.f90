@@ -297,7 +297,7 @@ program lsq
         end do
         if (SITE%skd(1:1) .ne. 'L') then
           call xyzblh(deltax(1:3), 1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, deltax)
-          if (deltax(3) .lt. -4.d2 .or. deltax(3) .gt. 20.d3) goto 40
+          if (deltax(3) .lt. -4.d2 .or. deltax(3) .gt. 40.d3) goto 40
         end if
       end if
     end if
