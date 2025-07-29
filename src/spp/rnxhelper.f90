@@ -93,7 +93,7 @@ if(ityp<=4)then
     call mjd2ydoy_s(mjd2, iyear2, idoy2)
     flname2=flname
     if(ityp==1 .or. ityp==2)then
-        write(flname2(13:19),"(I4.4I3.3)") iyear2, idoy2
+        write(flname2(13:19),"(I4.4,I3.3)") iyear2, idoy2
     elseif(ityp==3 .or. ityp==4)then
         write(flname2(10:11),"(I2.2)") mod(iyear2,100)
         write(flname2(5:7)  ,"(I3.3)") idoy2
@@ -109,7 +109,7 @@ elseif(ityp<=8)then
     ihour2=ihour2-(mjd2-mjd1)*24
     flname2=flname
     if(ityp==5 .or. ityp==6)then
-        write(flname2(13:21),"(I4.4I3.3I2.2)") iyear2, idoy2, ihour2
+        write(flname2(13:21),"(I4.4,I3.3,I2.2)") iyear2, idoy2, ihour2
     elseif(ityp==7 .or. ityp==8)then
         write(flname2(10:11),"(I2.2)") mod(iyear2,100)
         write(flname2(5:7)  ,"(I3.3)") idoy2
