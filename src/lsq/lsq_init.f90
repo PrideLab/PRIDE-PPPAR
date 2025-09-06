@@ -1,4 +1,5 @@
-!
+
+
 !! lsq_init.f90
 !!
 !!    Copyright (C) 2023 by Wuhan University
@@ -42,10 +43,10 @@ subroutine lsq_init(LCF, SITE, OB, NM, PM)
 !
 !! local
   integer*4 isat, ipar, irow
-  integer*4 i, j, k, ic, ip, kpar, sec 
+  integer*4 i, j, k, ic, ip, kpar, sec, refrck 
   character*4 sitename
   character*3 xyz, prnname
-  character*2 htg
+  character*2 htg, tmpsys
   character*6 sys
   real*8 val
 
@@ -157,41 +158,73 @@ subroutine lsq_init(LCF, SITE, OB, NM, PM)
   end if
 !
 !! receiver clock offset
+  refrck = 0; tmpsys = ''
   do i = 1, 6
     if (index(LCF%sys, sys(i:i)) .ne. 0) then
-      ip = ip + 1
-      ipar = NM%nc + ip
-      PM(ipar)%pname = 'RECCLK_'//sys(i:i)//'_'//trim(LCF%rckmod)
-      PM(ipar)%ptype = 'P'
-      PM(ipar)%ipt = ipar
-      PM(ipar)%psat = 0
-      if (LCF%rckmod(1:3) .eq. 'STO') then
-        PM(ipar)%map = 1.d0
-        PM(ipar)%ptime(2) = LCF%jd0 + LCF%sod0/864.d2
-        PM(ipar)%rw = 1.d0/(SITE%qrck*dsqrt(LCF%dintv/3600.d0))
-      else if (LCF%rckmod(1:3) .eq. 'WNO') then
-        PM(ipar)%map = 0.d0
-        PM(ipar)%ptime(2) = LCF%jd0 + LCF%sod0/864.d2
-        PM(ipar)%rw = 1.d0/SITE%dclk0
-      end if
-      PM(ipar)%xini = 0.d0
-      OB%npar = OB%npar + 1
-      OB%pname(OB%npar) = PM(ipar)%pname
-      do isat = 1, LCF%nprn
-        if (LCF%prn(isat) (1:1) .eq. 'C') then
-          if (sys(i:i) .eq. 'C') then
-            read (LCF%prn(isat) (2:3), '(i2)') k
-            if (k .le. 17) OB%ltog(OB%npar, isat) = ipar
-          else if (sys(i:i) .eq. '3') then
-            read (LCF%prn(isat)(2:3), '(i2)') k
-            if (k .gt. 17) OB%ltog(OB%npar, isat) = ipar
-          end if
-          cycle
+      if (index(LCF%isbsys, sys(i:i)) .eq. 0)then
+        if(refrck.eq.0) refrck = i 
+        ip = ip + 1
+        ipar = NM%nc + ip
+        PM(ipar)%pname = 'RECCLK_'//sys(i:i)//'_'//trim(LCF%rckmod)
+        PM(ipar)%ptype = 'P'
+        PM(ipar)%ipt = ipar
+        PM(ipar)%psat = 0
+        if (LCF%rckmod(1:3) .eq. 'STO') then
+          PM(ipar)%map = 1.d0
+          PM(ipar)%ptime(2) = LCF%jd0 + LCF%sod0/864.d2
+          PM(ipar)%rw = 1.d0/(SITE%qrck*dsqrt(LCF%dintv/3600.d0))
+        else if (LCF%rckmod(1:3) .eq. 'WNO') then
+          PM(ipar)%map = 0.d0
+          PM(ipar)%ptime(2) = LCF%jd0 + LCF%sod0/864.d2
+          PM(ipar)%rw = 1.d0/SITE%dclk0
         end if
-        if (LCF%prn(isat)(1:1) .eq. sys(i:i)) OB%ltog(OB%npar, isat) = ipar
-      end do
-      NM%norx(ipar, ipar) = 1.d0/SITE%dclk0**2
-      NM%iptp(ipar) = ipar
+        PM(ipar)%xini = 0.d0
+        OB%npar = OB%npar + 1
+        OB%pname(OB%npar) = PM(ipar)%pname
+        do isat = 1, LCF%nprn
+          tmpsys(1:1) = LCF%prn(isat) (1:1)
+          if (LCF%prn(isat) (1:1) .eq. 'C') then
+            read (LCF%prn(isat) (2:3), '(i2)') k
+            if (k .gt. 17) tmpsys(1:1) = '3'
+          endif
+          if (tmpsys(1:1) .eq. sys(i:i)) then
+            OB%ltog(OB%npar, isat) = ipar
+          else if (index(LCF%isbsys, tmpsys(1:1)) .ne. 0 .and. i.eq.refrck)then
+            OB%ltog(OB%npar, isat) = ipar 
+          endif
+        end do
+        NM%norx(ipar, ipar) = 1.d0/SITE%dclk0**2
+        NM%iptp(ipar) = ipar
+      else
+        ip = ip + 1
+        ipar = NM%nc + ip
+        write (PM(ipar)%pname, '(a,i0)') 'RECISB_'//sys(i:i)//':', 86400
+        PM(ipar)%ptype = 'P'
+        PM(ipar)%ipt = ipar
+        PM(ipar)%psat = 0
+        PM(ipar)%map = 0.d0
+        PM(ipar)%ptime(2) = LCF%jd0 + LCF%sod0/864.d2 + 864.d2/864.d2
+        PM(ipar)%rw = 1.d0/SITE%dclk0
+        PM(ipar)%xini = 0.d0
+        OB%npar = OB%npar + 1
+        OB%pname(OB%npar) = PM(ipar)%pname
+        do isat = 1, LCF%nprn
+          if (LCF%prn(isat) (1:1) .eq. 'C') then
+            if (sys(i:i) .eq. 'C') then
+              read (LCF%prn(isat) (2:3), '(i2)') k
+              if (k .le. 17) OB%ltog(OB%npar, isat) = ipar
+            else if (sys(i:i) .eq. '3') then
+              read (LCF%prn(isat)(2:3), '(i2)') k
+              if (k .gt. 17) OB%ltog(OB%npar, isat) = ipar
+            end if
+            cycle
+          end if
+          if (LCF%prn(isat)(1:1) .eq. sys(i:i)) OB%ltog(OB%npar, isat) = ipar
+        end do
+        NM%norx(ipar, ipar) = 1.d0/SITE%dclk0**2
+        NM%iptp(ipar) = ipar
+          
+      endif
     end if
   end do
 
@@ -283,7 +316,7 @@ subroutine lsq_init(LCF, SITE, OB, NM, PM)
 !
 !! copy common parameter index
   do ipar = 1, OB%npar
-    if (OB%pname(ipar) (1:6) .ne. 'RECCLK') then
+    if (OB%pname(ipar) (1:6) .ne. 'RECCLK' .and. OB%pname(ipar) (1:6) .ne. 'RECISB') then
       do isat = 2, LCF%nprn
         OB%ltog(ipar, isat) = OB%ltog(ipar, 1)
       end do

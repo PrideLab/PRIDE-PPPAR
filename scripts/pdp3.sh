@@ -183,7 +183,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     local i s t iarg carg time_sec avail_num sys_num sys
     local rnxo_path rnxo_name rinex_dir ctrl_path ctrl_file
     local ymd_s hms_s ymd_e hms_e site mode plen interval freq_cmb AR
-    local avail_sys edt_opt rck_opt ztd_opt htg_opt ion_opt tide_mask lam_opt pco_opt vbs_opt
+    local avail_sys edt_opt rck_opt isb_opt ztd_opt htg_opt ion_opt tide_mask lam_opt pco_opt vbs_opt
     local gnss_mask map_opt rckl rckp ztdl ztdp htgp eloff
     local mul_use=0
     local posp=0 twnd
@@ -484,6 +484,21 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                         rckp="$2"
                     else
                         throw_invalid_arg "clock process noise" "$2"
+                    fi
+                    shift 1
+                fi
+                ;;
+            -isb | --inter_sys_bias )
+                [ -z "$isb_opt" ]                               || throw_conflict_opt "$1"
+                if check_optional_arg "$2" "$last_arg"; then
+                    carg=$(echo "$2" | tr 'a-z' 'A-Z')  # 转大写以统一格式
+                    carg=$(sed "s/C/C3/g" <<< "$carg")
+                    if [[ "$carg" == "NO" ]]; then
+                        isb_opt="NO"
+                    elif [[ "$carg" =~ ^[GREC23J]+$ ]]; then
+                        isb_opt="$carg"
+                    else
+                        throw_invalid_arg "Invalid ISB setting: $2"
                     fi
                     shift 1
                 fi
@@ -902,6 +917,12 @@ ParseCmdArgs() { # purpose : parse command line into arguments
             esac
         fi
     fi
+    
+    # ISB model
+    [ -n "$isb_opt" ] || isb_opt=$(get_ctrl "$ctrl_file" "ISB model")
+    [ "$isb_opt" == "Default" ] && isb_opt="NO"
+
+    sedi "/^ISB model/s/ = .*/ = $isb_opt/" "$ctrl_file"
 
     # ZTD model
     [ -n "$ztd_opt" ] || ztd_opt=$(get_ctrl "$ctrl_file" "ZTD model")
@@ -1296,6 +1317,20 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
     >&2 echo "                                               * STO - stochastic walk"
     >&2 echo "                                               * the unit of process noise is m/sqrt(s)"
     >&2 echo "                                               * default: 0.0010 m/sqrt(s)"
+    >&2 echo ""
+    >&2 echo "  -isb <char>, --inter_sys_bias <char>       GNSS receiver inter-system biases to be processed, select one"
+    >&2 echo "                                             or more from \"GREC23J\":"
+    >&2 echo "                                             -----+------------------------+-----+-------------------------"
+    >&2 echo "                                               G  |  GPS                   |  R  |  GLONASS                "
+    >&2 echo "                                               E  |  Galileo               |  C  |  BeiDou-2 and BeiDou-3  "
+    >&2 echo "                                               2  |  BeiDou-2 only         |  3  |  BeiDou-3 only          "
+    >&2 echo "                                               J  |  QZSS                  |     |                         "
+    >&2 echo "                                             -----+------------------------+-----+-------------------------"
+    >&2 echo "                                               * default: no isb is estimated"
+    >&2 echo "                                               * a constellation for which the inter-system bias (ISB) is"
+    >&2 echo "                                               estimated will share the receiver clock parameter with the"
+    >&2 echo "                                               first constellation that has a receiver clock, according to"
+    >&2 echo "                                               the order 'GREC3J'"
     >&2 echo ""
     >&2 echo "  -twnd <num>,  --time-window <num>          processing time window in seconds, for not standard or super "
     >&2 echo "                                               high rate rinex obs."
@@ -2859,16 +2894,22 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 return 1
             fi
         elif [[ $abs_atx =~ ^igs[0-9]{2} ]]; then
-            atx_url="https://files.igs.org/pub/station/general/$abs_atx"
-            WgetDownload "$atx_url"
-            if [ $? -ne 0 ]; then
-                atx_url="https://files.igs.org/pub/station/general/pcv_archive/$abs_atx"
+            local atx_urls=(
+                "https://files.igs.org/pub/station/general/$abs_atx"
+                "https://files.igs.org/pub/station/general/pcv_archive/$abs_atx"
+                "https://files.igs.org/pub/station/general/pcv_archive/${abs_atx}.gz"
+            )
+            for atx_url in "${atx_urls[@]}"; do
                 WgetDownload "$atx_url"
-                if [ $? -ne 0 ]; then
-                    echo -e "$MSGERR PrepareProducts: failed to download ANTEX file: $abs_atx"
-                    echo -e "$MSGINF please download from $atx_url to $table_dir for processing"
-                    return 1
+                if [ $? -eq 0 ]; then
+                    [ -f "${abs_atx}.gz" ] && gunzip -f "${abs_atx}.gz"
+                    break
                 fi
+            done
+            if [ ! -f ${abs_atx} ]; then
+                echo -e "$MSGERR PrepareProducts: failed to download ANTEX file: $abs_atx"
+                echo -e "$MSGINF please download from $atx_url to $table_dir for processing"
+                return 1
             fi
         elif [[ $abs_atx =~ ^igsR3 ]]; then
             atx_url="ftp://igs-rf.ign.fr/pub/IGSR3/$abs_atx"

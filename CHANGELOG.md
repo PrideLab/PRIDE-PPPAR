@@ -1,6 +1,15 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.1.2
+## PRIDE PPP-AR version 3.1.5
+
+### 2025-09-06 (v3.1.5)
+* `lsq`: add 'isb' estimation for receiver clocks  
+
+### 2025-05-17 (v3.1.4)
+* `gui`: update rinex2 reading function and high-order ionosphere correction function
+
+### 2025-04-11 (v3.1.3)
+* `lib` & `orbit` : optimize reading RINEX-2.12 data and orbit product code, respectively
 
 ### 2025-02-25 (v3.1.2)
 * `lib`: update IGRF12.F

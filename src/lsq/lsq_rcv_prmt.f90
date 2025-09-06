@@ -57,7 +57,7 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
 !
   character*60 line
   character*3 temprn, prn(MAXSAT), typuse(4)
-  real*8 rck(1:6)
+  real*8 rck(1:6), isb(1:6)
 !
 !! function called
   integer*4 get_valid_unit, pointer_string
@@ -87,6 +87,7 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
   jdr = 0
   sodr = 0.d0
   rck = 0.d0
+  isb = 0.d0
   rckref = 0.d0
   do while (.true.)
     backspace lfncid
@@ -178,12 +179,15 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
       PM(ipar)%xcor = cof(ntot)/dummy
       if (PM(ipar)%iobs .gt. 0) then
         mw = PM(ipar)%ptime(1)
-        if (PM(ipar)%pname(1:6) .eq. 'RECCLK') then
+        if (PM(ipar)%pname(1:6) .eq. 'RECCLK' .and. PM(ipar)%iobs .gt. 2) then
           if (rckref .ne. 0.d0 .and. (rckref - mw)*86400.d0 .gt. MAXWND) then
             call mjd2date(0, rckref, iy, imon, id, ih, im, dummy)
             if (dabs(dummy - 60.d0) .lt. MAXWND) then
               call carrysec(iy, imon, id, ih, im, dummy)
             end if
+            do i = 1, 6
+              if(isb(i) .ne. 0.d0) rck(i) = isb(i)
+            enddo
             write (lfnrck, '(5i6,f10.6,6f17.6)') iy, imon, id, ih, im, dummy, (rck(j), j=1, 6)
             rck = 0.d0
             rckref = mw
@@ -202,6 +206,20 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, OB, NM, PM)
             rck(5) = PM(ipar)%xini + PM(ipar)%xcor
           else if (PM(ipar)%pname(1:8) .eq. 'RECCLK_J') then
             rck(6) = PM(ipar)%xini + PM(ipar)%xcor
+          end if
+        else if (PM(ipar)%pname(1:6) .eq. 'RECISB') then
+          if (PM(ipar)%pname(1:8) .eq. 'RECISB_G') then
+            isb(1) = PM(ipar)%xini + PM(ipar)%xcor
+          else if (PM(ipar)%pname(1:8) .eq. 'RECISB_R') then
+            isb(2) = PM(ipar)%xini + PM(ipar)%xcor
+          else if (PM(ipar)%pname(1:8) .eq. 'RECISB_E') then
+            isb(3) = PM(ipar)%xini + PM(ipar)%xcor
+          else if (PM(ipar)%pname(1:8) .eq. 'RECISB_C') then
+            isb(4) = PM(ipar)%xini + PM(ipar)%xcor
+          else if (PM(ipar)%pname(1:8) .eq. 'RECISB_3') then
+            isb(5) = PM(ipar)%xini + PM(ipar)%xcor
+          else if (PM(ipar)%pname(1:8) .eq. 'RECISB_J') then
+            isb(6) = PM(ipar)%xini + PM(ipar)%xcor
           end if
         else if (PM(ipar)%pname(1:4) .eq. 'HTGC') then
           if (LCF%htgmod(1:3) .ne. 'NON') then

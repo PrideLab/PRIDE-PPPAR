@@ -19,6 +19,7 @@ LEO quaternions        = Default
 ## Data processing strategies
 Strict editing         = Default                 ! change to NO if using high-dynamic data with bad quality
 RCK model              = Default                 ! receiver clock (WNO/STO). WNO, white noise
+ISB model              = Default                 ! GNSS receiver inter-system biases to be processed
 ZTD model              = Default                 ! zenith troposphere delay (PWC/STO). PWC:60, piece-wise constant for 60 min. STO, random walk
 HTG model              = Default                 ! horizontal troposphere gradient (PWC/STO/NON)
 Iono 2nd               = Default                 ! change to YES if correcting 2-order ionospheric delays

@@ -102,8 +102,14 @@ subroutine qzsmod(jd, sod, LCF, SITE, OB, SAT, IM)
   end do
 !
 !! receiver clock correction
+  if (index(LCF%isbsys,'J') .ne. 0) then
+    do i=1, MAXSYS+1
+      if(SITE%rclock(i).ne.0.d0) exit
+    enddo
+    SITE%rclock(6) = SITE%rclock(i)
+  endif
   drecclk = 0.d0
-  drecclk = SITE%rclock_J/VLIGHT
+  drecclk = SITE%rclock(6)/VLIGHT
 !
 !! if receiver clock is too bad we repeat model starting from here
   ite = 0
@@ -330,7 +336,7 @@ subroutine qzsmod(jd, sod, LCF, SITE, OB, SAT, IM)
   end do
 !
 !! receiver clock offset
-  if (ite .lt. 4) then
+  if (ite .lt. 2 .and. index(LCF%isbsys,'J').eq.0) then
     k = 0
     drecclk_tmp = 0.d0
     do isat = 1, LCF%nprn
@@ -340,10 +346,10 @@ subroutine qzsmod(jd, sod, LCF, SITE, OB, SAT, IM)
     end do
     drecclk = drecclk_tmp
     if (k .ge. 1) drecclk = drecclk/(k*freq(1))
-    if (dabs(drecclk) .gt. 1.d-6 .or. (k .ge. 1 .and. SITE%rclock_J .eq. 0.d0)) then
-      SITE%rclock_J = SITE%rclock_J + drecclk*VLIGHT
-      drecclk = SITE%rclock_J/VLIGHT
-    !!  if (dabs(drecclk) .lt. 1.d-1) goto 100
+    if (dabs(drecclk) .gt. 1.d-6 .or. (k .ge. 1 .and. SITE%rclock(6) .eq. 0.d0)) then
+      SITE%rclock(6) = SITE%rclock(6) + drecclk*VLIGHT
+      drecclk = SITE%rclock(6)/VLIGHT
+      goto 100
     !!  write (*, '(a,i7,f9.2,e15.4)') '***ERROR(qzsmod): abnormal drecclk at ', jd, sod, drecclk
     !!  call exit(1)
     end if

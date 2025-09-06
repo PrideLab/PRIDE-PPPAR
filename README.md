@@ -1,6 +1,6 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
 
-## PRIDE-PPPAR ver. 3.1.4 (last updated on 2025-05-17)
+## PRIDE-PPPAR ver. 3.1.5 (last updated on 2025-09-06)
 
 PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -63,6 +63,9 @@ The improvements made in PRIDE PPP-AR version 3.1 include:
 ## Version History
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.1.
+
+### 2025-09-06 (v3.1.5)
+* `lsq`: add 'isb' estimation for receiver clocks  
 
 ### 2025-05-17 (v3.1.4)
 * `gui`: update rinex2 reading function and high-order ionosphere correction function

@@ -257,6 +257,12 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT, IM)
   if (key(1:5) .eq. 'EMPTY') goto 100
   LCF%rckmod = trim(key)
 !
+!! Receiver ISB model
+  msg = 'ISB model'
+  key = findkey(lfn, msg, ' ')
+  if (key(1:5) .eq. 'EMPTY') goto 100
+  LCF%isbsys = trim(key)
+!
 !!
   msg = 'Iono 2nd'
   key = findkey(lfn, msg, ' ')

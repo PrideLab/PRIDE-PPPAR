@@ -21,7 +21,7 @@ type station
   real*8 mhm(360, 90, 2, 5)
 !
 !! clock correction
-  real*8 dclk0, rclock_G, rclock_R, rclock_E, rclock_C, rclock_3, rclock_J, qrck
+  real*8 dclk0, rclock(MAXSYS+1), qrck
 !
 !! observation info
   real*8 sigr, sigp, cutoff

@@ -13,7 +13,7 @@ type lsqcfg
   character*10 sys, edit
 !
 !! parameter model
-  character*15 rckmod
+  character*15 rckmod, isbsys
   character*15 ztdmod
   character*15 htgmod
 !
@@ -49,7 +49,7 @@ type lsqcfg
   character*60 tide
 !
 !! fixing ambiguity
-  logical*1 pcowl
+  logical*1 pcowl, isini
   character*3 fcbprn(MAXSAT)
   integer*4 fcbnprn
   integer*4 nconG, nconE, nconC2, nconC3, nconJ

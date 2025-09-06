@@ -103,8 +103,14 @@ subroutine glomod(jd, sod, LCF, SITE, OB, SAT, IM)
   end do
 !
 !! receiver clock correction
+  if (index(LCF%isbsys,'R') .ne. 0) then
+    do i=1, MAXSYS+1
+      if(SITE%rclock(i).ne.0.d0) exit
+    enddo
+    SITE%rclock(2) = SITE%rclock(i)
+  endif
   drecclk = 0.d0
-  drecclk = SITE%rclock_R/VLIGHT
+  drecclk = SITE%rclock(2)/VLIGHT
 !
 !! if receiver clock is too bad we repeat model starting from here
   ite = 0
@@ -328,7 +334,7 @@ subroutine glomod(jd, sod, LCF, SITE, OB, SAT, IM)
   end do
 !
 !! receiver clock offset
-  if (ite .lt. 4) then
+  if (ite .lt. 2 .and. index(LCF%isbsys,'R').eq.0) then
     k = 0
     drecclk_tmp = 0.d0
     do isat = 1, LCF%nprn
@@ -340,10 +346,10 @@ subroutine glomod(jd, sod, LCF, SITE, OB, SAT, IM)
     end do
     drecclk = drecclk_tmp ! sec
     if (k .ge. 1) drecclk = drecclk/(k*1.d0)
-    if (dabs(drecclk) .gt. 1.d-6 .or. (k .ge. 1 .and. SITE%rclock_R .eq. 0.d0)) then
-      SITE%rclock_R = SITE%rclock_R + drecclk*VLIGHT
-      drecclk = SITE%rclock_R/VLIGHT
-    !!  if (dabs(drecclk) .lt. 1.d-1) goto 100
+    if (dabs(drecclk) .gt. 1.d-6 .or. (k .ge. 1 .and. SITE%rclock(2) .eq. 0.d0)) then
+      SITE%rclock(2) = SITE%rclock(2) + drecclk*VLIGHT
+      drecclk = SITE%rclock(2)/VLIGHT
+      goto 100
     !!  write (*, '(a,i7,f9.2,e15.4)') '***ERROR(glomod): abnormal drecclk at ', jd, sod, drecclk
     !!  call exit(1)
     end if

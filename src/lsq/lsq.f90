@@ -57,7 +57,7 @@ program lsq
   type(ionex)   IM
 !
 !! local
-  logical*1     lopen
+  logical*1     lopen, isini
   logical*1     arsig_used(MAXSAT)
   integer*4     i0, i, j, k, jd, jd_sav, jdc, isat, iepo, ipar, iamb, id, ih
   integer*4     openid, ierr
@@ -322,18 +322,19 @@ program lsq
     end if
 !
 !! prepare a priori receiver clock correction (unit: m)
-    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_G'//trim(LCF%rckmod))
-    if (ipar .ne. 0) SITE%rclock_G = PM(OB%ltog(ipar, index_g(1)))%xini
-    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_R'//trim(LCF%rckmod))
-    if (ipar .ne. 0) SITE%rclock_R = PM(OB%ltog(ipar, index_r(1)))%xini
-    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_E'//trim(LCF%rckmod))
-    if (ipar .ne. 0) SITE%rclock_E = PM(OB%ltog(ipar, index_e(1)))%xini
-    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_C'//trim(LCF%rckmod))
-    if (ipar .ne. 0) SITE%rclock_C = PM(OB%ltog(ipar, index_c(1)))%xini
-    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_3'//trim(LCF%rckmod))
-    if (ipar .ne. 0) SITE%rclock_3 = PM(OB%ltog(ipar, index_3(1)))%xini
-    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_J'//trim(LCF%rckmod))
-    if (ipar .ne. 0) SITE%rclock_J = PM(OB%ltog(ipar, index_j(1)))%xini
+    SITE%rclock = 0.d0
+    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_G_'//trim(LCF%rckmod))
+    if (ipar .ne. 0) SITE%rclock(1) = PM(OB%ltog(ipar, index_g(1)))%xini
+    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_R_'//trim(LCF%rckmod))
+    if (ipar .ne. 0) SITE%rclock(2) = PM(OB%ltog(ipar, index_r(1)))%xini
+    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_E_'//trim(LCF%rckmod))
+    if (ipar .ne. 0) SITE%rclock(3) = PM(OB%ltog(ipar, index_e(1)))%xini
+    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_C_'//trim(LCF%rckmod))
+    if (ipar .ne. 0) SITE%rclock(4) = PM(OB%ltog(ipar, index_c(1)))%xini
+    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_3_'//trim(LCF%rckmod))
+    if (ipar .ne. 0) SITE%rclock(5) = PM(OB%ltog(ipar, index_3(1)))%xini
+    ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_J_'//trim(LCF%rckmod))
+    if (ipar .ne. 0) SITE%rclock(6) = PM(OB%ltog(ipar, index_j(1)))%xini
 !
 !! one way model
     call read_meteo(jd, sod, SITE%imet, SITE%map, SITE%geod, SITE%p0, SITE%t0, SITE%hr0, SITE%undu)
@@ -393,17 +394,17 @@ program lsq
 !
 !! save a priori receiver clock correction
     ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_G')
-    if (ipar .ne. 0) PM(OB%ltog(ipar, index_g(1)))%xini = SITE%rclock_G
+    if (ipar .ne. 0) PM(OB%ltog(ipar, index_g(1)))%xini = SITE%rclock(1)
     ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_R')
-    if (ipar .ne. 0) PM(OB%ltog(ipar, index_r(1)))%xini = SITE%rclock_R
+    if (ipar .ne. 0) PM(OB%ltog(ipar, index_r(1)))%xini = SITE%rclock(2)
     ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_E')
-    if (ipar .ne. 0) PM(OB%ltog(ipar, index_e(1)))%xini = SITE%rclock_E
+    if (ipar .ne. 0) PM(OB%ltog(ipar, index_e(1)))%xini = SITE%rclock(3)
     ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_C')
-    if (ipar .ne. 0) PM(OB%ltog(ipar, index_c(1)))%xini = SITE%rclock_C
+    if (ipar .ne. 0) PM(OB%ltog(ipar, index_c(1)))%xini = SITE%rclock(4)
     ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_3')
-    if (ipar .ne. 0) PM(OB%ltog(ipar, index_3(1)))%xini = SITE%rclock_3
+    if (ipar .ne. 0) PM(OB%ltog(ipar, index_3(1)))%xini = SITE%rclock(5)
     ipar = pointer_string(OB%npar, OB%pname, 'RECCLK_J')
-    if (ipar .ne. 0) PM(OB%ltog(ipar, index_j(1)))%xini = SITE%rclock_J
+    if (ipar .ne. 0) PM(OB%ltog(ipar, index_j(1)))%xini = SITE%rclock(6)
 !
 !! save a priori horizontal troposphere gradients
     if (LCF%htgmod(1:3) .ne. 'NON') then
@@ -460,10 +461,14 @@ program lsq
     if (LCF%lrmbias) then
 !
 !! find bias to be removed
+      LCF%isini=.true.
       nbias = 0
       do ipar = NM%nc + NM%np + 1, NM%ipm
         if (PM(ipar)%pname(1:3) .ne. 'AMB' .or. PM(ipar)%ipt .eq. 0) cycle
-        if ((jd - PM(ipar)%ptend)*864.d2 + sod .lt. MAXWND - LCF%dintv + 1.d-3) cycle
+        if ((jd - PM(ipar)%ptend)*864.d2 + sod .lt. MAXWND - LCF%dintv + 1.d-3)then
+          LCF%isini=.false.
+          cycle
+        endif
         isat = PM(ipar)%psat
         iamb = pointer_string(OB%npar, OB%pname, 'AMBC')
         nbias = nbias + 1
@@ -485,6 +490,7 @@ program lsq
   end do
 !
 !! apply all remaining ambiguity constraints
+  LCF%isini=.true.
   call lsq_add_ambcon(lfncid, lfnobs, jd, sod, LCF, SITE, NM, PM, OB)
 !
 !! remove all 'P' and 'S' parameters
