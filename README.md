@@ -6,8 +6,8 @@ PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later develo
 
 We make this package open source with the goal of benefiting those professionals in their early career, and also advocate the geodetic and geophysical applications of GNSS PPP-AR. Especially, we hope that this package can contribute to high-precision applications in geosciences such as crustal motion and troposphere sounding studies. The entire open-source project is funded by the National Natural Science Foundation of China (No. 42025401) and is under the auspices of IAG Sub-Commission 4.2 "Multi-constellation and multi-frequency GNSS" and [IGS Pilot Project PPP-AR](https://igs.org/wg/ppp-ar/#rapid).
 
-The GNSS products are accessible at <ftp://igs.gnsswhu.cn/pub/whu/phasebias>.
-Latest updates for Support, Training courses and FAQ can be found at <http://pride.whu.edu.cn>.
+The GNSS products are accessible at <ftps://bdspride.com>.
+Latest updates for Support, Training courses and FAQ can be found at <http://pride.apm.ac.cn>.
 The copyright of this package is protected by GNU General Public License (version 3). 
 
 Relevant publications are
@@ -174,5 +174,6 @@ Special notes for compatibility with older versions of PRIDE PPP-AR:
 ## License
 
 ***Copyright (C) 2023 by Wuhan University, All rights reserved.***
+
 
 
