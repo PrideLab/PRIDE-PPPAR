@@ -19,14 +19,14 @@
 !          integer    info   O  status (0:ok,other:error)
 ! notes  : matrix stored by column-major order (fortran convension)
 ! ------------------------------------------------------------------------------
-subroutine lambda(n, m, a, Q, F, s, info)
+subroutine lambda(n, m, a, Q, F, s, add, info)
     implicit none
 
     dimension a(n), za(n), s(m), E(n*m), F(n*m)
     dimension D(n), Q(n*n), L(n*n), Z(n*n), Zt(n*n), Zi(n*n)
 
     integer i, j, n, m
-    real*8  a, za, s, E, F
+    real*8  a, za, s, E, F, add(2)
     real*8  D, Q, L, Z, Zt, Zi
     integer info
     
@@ -40,11 +40,12 @@ subroutine lambda(n, m, a, Q, F, s, info)
     
     call LD(n, Q, L, D, info)                      ! LD factorization
 
+
     if (info .eq. 0) then
         call reduction(n, L, D, Z)                 ! lambda reduction
         call lam_mattrans(Z, n, n, Zt)
         call lam_matmult(Zt, a, n, 1, n, za)
-        call search(n, m, L, D, za, E, s, info)    ! mlambda search
+        call search(n, m, L, D, za, E, s, add, info)    ! mlambda search
         if (info .eq. 0) then
             Zi = Zt
             call lam_matinv(Zi, n, info)
@@ -122,14 +123,14 @@ subroutine reduction(n, L, D, Z)
 end subroutine reduction
 
 ! modified lambda (mlambda) search (ref. [2]) ----------------------------------
-subroutine search(n, m, L, D, zs, zn, s, info)
+subroutine search(n, m, L, D, zs, zn, s, add, info)
     implicit none
 
-    integer, parameter :: LOOPMAX = 10000          ! maximum count of search loop
+    integer, parameter :: LOOPMAX = 1000000          ! maximum count of search loop
     integer n, m, i, j, k, c, nn, imax
-    real*8  sgn, roundup
+    real*8  sgn, roundup, add(2)
     real*8  newdist, maxdist, y
-    real*8, dimension(n) :: D, dist, z, zb, zs, step
+    real*8, dimension(n) :: D, dist, z, zb, zs, step, z2
     real*8, dimension(m) :: s
     real*8, dimension(n*m) :: zn
     real*8, dimension(n*n) :: L, T
@@ -198,7 +199,6 @@ subroutine search(n, m, L, D, zs, zn, s, info)
             end if
         end if
     end do
-    
     ! sort by s
     do i = 1, m
         do j = i, m
@@ -211,7 +211,46 @@ subroutine search(n, m, L, D, zs, zn, s, info)
             end do
         end do
     end do
-    
+
+    add = 0.d0
+
+    T = 0.d0
+    k = n
+    z(k) = zn(k) - zn(k + n)
+    zb(k) = zn(k + n)
+    do k = n - 1, 1, -1
+        do i = 1, k
+            T(k+(i-1)*n) = T(k+1+(i-1)*n) &
+            + (zn(k+1) - zb(k+1)) * L(k+1+(i-1)*n)
+         enddo
+
+         zb(k) = zn(k + n) + T(k + (k - 1) * n)
+         z(k) = zb(k) - zn(k)
+    enddo
+
+    do i = 1, n
+        add(1) = add(1) +z(i)**2 / D(i)
+    enddo
+ 
+    write(*,*) c, n, m
+
+    T = 0.d0
+    k = n
+    z2(k) = zn(k) - zs(k)
+    zb(k) = zs(k)
+    do k = n - 1, 1, -1
+        do i = 1, k
+            T(k+(i-1)*n) = T(k+1+(i-1)*n) &
+            + (zn(k + 1) - zb(k+1)) * L(k+1+(i-1)*n)
+         enddo
+
+         zb(k) = zs(k) + T(k + (k - 1) * n)
+         z2(k) = zb(k) - zn(k)
+    enddo
+    do i = 1, n
+        add(2) = add(2) + dabs(z(i)*z2(i)) / D(i)
+    enddo
+
     if (c .ge. LOOPMAX) then
         write (*, '(a)') '***ERROR(search): search loop count overflow '
         info = -1
@@ -337,7 +376,7 @@ subroutine lambda_search(n, m, a, Q, F, s, info)
 
     integer n, m
     real*8  a, za, s, F
-    real*8  D, Q, L
+    real*8  D, Q, L, add(2)
     integer info
     
     info = 0
@@ -348,7 +387,7 @@ subroutine lambda_search(n, m, a, Q, F, s, info)
     L = 0
     call LD(n, Q, L, D, info)
     if (info .ne. 0) return
-    call search(n, m, L, D, a, F, s, info)
+    call search(n, m, L, D, a, F, s, add, info)
 end subroutine lambda_search
 
 ! identity matrix --------------------------------------------------------------

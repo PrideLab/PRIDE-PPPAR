@@ -179,6 +179,12 @@ subroutine get_arsig_args(ACF)
   msg = 'Verbose output'
   key = findkey(lfn, msg, ' ')
   if (index(key, 'YES') .ne. 0) ACF%lverbose = .true.
+!
+!! Ambiguity validation 
+  ACF%lambsvm = .false.
+  msg = 'AI Ambiguity validation'
+  key = findkey(lfn, msg, ' ')
+  if (index(key, 'YES') .ne. 0) ACF%lambsvm = .true.
 
   close (lfn)
   return

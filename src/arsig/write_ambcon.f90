@@ -43,6 +43,7 @@ subroutine write_ambcon(indp, SD, ACF, AS)
   integer*4 i, j, lfn, jd, iy(2), imon(2), id(2), ih(2), im(2)
   real*8 is(2), sod
   type(ambssd) XSD
+  integer*4 isat, jsat
 !
 !! function used
   integer*4 get_valid_unit
@@ -70,9 +71,20 @@ subroutine write_ambcon(indp, SD, ACF, AS)
   if(ACF%ntot_J.gt.0) write (lfn, '(3i6,42x,a)') ACF%ntot_J,ACF%nwlfx_J,ACF%nwnfx_J,'J   AMB FIXING (T/W/N)'
   if(ACF%lsearch) then
     write (lfn, '(3i6,4x,a8,30x,a)') ACF%ntot_ind,ACF%nwl_ind,ACF%nwn_ind,'LAMBDA  ','IND AMB FIXING (T/W/N)'
+    if(ACF%features(1) .gt. 1.1) then
+        write(lfn,'(i12, 3f12.4,12x,a)') nint(ACF%features(1)), (ACF%features(i), i=2,4), 'NCAD DISMIN RATIO PENAL'
+        write(lfn,'(4f12.4,12x,a)')      (ACF%features(i), i=5,8), 'ADOP WRATIO PRATIO NOBS'
+    endif
   else
     write (lfn, '(3i6,4x,a8,30x,a)') ACF%ntot_ind,ACF%nwl_ind,ACF%nwn_ind,'ROUNDING','IND AMB FIXING (T/W/N)'
   endif
+
+  if(indp .ne. 0) then
+     write (lfn, '(4x, a6,50x,a)') 'SUCESS','AR RESULT'
+  else
+     write (lfn, '(4x, a6,50x,a)') 'FAIL  ','AR RESULT'
+  endif
+
   write (lfn, '(60x,a)') 'END OF HEADER'
 !
 !! write each constraint

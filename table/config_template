@@ -27,15 +27,16 @@ Tides                  = SOLID/OCEAN/POLE        ! remove any to shut it down, o
 Multipath              = Default                 ! use the multipath correction model (YES/NO)
 
 ## Ambiguity fixing options
-Ambiguity co-var       = Default                 ! change to YES if the Ambiguity fixing method is LAMBDA
-Ambiguity duration     = 600                     ! time duration in seconds for a resolvable ambiguity
-Cutoff elevation       = 15                      ! cutoff mean elevation for eligible ambiguities to be resolved
-PCO on wide-lane       = YES                     ! pco corrections on Melbourne-Wubbena or not
-Widelane decision      = 0.20 0.15 1000.         ! deviation (cycle), sigma (cycle) and decision threshold for WL ambiguities
-Narrowlane decision    = 0.15 0.15 1000.         ! deviation (cycle), sigma (cycle) and decision threshold for NL ambiguities
-Critical search        = 3 4 1.8 3.0             ! highest number of ambiguities to be excluded, lowest number to be reserved, fixed/float, ratio threshold
-Truncate at midnight   = Default                 ! truncate all ambiguities at midnight to avoid day boundary discontinuity
-Verbose output         = NO                      ! output detailed information of ambiguity resolution
+Ambiguity co-var        = Default                ! change to YES if the Ambiguity fixing method is LAMBDA
+Ambiguity duration      = 600                    ! time duration in seconds for a resolvable ambiguity
+AI Ambiguity validation = YES                    ! Ambiguity fixing validation is SVM or not
+Cutoff elevation        = 15                     ! cutoff mean elevation for eligible ambiguities to be resolved
+PCO on wide-lane        = YES                    ! pco corrections on Melbourne-Wubbena or not
+Widelane decision       = 0.20 0.15 1000.        ! deviation (cycle), sigma (cycle) and decision threshold for WL ambiguities
+Narrowlane decision     = 0.15 0.15 1000.        ! deviation (cycle), sigma (cycle) and decision threshold for NL ambiguities
+Critical search         = 3 4 1.8 3.0            ! highest number of ambiguities to be excluded, lowest number to be reserved, fixed/float, ratio threshold
+Truncate at midnight    = Default                ! truncate all ambiguities at midnight to avoid day boundary discontinuity
+Verbose output          = NO                     ! output detailed information of ambiguity resolution
 
 ## Satellite list
 # Inserting `#' at the beginning of individual GNSS PRN means not to use this satellite

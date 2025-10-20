@@ -10,6 +10,7 @@ type ambsit
   integer*4 iepc(2,MAXOW_ST)
 !! pointer to inversed normal matrix
   integer*4 ipt(MAXOW_ST)
+!! # of ambiguity
 !! useful value
   real*8 xamb(MAXOW_ST),xrwl(MAXOW_ST),xrms(MAXOW_ST),xswl(MAXOW_ST)
 end type

@@ -80,6 +80,7 @@ subroutine read_ambiguity(ACF, AS)
     endif
   enddo
   AS%now = 0
+  ACF%nobs = 0
   do while (.true.)
     read (lfn, '(a)', iostat=ierr) line
     if (ierr .ne. 0) exit
@@ -104,6 +105,7 @@ subroutine read_ambiguity(ACF, AS)
     AS%xswl(AS%now) = xswl
     AS%iepc(1, AS%now) = nint(((t(1) - ACF%jd0)*86400.d0 - ACF%sod0)/ACF%dintv) + 1
     AS%iepc(2, AS%now) = nint(((t(2) - ACF%jd0)*86400.d0 - ACF%sod0)/ACF%dintv) + 1
+    ACF%nobs = AS%iepc(2, AS%now) - AS%iepc(1, AS%now) + 1 + ACF%nobs
   enddo
   close (lfn)
 

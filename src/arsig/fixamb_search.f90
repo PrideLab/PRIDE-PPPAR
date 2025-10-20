@@ -25,55 +25,105 @@
 !!    output: PM -- parameter struct
 !!            QN%-- inversed normal matrix
 !
-subroutine fixamb_search(SD, PM, QN, invx, max_del, min_sav, max_chisq, min_ratio)
+subroutine fixamb_search(SD, PM, QN, invx, max_del, min_sav, max_chisq, min_ratio, features, nobs, ACF) 
+  use iso_c_binding
   implicit none
   include '../header/const.h'
   include 'ambssd.h'
   include 'invnor.h'
+  include 'arscfg.h'
 
   type(ambssd) SD(1:*)
   type(pest) PM(1:*)
   type(invm) QN
+  type(arscfg)  ACF
+
   integer*4 max_del, min_sav
-  real*8 max_chisq, min_ratio, invx(1:*)
-!
-!! local
+  real*8 max_chisq, min_ratio, invx(1:*) 
+  real*8 features(8), nobs
+  
+  ! interface to C xgb function
+  interface
+     subroutine callPyXgb(features, flag, prob) bind(C, name="callPyXgb")
+        use iso_c_binding
+        real(c_double), intent(inout) :: features(8)
+        integer(c_int), intent(out)   :: flag
+        real(c_double), intent(out)   :: prob
+     end subroutine callPyXgb
+  end interface
+  
+  ! local
   integer*4 i, j, k, ntot, ierr
-  real*8 dump, disall(2), chisq, ratio
+  real*8 dump, disall(2), chisq, ratio  
+  integer(c_int) :: flag
+  real(c_double) :: prob
+  character(len=3) :: label
+  ! pointers
   real*8, pointer :: bias(:), q22(:), q22h(:, :), q21h(:, :), q12h(:, :), qhlp(:, :)
-!
-  QN%nfix   = 0
+  real*8, pointer :: bias_p(:)
+
+  features = 0.D0
+  QN%nfix = 0
   allocate (bias(QN%indp + QN%nxyz))
+  allocate (bias_p(QN%indp + QN%nxyz))
   allocate (q22(QN%indp*(QN%indp + 1)/2), stat=ierr)
+
   if (ierr .ne. 0) then
     write (*, '(a)') '***ERROR(fixamb_search): memory allocation q22 '
     call exit(1)
   endif
+
   if (QN%ndam .gt. 0) then
     do i = 1, QN%ndam
       SD(i)%id = 0
     enddo
-    QN%ncad   = QN%ndam
+    QN%ncad = QN%ndam
     call sort_invx(SD, QN, invx, bias, q22)
+    do i = 1, QN%indp + QN%nxyz
+      bias_p(i) = bias(i)
+    enddo
+    QN%ncad = QN%ndam
     call ambslv(QN%ncad, q22, bias, disall)
     chisq = (disall(1) + (QN%vtpv*25.d0))/(QN%frdm + QN%ncad)/(QN%vtpv*25.d0)*QN%frdm
     ratio = disall(2)/disall(1)
     write (*, '(/,a21,a4,2a10)') 'LAMBDA search: ','#AMB','Chi','Ratio'
     write (*, '(a,i4,2f10.3)') 'Narrow-lane AR(all): ', QN%ncad, chisq, ratio
+
 !
 !! partial AR
-    if (chisq .ge. max_chisq .or. ratio .le. min_ratio) then
-      call candid_amb(SD, QN, invx, max_del, min_sav, max_chisq, min_ratio)
+    if (ACF%lambsvm) then
+        call cal_features(QN%ncad, q22, bias_p, chisq, ratio, nobs, features)
+        call callPyXgb(features, flag, prob)
+        label = merge('SUC','FAL', flag .eq. 1)
+        write(*,'(a,a,f10.3)') 'AI validation(flag, prob): ', label, prob
+    endif
+    if ((.not. ACF%lambsvm .and. (chisq .ge. max_chisq .or. ratio .le. min_ratio)) .or. (ACF%lambsvm .and. flag .eq. 0)) then
+      call candid_amb(SD, QN, ACF%lambsvm, nobs, invx, max_del, min_sav, max_chisq, min_ratio)
       if (QN%ncad .eq. 0) then
         write (*, '(a)') '$$$MESSAGE(fixamb_search): no more can be fixed '
         goto 100
       endif
       call sort_invx(SD, QN, invx, bias, q22)
+      do i = 1, QN%ncad
+        bias_p(i) = bias(i)
+      enddo
       call ambslv(QN%ncad, q22, bias, disall)
       chisq = (disall(1) + (QN%vtpv*25.d0))/(QN%frdm + QN%ncad)/(QN%vtpv*25.d0)*QN%frdm
       ratio = disall(2)/disall(1)
+      if (ACF%lambsvm) then
+          call cal_features(QN%ncad, q22, bias_p, chisq, ratio, nobs, features)
+          call callPyXgb(features, flag, prob)
+          label = merge('SUC','FAL', flag .eq. 1)
+          write(*,'(a,a,f10.3)') 'AI validation(flag, prob): ', label, prob
+      endif
     endif
-    write (*, '(a,i4,2f10.3)') 'Narrow-lane AR(fin): ', QN%ncad, chisq, ratio
+ 
+    if(ACF%lambsvm) then
+        do i = 1, QN%ncad
+          bias(i) = bias_p(i)
+        enddo
+    endif
+    
 !
 !! Q22 inversed matrix
     ntot = QN%nxyz + QN%ndam
@@ -140,6 +190,7 @@ subroutine fixamb_search(SD, PM, QN, invx, max_del, min_sav, max_chisq, min_rati
   endif
 100 continue
   deallocate (bias)
+  deallocate (bias_p)
   deallocate (q22)
 
   return

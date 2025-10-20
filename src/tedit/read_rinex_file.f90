@@ -38,7 +38,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
                            check_pc, pclimit, &
                            cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
                            stanam, x, y, z, t_first_in_rinex, t_last_in_rinex, v, &
-                           nepo, nsat, jd0, nobs, flagall, ti, ts, obs, itypuse, bias,dwnd)
+                           nepo, nsat, jd0, nobs, flagall, ti, ts, obs, itypuse, bias,dwnd,GNSS_SYS)
   implicit none
   include '../header/const.h'
   include '../header/absbia.h'
@@ -100,6 +100,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
   logical*1     istrue
   integer*4     modified_julday, set_flag, get_valid_unit, pointer_string
   real*8        timdif
+  character*8   GNSS_SYS 
 
 ! initialize
   call prn_matbld(prn0)
@@ -205,6 +206,32 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
     else
       call rdrnxoi2(iunit, jd0, tobs, dwnd, nprn, prn, HD, OB, bias, nbias_used, ierr)
     end if
+    ! judge satellite system
+    do ichn = 1, OB%nprn
+      read (OB%prn(ichn) (2:3), '(i2)') j
+      if (index(GNSS_SYS, OB%prn(ichn)(1:1)) > 0) then
+        continue  
+      else if (OB%prn(ichn)(1:1)  .eq. 'C') then
+        if  (index(GNSS_SYS, '2') > 0 .and. index(GNSS_SYS, '3') > 0 ) then
+          continue
+        else if  (index(GNSS_SYS, '2') > 0) then
+          if (j .gt. 17) then
+            OB%prn(ichn)=" "
+            continue
+          end if 
+        else if  (index(GNSS_SYS, '3') > 0) then
+          if (j .le. 17) then
+            OB%prn(ichn)=" "
+            continue
+          end if 
+        else
+          OB%prn(ichn)=" "  
+          continue
+        end if
+      else
+        OB%prn(ichn)=" "
+      endif
+    end do
     if (ierr .eq. 2) then
       call next_rinex(iunit, iunit_next, &
         int(jd0 + (tstart(4)*3600.d0 + tstart(5)*60.d0 + sstart + session_length)/864.d2))

@@ -24,7 +24,7 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
                                  tstart, sstart, session_length, length_gap, length_short, &
                                  cutoff_elevation, max_mean_namb, min_percent, min_mean_nprn, &
                                  interval, lclimit, pclimit, lglimit, lgrmslimit, &
-                                 stanam,dwnd)
+                                 stanam,dwnd,GNSS_SYS)
   implicit none
   include '../header/const.h'
 
@@ -48,6 +48,7 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
   logical*1     lexist, display_help
 ! function called
   character*1   lower_string
+  character*8   GNSS_SYS
 
   flneph = ' '
   flnrhd = ' '
@@ -236,6 +237,9 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
           end do
         end if
       end do
+    else if (arg(ipar, 1)(1:4) .eq. '-sys') then
+      display_help = nval(ipar) .lt. 1
+      if (.not. display_help) GNSS_SYS = arg(ipar, nval(ipar))
     else
       display_help = .true.
     end if
@@ -280,6 +284,9 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
         lglimit = 1.d0
         lgrmslimit = 0.3d0
       end if
+      if ((check_lc) .and. (trim(GNSS_SYS) .eq. 'R')) then
+        lclimit = 30.d0
+      end if 
     end if
   end if
 
@@ -355,6 +362,8 @@ subroutine get_control_parameter(flnrnx, flneph, flnosb, flnrhd, &
     write (*, '(a)') "  -pc_check [limit]                                         "
     write (*, '(a)') "    using pesudo-range to check the consistency of the      "
     write (*, '(a)') "    receiver clock difference. Default is 250. (Unit: meter)"
+    write (*, '(a)') "  -sys [char]                                               "
+    write (*, '(a)') '    GNSS to be processed, select one or more from "GREC23J":'
     write (*, '(a)') "                                                            "
     write (*, '(a)') "Note: Some dependent files need to be under folders.        "
     write (*, '(a)') "                                                            "

@@ -6,9 +6,9 @@
 ##                                                                           ##
 ##  AUTHOR : PRIDE LAB      pride@whu.edu.cn                                 ##
 ##                                                                           ##
-##  VERSION: ver 3.1                                                         ##
+##  VERSION: ver 3.2                                                         ##
 ##                                                                           ##
-##  DATE   : Apr-08, 2024                                                    ##
+##  DATE   : Oct-20, 2025                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -58,7 +58,7 @@ readonly USECACHE=YES
 readonly USERTS=YES
 
 readonly SCRIPT_NAME="pdp3"
-readonly VERSION_NUM="3.1.1"
+readonly VERSION_NUM="3.2.0"
 
 ######################################################################
 ##                     System-specific Command                      ##
@@ -101,7 +101,9 @@ main() {
     local      mode=$(echo "$args" | sed -n 8p)       # S/P/K/F/L, upper case
     local        AR=$(echo "$args" | sed -n 9p)       # A/Y/N, upper case
     local   mul_use=$(echo "$args" | sed -n 10p)      # MHM modeling duration
-
+    local   wcc_use=$(echo "$args" | sed -n 11p)      # wcc product
+    local   tedit_avisys=$(echo "$args" | sed -n 12p) # tedit sate system
+	
     local interval=$(get_ctrl "$ctrl_file" "Interval")
     local freq_cmb=$(get_ctrl "$ctrl_file" "Frequency combination")
     local site=$(grep "^ .... [A-Z]" "$ctrl_file" | cut -c 2-5)
@@ -152,7 +154,7 @@ main() {
     if [[ "$mul" == "YES" ]]; then
         mkdir -p "$mhm_dir" && cd "$mhm_dir"
         if [ $? -eq 0 ]; then
-            PrepareMhmModel "$mjd_s" "$rnxo_path" "$ctrl_file" "$mhm_dir" "$mul_use" "$work_dir"\
+            PrepareMhmModel "$mjd_s" "$rnxo_path" "$ctrl_file" "$mhm_dir" "$mul_use" "$work_dir" "$wcc_use"\
                 || echo -e "$MSGERR from $ymd_s $doy_s to $ymd_e $doy_e preparing mhm model failed"
         else
             echo -e "$MSGERR no such directory: $mhm_dir"
@@ -161,7 +163,7 @@ main() {
 
     mkdir -p "$work_dir" && cd "$work_dir"
     if [ $? -eq 0 ]; then
-        ProcessSingleSession "$rnxo_path" "$ctrl_file" "$date_s" "$hour_s" "$date_e" "$hour_e" "$AR" \
+        ProcessSingleSession "$rnxo_path" "$ctrl_file" "$date_s" "$hour_s" "$date_e" "$hour_e" "$AR" "$wcc_use" "$tedit_avisys"\
             || echo -e "$MSGERR from $ymd_s $doy_s to $ymd_e $doy_e processing failed"
     else
         echo -e "$MSGERR no such directory: $work_dir"
@@ -186,7 +188,10 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     local avail_sys edt_opt rck_opt isb_opt ztd_opt htg_opt ion_opt tide_mask lam_opt pco_opt vbs_opt
     local gnss_mask map_opt rckl rckp ztdl ztdp htgp eloff
     local mul_use=0
+	local wcc_use=0
     local posp=0 twnd
+	# modified by ranzeng
+    local ai_model
 
     local last_arg=${@: -1}
     case $last_arg in
@@ -425,6 +430,21 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                     mul_use=0
                 fi
                 ;;
+			-wcc | --wuhan-combination-center)
+                case "$2" in
+                    fin)
+                        wcc_use=1
+                        shift 1
+                        ;;
+                    rap)
+                        wcc_use=2
+                        shift 1
+                        ;;
+                    *)
+                        wcc_use=1
+                        ;;
+                esac
+                ;;
             -h | --htg )
                 [ -z "$htg_opt" ]                               || throw_conflict_opt "$1"
                 check_optional_arg "$2" "$last_arg"             || throw_require_arg  "$1"
@@ -491,7 +511,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
             -isb | --inter_sys_bias )
                 [ -z "$isb_opt" ]                               || throw_conflict_opt "$1"
                 if check_optional_arg "$2" "$last_arg"; then
-                    carg=$(echo "$2" | tr 'a-z' 'A-Z')  # 转大写以统一格式
+                    carg=$(echo "$2" | tr 'a-z' 'A-Z')  
                     carg=$(sed "s/C/C3/g" <<< "$carg")
                     if [[ "$carg" == "NO" ]]; then
                         isb_opt="NO"
@@ -523,8 +543,15 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 [ -z "$lam_opt" ]                               || throw_conflict_opt "$1"
                 check_optional_arg "$2" "$last_arg"             || throw_require_arg  "$1"
                 case ${2} in
-                "1" ) lam_opt="NO"  ;;
-                "2" ) lam_opt="YES" ;;
+                "1" ) lam_opt="NO"
+                      ai_model="NO"
+                ;;
+                "2" ) lam_opt="YES" 
+                      ai_model="NO" 
+                ;;
+                "3" ) lam_opt="YES"
+                      ai_model="YES"
+                ;;
                 * ) throw_invalid_arg "fixing method" "$2"
                 esac
                 shift 1
@@ -1034,6 +1061,16 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     [ -n "$pco_opt" ] || pco_opt=$(get_ctrl "$ctrl_file" "PCO on wide-lane" | tr 'a-z' 'A-Z')
     [[ "$pco_opt" == "NO" ]] || pco_opt="YES"
     sedi "/^PCO on wide-lane/s/ = .*/ = $pco_opt/" "$ctrl_file"
+	
+    #modified by ranzeng
+    # Use AI MODEL to validate AR (default as YES)
+     
+    [ -n "$ai_model" ] || ai_model=$(get_ctrl "$ctrl_file" "AI Ambiguity validation")
+    if [ "$ai_model" == "Default" ]; then
+        [[ $(echo "$sspan <= 21600.0" | bc) -eq 1 ]] && ai_model="YES" || ai_model="NO"
+    fi
+
+    sedi "/^AI Ambiguity validation/s/ = .*/ = $ai_model/" "$ctrl_file"
 
     # Verbose output (default as NO)
     [ -n "$vbs_opt" ] || vbs_opt=$(get_ctrl "$ctrl_file" "Verbose output" | tr 'a-z' 'A-Z')
@@ -1099,6 +1136,8 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     echo "$mode"
     echo "$AR"
     echo "$mul_use"
+	echo "$wcc_use"
+    echo "${avail_sys[@]}"
 }
 
 check_optional_arg() { # purpose : check if optional argument is existing
@@ -1345,12 +1384,21 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
     >&2 echo ""
     >&2 echo "  -v, --verbose                              output details of ambiguity resolution"
     >&2 echo ""
-    >&2 echo "  -x <num>, --fix-method <num>               ambiguity fixing method, choose 1 or 2:"
+    >&2 echo "  -wcc <str>, --wuhan-combination-center  <str>"
+    >&2 echo "                                             use wuhan combinaltion center product"
     >&2 echo "                                             -----+------------------------+-----+-------------------------"
-    >&2 echo "                                               1  |  rounding              |  2  |  LAMBDA                 "
+    >&2 echo "                                              fin |  final                 | rap |  rapid                  "
     >&2 echo "                                             -----+------------------------+-----+-------------------------"
+    >&2 echo "                                               * default: use final product"
+    >&2 echo ""
+    >&2 echo "  -x <num>, --fix-method <num>               ambiguity fixing method, choose 1, 2 or 3:"
+    >&2 echo "                                             -----+--------------------------------------------------------"
+    >&2 echo "                                               1  |  rounding                                              "
+    >&2 echo "                                               2  |  LAMBDA (validated by ratio with a fixed threshold 3.0)"
+    >&2 echo "                                               3  |  LAMBDA (validated by AI)                              "
+    >&2 echo "                                             -----+--------------------------------------------------------"
     >&2 echo "                                               * default: rounding for long observation time (> 6 h)"
-    >&2 echo "                                                          LAMBDA for short observation time (<= 6 h)"
+    >&2 echo "                                                          LAMBDA (validated by AI) for short observation time (<= 6 h)"
     >&2 echo ""
     >&2 echo "  -z <char[length] [num]>, --ztd <char[length] [num]>"
     >&2 echo "                                             ZTD model, piece length and process noise:"
@@ -1388,6 +1436,8 @@ ProcessSingleSession() { # purpose : process data of a single observation sessio
     local ymd_e="$5"
     local hms_e="$6"
     local AR="$7"
+    local wcc_use="$8"
+    local tedit_avisys="$9"
 
     local interval=$(get_ctrl "$ctrl_file" "Interval")
     local twnd=$(get_ctrl "$ctrl_file" "Time window")
@@ -1522,8 +1572,12 @@ ProcessSingleSession() { # purpose : process data of a single observation sessio
     fi
 
     # Prepare products
+    if [[ "$mjd_s" -lt 60743 && "$wcc_use" -ne 0 ]]; then
+        echo -e "$MSGERR PrepareProducts: Wuhan Combination Center no satellite orbit product"
+        return 1
+    fi
     local product_dir=$(get_ctrl "$ctrl_file" "Product directory" | sed "s/^[ ]*//; s/[ ]*$//; s#^~#$HOME#")
-    PrepareProducts "$mjd_s" "$mjd_e" "$product_dir" "$ctrl_file" "$rinexobs" "$AR"
+    PrepareProducts "$mjd_s" "$mjd_e" "$product_dir" "$ctrl_file" "$rinexobs" "$AR" "$wcc_use"
     if [ $? -ne 0 ]; then
         echo -e "$MSGERR PrepareProducts failed"
         return 1
@@ -1547,7 +1601,7 @@ ProcessSingleSession() { # purpose : process data of a single observation sessio
     sedi "/^Truncate at midnight/s/ = .*/ = $tct_opt/" "$ctrl_file"
 
     # Process single site
-    ProcessSingleSite "$rinexobs" "$rinexnav" "$ctrl_file" "$mjd_s" "$hms_s" "$mjd_e" "$hms_e" "$site" "$AR"
+    ProcessSingleSite "$rinexobs" "$rinexnav" "$ctrl_file" "$mjd_s" "$hms_s" "$mjd_e" "$hms_e" "$site" "$AR" "$tedit_avisys"
     if [ $? -ne 0 ]; then
         echo -e "$MSGERR ProcessSingleSession: processing from $ymd_s $doy_s to $ymd_e $doy_e $site failed"
         [ ${DEBUG} == "NO" ] && CleanMid "$ymd_s" "$doy_s"
@@ -1567,7 +1621,8 @@ ProcessSingleSite() { # purpose : process data of single site
     local hms_e="$7"
     local site="$8"
     local AR="$9"
-
+    local tedit_avisys="${10}" 
+	
     local ydoy_s=($(mjd2ydoy $mjd_s))
     local ydoy_e=($(mjd2ydoy $mjd_e))
     local ymd_s=($(ydoy2ymd ${ydoy_s[*]}))
@@ -1689,40 +1744,46 @@ ProcessSingleSite() { # purpose : process data of single site
     local rhd_file="log_${year}${doy}_${site}"
     xyz=($(awk -v sit=$site '{if($1==sit){print $2,$3,$4}}' sit.xyz))
     local cmd=""
+	if [ -z "$tedit_avisys" ]; then
+        tedit_avisys="GRE23J"
+    else
+        tedit_avisys=$(echo "$tedit_avisys" | tr -d ' ')
+    fi
     if [ "$positioning_mode" == "S" -o "$positioning_mode" == "F" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
              -xyz ${xyz[*]} -short 1200 -lc_check only -rhd ${rhd_file} -pc_check 300 \
              -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" \
-             -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd}"
+             -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd} -sys ${tedit_avisys}"
         if [ $mjd_s -le 51666 ]; then
             cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                  -xyz ${xyz[*]} -short 1200 -lc_check no -rhd ${rhd_file} -pc_check 0 \
                  -elev ${cutoff_elevation} -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" \
-                 -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd}"
+                 -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd} -sys ${tedit_avisys}"
         fi
     elif [ "$positioning_mode" == "P" -o "$positioning_mode" == "K" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
              -xyz kin_${year}${doy}_${site} -short ${tkshort} -lc_check ${lcc_opt} \
              -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" \
-             -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt} -twnd ${twnd}"
+             -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} \
+             -tighter_thre ${tth_opt} -twnd ${twnd} -sys ${tedit_avisys}"
         if [ $mjd_s -le 51666 ]; then
             cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                  -xyz kin_${year}${doy}_${site} -short ${tkshort} -lc_check no \
                  -pc_check 0 -elev ${cutoff_elevation} -rhd ${rhd_file} \
                  -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" -freq ${freq_cmb} \
-                 -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt} -twnd ${twnd}"
+                 -trunc_dbd ${tct_opt} -tighter_thre ${tth_opt} -twnd ${twnd} -sys ${tedit_avisys}"
         fi
     elif [ "$positioning_mode" == "L" ]; then
         cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
             -xyz kin_${year}${doy}_${site} -short 120 -lc_check lm \
             -elev ${cutoff_elevation} -rhd ${rhd_file} -rnxn \"${rinexnav}\" \
-            -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd}"
+            -osb \"${sinexosb}\" -freq ${freq_cmb} -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd} -sys ${tedit_avisys}"
         if [ $mjd_s -le 51666 ]; then
            cmd="tedit \"${rinexobs}\" -time ${ymd[*]} ${hms[*]} -len ${session} -int ${interval} \
                 -xyz kin_${year}${doy}_${site} -short 120 -lc_check lm \
                 -pc_check 0 -elev ${cutoff_elevation} -rhd ${rhd_file} \
                 -rnxn \"${rinexnav}\" -osb \"${sinexosb}\" -freq ${freq_cmb} \
-                -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd}"
+                -trunc_dbd ${tct_opt} -tighter_thre no -twnd ${twnd} -sys ${tedit_avisys}"
         fi
     else
         echo -e "$MSGERR ProcessSingleSite: illegal positioning mode: $positioning_mode"
@@ -2212,19 +2273,35 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local ydoy=($(mjd2ydoy $mjd))
             local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+                "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
             )
-            for url in ${urls[@]}; do
-                if [[ "$url" =~ igs.ign.fr ]]; then
-                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+            case "$wcc_use" in
+            0)
+                for url in ${urls[@]}; do
+                    if [[ "$url" =~ igs.ign.fr ]]; then
+                        [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                    fi
+                    local cmp=$(basename "$url")
+                    local sp3="${cmp/\.[gZ]*/}"
+                    CopyOrDownloadProduct "$product_cmn_dir/$sp3"        && break
+                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                done
+                ;;
+            1|2)
+                if [ "$wcc_use" -eq 1 ]; then
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
+                else
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 fi
                 local cmp=$(basename "$url")
                 local sp3="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$sp3"        && break
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
-            done
+                CopyOrDownloadProduct "$product_cmn_dir/$sp3"        
+                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                ;;
+            esac
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$sp3" ]; then
                 local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
@@ -2314,19 +2391,37 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local ydoy=($(mjd2ydoy $mjd))
             local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+			    "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
             )
-            for url in ${urls[@]}; do
-                if [[ "$url" =~ igs.ign.fr ]]; then
-                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+			
+            case "$wcc_use" in
+            0)
+                for url in ${urls[@]}; do
+                    if [[ "$url" =~ igs.ign.fr ]]; then
+                        [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                    fi
+                    local cmp=$(basename "$url")
+                    local clk="${cmp/\.[gZ]*/}"
+                    CopyOrDownloadProduct "$product_cmn_dir/$clk"        && break
+                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                done
+                ;;
+            1|2)
+                if [ "$wcc_use" -eq 1 ]; then
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
+                else
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                 fi
                 local cmp=$(basename "$url")
                 local clk="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$clk"        && break
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
-            done
+                CopyOrDownloadProduct "$product_cmn_dir/$clk"       
+                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                ;;
+            esac
+			
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$clk" ]; then
                 local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
@@ -2414,19 +2509,37 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local ydoy=($(mjd2ydoy $mjd))
             local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+			    "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/COD0R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
             )
-            for url in ${urls[@]}; do
-                if [[ "$url" =~ igs.ign.fr ]]; then
-                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+
+            case "$wcc_use" in
+            0)
+                for url in ${urls[@]}; do
+                    if [[ "$url" =~ igs.ign.fr ]]; then
+                        [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                    fi
+                    local cmp=$(basename "$url")
+                    local erp="${cmp/\.[gZ]*/}"
+                    CopyOrDownloadProduct "$product_cmn_dir/$erp"        && break
+                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                done
+                ;;
+            1|2)
+                if [ "$wcc_use" -eq 1 ]; then
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
+                else
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                 fi
                 local cmp=$(basename "$url")
                 local erp="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$erp"        && break
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
-            done
+                CopyOrDownloadProduct "$product_cmn_dir/$erp"       
+                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                ;;
+            esac 
+			
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$erp" ]; then
                 local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
@@ -2514,19 +2627,37 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local ydoy=($(mjd2ydoy $mjd))
             local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+			    "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
             )
-            for url in ${urls[@]}; do
-                if [[ "$url" =~ igs.ign.fr ]]; then
-                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+
+            case "$wcc_use" in
+            0)
+                for url in ${urls[@]}; do
+                    if [[ "$url" =~ igs.ign.fr ]]; then
+                        [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                    fi
+                    local cmp=$(basename "$url")
+                    local att="${cmp/\.[gZ]*/}"
+                    CopyOrDownloadProduct "$product_cmn_dir/$att"        && break
+                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                done
+                ;;
+            1|2)
+                if [ "$wcc_use" -eq 1 ]; then
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
+                else
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
                 fi
                 local cmp=$(basename "$url")
                 local att="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$att"        && break
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
-            done
+                CopyOrDownloadProduct "$product_cmn_dir/$att"       
+                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                ;;
+            esac
+			
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$att" ]; then
                 [ ${ydoy[0]} -ge 2020 ] && local url="${urls[1]}" || local url="${urls[${#urls[@]}-1]}"
@@ -2608,19 +2739,37 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             local ydoy=($(mjd2ydoy $mjd))
             local wkdow=($(mjd2wkdow $mjd_s))
             local urls=(
+			    "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
             )
-            for url in ${urls[@]}; do
-                if [[ "$url" =~ igs.ign.fr ]]; then
-                    [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+			
+            case "$wcc_use" in
+            0)
+                for url in ${urls[@]}; do
+                    if [[ "$url" =~ igs.ign.fr ]]; then
+                        [ -e "$ign_priority_path" ] && [ "${wkdow[0]}" -ge 2290 ] || continue
+                    fi
+                    local cmp=$(basename "$url")
+                    local fcb="${cmp/\.[gZ]*/}"
+                    CopyOrDownloadProduct "$product_cmn_dir/$fcb"        && break
+                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                done
+                ;;
+            1|2)
+                if [ "$wcc_use" -eq 1 ]; then
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
+                else
+                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 fi
                 local cmp=$(basename "$url")
                 local fcb="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$fcb"        && break
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
-            done
+                CopyOrDownloadProduct "$product_cmn_dir/$fcb"        
+                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                ;;
+            esac  
+			
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$fcb" ]; then
                 local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
@@ -3192,9 +3341,13 @@ WgetDownload() { # purpose : download a file with wget
     local url="$1"
     local arg="-q -nv -nc -c -t 3 --connect-timeout=10 --read-timeout=60"
     [ -n "$url" ] && [ "$OFFLINE" = "NO" ] || return 1
-
+    local curl_ver=$(curl --version | head -n 1 | awk '{print $2}')
     local wget_ver=$(wget --version | head -n 1 | awk '{print $3}')
-    if [[ $wget_ver =~ ^1(\.[0-9]+){0,2}$ ]]; then
+   if [[ "$url" == *bdspride* ]]; then
+        arg="--ftp-ssl -k --progress-bar -S -C - --retry 3 --connect-timeout 10 --max-time 60 -O"
+        local cmd="curl $arg $url"
+        echo "$cmd" | bash
+    elif [[ $wget_ver =~ ^1(\.[0-9]+){0,2}$ ]]; then
        wget --help | grep -q "\--show-progress" && arg="$arg --show-progress"
        local cmd="wget $arg $url"
        echo "$cmd" | bash
@@ -3289,8 +3442,8 @@ PrepareMhmModel() { # purpose : determine the number of days required for modeli
     local rnxo_path="$2"
     local ctrl_file="$3"
     local mhm_dir="$4"
-    local mul_use="$5"
-    local work_dir="$6”"
+    local work_dir="$6"
+    local wcc_use="$7"
 
     local mul_day=10
     local tmpydoy tmpfobs
@@ -3372,13 +3525,28 @@ PrepareMhmModel() { # purpose : determine the number of days required for modeli
             fi    
         done
 
-        mkdir -p "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}" 		
-        [ -f "$tmpfres" ] \
-            || (pdp3 -f -m S -cfg $tmpfcon $tmpfobs  \
-             && find "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/" -type f \
-                 -not -name "res_${tmpydoy[0]}${tmpydoy[1]}_${site}" \
-                 -not -name "pos_${tmpydoy[0]}${tmpydoy[1]}_${site}" \
-                 -exec rm -f {} \;)     
+        mkdir -p "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}" 	
+        if [ ! -f "$tmpfres" ]; then
+            case "$wcc_use" in
+                0)
+                    pdp3 -f -m S -cfg $tmpfcon $tmpfobs  
+                    ;;
+                1)
+                    pdp3 -f -m S -wcc fin -cfg $tmpfcon $tmpfobs  
+                    ;;
+                2)
+                    pdp3 -f -m S -wcc rap -cfg $tmpfcon $tmpfobs  
+                    ;;
+                *)
+                    >&2 echo -e "$MSGERR PrepareMhmModel: No available products can be used for multipath correction "
+                    rm "$tmpfres" "$tmpfpos"
+                    exit 1
+            esac
+            find "$mhm_dir/${tmpydoy[0]}/${tmpydoy[1]}/" -type f \
+                        -not -name "res_${tmpydoy[0]}${tmpydoy[1]}_${site}" \
+                        -not -name "pos_${tmpydoy[0]}${tmpydoy[1]}_${site}" \
+                        -exec rm -f {} \;
+        fi  
       
         if [ -f "$tmpfpos" ]; then
             custom_pro_sp3=$(grep -i "SAT ORBIT" "$tmpfpos" | awk '{print $1}')

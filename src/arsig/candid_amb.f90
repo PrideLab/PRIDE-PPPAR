@@ -28,7 +28,8 @@
 !!            min_ratio -- ratio test critical value
 !!    output: MD -- multiple difference struct
 !
-subroutine candid_amb(MD, QN, invx, max_del, min_sav, max_chisq, min_ratio)
+subroutine candid_amb(MD, QN, lambsvm, nobs, invx, max_del, min_sav, max_chisq, min_ratio)
+  use iso_c_binding
   implicit none
   include 'ambssd.h'
   include 'invnor.h'
@@ -42,7 +43,21 @@ subroutine candid_amb(MD, QN, invx, max_del, min_sav, max_chisq, min_ratio)
   integer*4, pointer :: candi(:), savi(:)
   real*8, pointer :: bias(:), q22(:)
   integer*4 ncad, ndel, i, j, k, l, m
-  real*8 disall(2), chisq, ratio, cdrto
+  real*8 disall(2), chisq, ratio, cdrto, cdprob, features(8), nobs
+  logical*1 lambsvm
+  integer(c_int) :: flag
+  real(c_double) :: prob
+
+  ! interface to C xgb function
+
+  interface
+     subroutine callPyXgb(features, flag, prob) bind(C, name="callPyXgb")
+        use iso_c_binding
+        real(c_double), intent(inout) :: features(8)
+        integer(c_int), intent(out)   :: flag
+        real(c_double), intent(out)   :: prob
+     end subroutine callPyXgb
+  end interface
 !
 !! function called
   integer*4 pointer_int
@@ -63,6 +78,7 @@ subroutine candid_amb(MD, QN, invx, max_del, min_sav, max_chisq, min_ratio)
     ncad = QN%ndam - ndel
     candi(1:max_del) = 0
     cdrto = 0.d0
+    cdprob = 0.d0
     do while (i .gt. 0)
       call sel_candi(QN%ndam, i, candi)
       if (i .gt. 0) then
@@ -77,16 +93,27 @@ subroutine candid_amb(MD, QN, invx, max_del, min_sav, max_chisq, min_ratio)
             q22(m) = invx(QN%idq(QN%nxyz + j) + QN%nxyz + k)
           enddo
         enddo
-        call ambslv(ncad, q22, bias, disall)
-        chisq = (disall(1) + (QN%vtpv*25.d0))/(QN%frdm + QN%ncad)/(QN%vtpv*25.d0)*QN%frdm
-        ratio = disall(2)/disall(1)
-        if (ratio .gt. cdrto .and. chisq .lt. max_chisq) then
-          cdrto = ratio
-          savi(1:ndel) = candi(1:ndel)
+        if (lambsvm) then
+          call cal_features(ncad, q22, bias, chisq, ratio, nobs, features)
+          call callPyXgb(features, flag, prob)
+          if (prob .gt. cdprob .and. flag .eq. 1) then
+            cdprob = prob
+            savi(1:ndel) = candi(1:ndel)
+          endif
+        else
+          call ambslv(ncad, q22, bias, disall)
+          chisq = (disall(1) + (QN%vtpv*25.d0))/(QN%frdm + QN%ncad)/(QN%vtpv*25.d0)*QN%frdm
+          ratio = disall(2)/disall(1)
+          if (ratio .gt. cdrto .and. chisq .lt. max_chisq) then
+            cdrto = ratio
+            savi(1:ndel) = candi(1:ndel)
+          endif
         endif
       endif
     enddo
-    if (cdrto .gt. min_ratio) then
+    
+   
+    if ((cdrto .gt. min_ratio .and. .not. lambsvm) .or. (lambsvm .and. cdprob .ne. 0.d0)) then
       do i = 1, ndel
         MD(savi(i))%id = 1
       enddo

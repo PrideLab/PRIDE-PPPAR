@@ -89,6 +89,7 @@ program tedit
   logical*1     istrue
   integer*4     get_valid_unit
   integer*4     modified_julday
+  character*8   GNSS_SYS
 
   call prn_matbld(prn0)
 
@@ -104,7 +105,7 @@ program tedit
                              tstart, sstart, session_length, length_gap, length_short, &
                              cutoff_elevation, max_mean_namb, min_percent, min_mean_nprn, &
                              interval, lclimit, pclimit, lglimit, lgrmslimit, &
-                             stanam,dwnd)
+                             stanam,dwnd,GNSS_SYS)
 !
 !! assign coefficients
   do i0 = 1, MAXSYS
@@ -202,7 +203,7 @@ program tedit
                          check_pc, pclimit, &
                          cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
                          stanam, xt, yt, zt, t_first_in_rinex, t_last_in_rinex, vel, &
-                         mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs, itypuse, bias_null,dwnd)
+                         mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs, itypuse, bias_null,dwnd,GNSS_SYS)
 
     ! read docb records
     allocate (bias(mday, MAXSAT, MAXTYP))

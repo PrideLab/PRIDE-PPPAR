@@ -65,6 +65,7 @@ subroutine read_invnormal(ACF, PM, QN, AS)
     call exit(1)
   end if
   AS%now = 0
+  ACF%nobs = 0
   read (lfn) AS%name
   read (lfn) ACF%fcbnprn, (ACF%fcbprn(i), i=1, ACF%fcbnprn)
   read (lfn) nprn, (prn(i), i=1, nprn)
@@ -111,6 +112,7 @@ subroutine read_invnormal(ACF, PM, QN, AS)
     AS%xswl(AS%now) = xswl
     AS%iepc(1, AS%now) = nint(((PM(i)%ptime(1) - ACF%jd0)*86400.d0 - ACF%sod0)/ACF%dintv) + 1
     AS%iepc(2, AS%now) = nint(((PM(i)%ptime(2) - ACF%jd0)*86400.d0 - ACF%sod0)/ACF%dintv) + 1
+    ACF%nobs = AS%iepc(2, AS%now) - AS%iepc(1, AS%now) + 1 + ACF%nobs
     AS%ipt(AS%now) = i       ! pointer to Q matrix
   end do
 !

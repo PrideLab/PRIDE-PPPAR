@@ -40,7 +40,6 @@ program arsig
 !
   integer*4     i0, i, j, k, tfx, tsd
   real*8        f1(MAXSYS), f2(MAXSYS)
-
 !
 !! read arguments & configure options
   call get_arsig_args(ACF)
@@ -59,6 +58,9 @@ program arsig
   else
     call read_ambiguity(ACF, AS)
   end if
+
+  ACF%nobs =ACF%nobs / (nint((ACF%jd1 - ACF%jd0)*86400.0 + (ACF%sod1 -  ACF%sod0))/ACF%dintv +1)
+  
   if (ACF%fcbnprn .eq. 0) then
     write (*, '(a)') '***ERROR(arsig): no resolvable ambiguities '
     call exit(1)
@@ -102,7 +104,7 @@ program arsig
 !! mapping
     call map_invnormal(SD, QN, QN%invx)
 !! fix ambiguities sequentially
-    call fixamb_search(SD, PM, QN, QN%invx, ACF%maxdel, ACF%minsav, ACF%chisq, ACF%ratio)
+    call fixamb_search(SD, PM, QN, QN%invx, ACF%maxdel, ACF%minsav, ACF%chisq, ACF%ratio, ACF%features, ACF%nobs, ACF)
 !! fixed SD
     if (QN%nfix .ne. 0) then
       do i = QN%ndam + 1, QN%ndam + QN%nfix
