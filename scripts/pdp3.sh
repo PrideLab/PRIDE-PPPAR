@@ -431,19 +431,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 fi
                 ;;
 			-wcc | --wuhan-combination-center)
-                case "$2" in
-                    fin)
-                        wcc_use=1
-                        shift 1
-                        ;;
-                    rap)
-                        wcc_use=2
-                        shift 1
-                        ;;
-                    *)
-                        wcc_use=1
-                        ;;
-                esac
+                wcc_use=1
                 ;;
             -h | --htg )
                 [ -z "$htg_opt" ]                               || throw_conflict_opt "$1"
@@ -1384,12 +1372,7 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
     >&2 echo ""
     >&2 echo "  -v, --verbose                              output details of ambiguity resolution"
     >&2 echo ""
-    >&2 echo "  -wcc <str>, --wuhan-combination-center  <str>"
-    >&2 echo "                                             use wuhan combinaltion center product"
-    >&2 echo "                                             -----+------------------------+-----+-------------------------"
-    >&2 echo "                                              fin |  final                 | rap |  rapid                  "
-    >&2 echo "                                             -----+------------------------+-----+-------------------------"
-    >&2 echo "                                               * default: use final product"
+    >&2 echo "  -wcc, --wuhan-combination-center           use wuhan combination center final product"
     >&2 echo ""
     >&2 echo "  -x <num>, --fix-method <num>               ambiguity fixing method, choose 1, 2 or 3:"
     >&2 echo "                                             -----+--------------------------------------------------------"
@@ -3532,10 +3515,7 @@ PrepareMhmModel() { # purpose : determine the number of days required for modeli
                     pdp3 -f -m S -cfg $tmpfcon $tmpfobs  
                     ;;
                 1)
-                    pdp3 -f -m S -wcc fin -cfg $tmpfcon $tmpfobs  
-                    ;;
-                2)
-                    pdp3 -f -m S -wcc rap -cfg $tmpfcon $tmpfobs  
+                    pdp3 -f -m S -wcc -cfg $tmpfcon $tmpfobs  
                     ;;
                 *)
                     >&2 echo -e "$MSGERR PrepareMhmModel: No available products can be used for multipath correction "
