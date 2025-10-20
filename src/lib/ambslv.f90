@@ -30,7 +30,7 @@ subroutine ambslv(ncad, q22, bias, disall)
   implicit none
 
   integer*4 ncad,m,i,j,k,info
-  real*8 q22(1:*), bias(1:*), disall(1:*)
+  real*8 q22(1:*), bias(1:*), disall(1:*),add(2)
   real*8, dimension(:),allocatable::a,s
   real*8, dimension(:),allocatable::Q,zn
 
@@ -58,7 +58,7 @@ subroutine ambslv(ncad, q22, bias, disall)
       enddo
     enddo
 
-    call lambda(ncad,m,a,Q,zn,s,info)
+    call lambda(ncad,m,a,Q,zn,s,add,info)
 
     do i=1,ncad
       bias(i)=zn(i)
