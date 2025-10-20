@@ -1385,7 +1385,7 @@ PRIDE_PPPAR_HELP() { # purpose : print usage for PRIDE PPP-AR
     >&2 echo "  -v, --verbose                              output details of ambiguity resolution"
     >&2 echo ""
     >&2 echo "  -wcc <str>, --wuhan-combination-center  <str>"
-    >&2 echo "                                             use wuhan combinaltion center product"
+    >&2 echo "                                             use wuhan combination center product"
     >&2 echo "                                             -----+------------------------+-----+-------------------------"
     >&2 echo "                                              fin |  final                 | rap |  rapid                  "
     >&2 echo "                                             -----+------------------------+-----+-------------------------"
