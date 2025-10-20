@@ -232,7 +232,6 @@ subroutine search(n, m, L, D, zs, zn, s, add, info)
         add(1) = add(1) +z(i)**2 / D(i)
     enddo
  
-    write(*,*) c, n, m
 
     T = 0.d0
     k = n
