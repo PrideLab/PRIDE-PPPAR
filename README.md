@@ -167,13 +167,14 @@ Special notes for compatibility with older versions of PRIDE PPP-AR:
 
 * You can contact us for **bug reports** and **comments** by sending an email or leaving a message on our website:
   * Email: <pride@whu.edu.cn>
-  * Website: <http://pride.whu.edu.cn>
+  * Website: <http://pride.apm.ac.cn>
 * For Chinese users, we provide Tencent **QQ Group** service.
   * QQ group: 971523302
 
 ## License
 
 ***Copyright (C) 2023 by Wuhan University, All rights reserved.***
+
 
 
 
