@@ -1,6 +1,6 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
 
-## PRIDE-PPPAR ver. 3.1.5 (last updated on 2025-09-06)
+## PRIDE-PPPAR ver. 3.2.0 (last updated on 2025-10-20)
 
 PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -20,8 +20,9 @@ Relevant publications are
 * Geng J, Chen X, Pan Y, Mao S, Li C, Zhou J, Zhang K (2019). PRIDE PPP‑AR: an open‑source software for GPS PPP ambiguity resolution. *GPS Solutions*, 23(91):1-10. doi:[10.1007/s10291-019-0888-1](https://doi.org/10.1007/s10291-019-0888-1)
 * Zeng J, Geng J, Li G, Tang W (2024). Improving cycle slip detection in ambiguity-fixed precise point positioning for kinematic LEO orbit determination. *GPS Solutions*, 28(3): 135. doi:[10.1007/s10291-024-01639-1](https://doi.org/10.1007/s10291-024-01639-1) 
 * Geng J, Zhang H, Li G, Aoki Y (2024). Multipath mitigation for GPS/Galileo/BDS-3 precise point positioning with overlap-frequency signals. *Satellite Navigation*,22(5). doi:[10.1186/s43020-024-00144-7](https://doi.org/10.1186/s43020-024-00144-7)
+* Guo J, Geng J (2025). Integer ambiguity validation through machine learning for precise point positioning. *Satellite Navigation*, 14(6). doi:[10.1186/s43020-025-00167-8](https://doi.org/10.1186/s43020-025-00167-8)
 
-PRIDE PPP-AR ver. 3.1 is available for:
+PRIDE PPP-AR ver. 3.2 is available for:
 
 1) Multi-GNSS data processing with GPS, GLONASS, Galileo, BDS-2/3 and QZSS
 2) All-frequency PPP-AR on any dual-frequency ionosphere-free combinations of GPS, Galileo, and BDS-2/3
@@ -38,8 +39,9 @@ PRIDE PPP-AR ver. 3.1 is available for:
 13) Ambiguity-float PPP with backward compatibility from 1994 when selective availablity (SA) was on
 14) Timely data processing with rapid (RAP) products and real-time archived (RTS) products
 15) Multipath delay compensation based on Multipath Hemispherical Map model
+16) The use of AI to validate ambiguity resolution
 
-The improvements made in PRIDE PPP-AR version 3.1 include:
+The improvements made in PRIDE PPP-AR version 3.2 include:
 
 * Enable all-frequency PPP-AR on any dual-frequency ionosphere-free combinations
 * Employ the latest WUM0MGXRAP products to resolve ambiguities on new GNSS signals (L5/E6/E5b/E5B/B1C/B2a/B2)
@@ -48,13 +50,14 @@ The improvements made in PRIDE PPP-AR version 3.1 include:
 * Provide more command-line options and models for parameter estimation
 * Increase compatibility with the latest IGS data and product extensions
 * Refine the data format of result files and the output information of program runs
+* A machine learning–based model is adopted by default for ambiguity validation
 
 `Notes: The all-frequency satellite orbit/clock/bias/ERP/quaternion products from Wuhan University are required by PRIDE PPP-AR`
 
 ## Contributors
 
 ### Developers
-* Jianghui Geng, Qiang Wen, Maorong Ge, Songfeng Yang, Honghai Zhang, Kunlun Zhang, Jihang Lin, Wenyi Li, Shuyin Mao, Yuanxin Pan, Jing Zeng, Yingda Deng
+* Jianghui Geng, Qiang Wen, Maorong Ge, Songfeng Yang, Honghai Zhang, Kunlun Zhang, Jihang Lin, Ran Zeng, Jiang Guo, Wenyi Li, Shuyin Mao, Yuanxin Pan, Jing Zeng, Yingda Deng, Shuzhi Lyu
 
 ### Testers
 * Zhaoyan Liu, Qi Zhang, Bingqing Li, Yiwei Feng, Bingchen Fu, Yahao Zhang, Xun Ma
@@ -62,7 +65,13 @@ The improvements made in PRIDE PPP-AR version 3.1 include:
 
 ## Version History
 
-See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.1.
+See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.2.
+
+### 2025-10-20 (v3.2.0)
+* `arsig`: A machine learning–based model is adopted by default for ambiguity validation
+* `tedit`: Single constellation data edition is allowed
+* `pdp3`: A new “-wcc fin/rap” option has been added to the command line to support the use of Wuhan Combination Center combined products
+* `pdp3`: The default FTP address for WUM0MGXRAP products is changed to "ftps://bdspride.com/wum/"
 
 ### 2025-09-06 (v3.1.5)
 * `lsq`: add 'isb' estimation for receiver clocks  
@@ -165,3 +174,4 @@ Special notes for compatibility with older versions of PRIDE PPP-AR:
 ## License
 
 ***Copyright (C) 2023 by Wuhan University, All rights reserved.***
+
