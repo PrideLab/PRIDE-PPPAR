@@ -70,7 +70,7 @@ See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGEL
 ### 2025-10-20 (v3.2.0)
 * `arsig`: A machine learning–based model is adopted by default for ambiguity validation
 * `tedit`: Single constellation data edition is allowed
-* `pdp3`: A new “-wcc fin/rap” option has been added to the command line to support the use of Wuhan Combination Center combined products
+* `pdp3`: A new “-wcc” option has been added to the command line to support the use of Wuhan Combination Center combined products
 * `pdp3`: The default FTP address for WUM0MGXRAP products is changed to "ftps://bdspride.com/wum/"
 
 ### 2025-09-06 (v3.1.5)
@@ -174,4 +174,5 @@ Special notes for compatibility with older versions of PRIDE PPP-AR:
 ## License
 
 ***Copyright (C) 2023 by Wuhan University, All rights reserved.***
+
 
