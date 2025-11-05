@@ -95,7 +95,7 @@ subroutine rdrnxoh(lfn, HD, ierr)
 !
 !! antenna offset
     else if (index(keyword, 'ANTENNA: DELTA') .ne. 0) then
-      read (line, '(3f14.4)', iostat=ioerr) HD%h, HD%e, HD%n
+      read (line(1:60), *, iostat=ioerr) HD%h, HD%e, HD%n
       if (ioerr .ne. 0) msg = 'read ANTENNA: DELTA error.'
 !
 !! wavelength fact

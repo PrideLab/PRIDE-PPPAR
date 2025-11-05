@@ -63,7 +63,7 @@ program tedit
   character*20  string
   character*4   stanam
   integer*4     tstart(5), length_gap, length_short
-  real*8        sstart, interval, cutoff_elevation,dwnd
+  real*8        sstart, sstart0, interval, cutoff_elevation,dwnd
   real*8        pclimit, lclimit, lglimit, lgrmslimit
   real*8        max_mean_namb, min_percent, min_mean_nprn, session_length
 ! coefficient
@@ -166,6 +166,7 @@ program tedit
 !! divide a long-period processing into several sessions
   kepo = 1
   jepo = 1
+  sstart0 = sstart
   do while (kday .le. nday)
 
     ! number of epoch of this session
@@ -199,11 +200,19 @@ program tedit
     end if
 
     ! read rinex observation file
-    call read_rinex_file(flnrnx, tstart, sstart, tmp_session, interval, &
-                         check_pc, pclimit, &
-                         cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
-                         stanam, xt, yt, zt, t_first_in_rinex, t_last_in_rinex, vel, &
-                         mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs, itypuse, bias_null,dwnd,GNSS_SYS)
+    if (kday .ne. 1 .and. sstart0 .ne. 0.d0) then ! sstart not zero only for the nest session
+      call read_rinex_file(flnrnx, tstart, sstart+sstart0, tmp_session, interval, &
+                          check_pc, pclimit, &
+                          cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
+                          stanam, xt, yt, zt, t_first_in_rinex, t_last_in_rinex, vel, &
+                          mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs, itypuse, bias_null,dwnd,GNSS_SYS)
+    else
+      call read_rinex_file(flnrnx, tstart, sstart, tmp_session, interval, &
+                          check_pc, pclimit, &
+                          cutoff_elevation, use_brdeph, neph, ephem, lm_edit, ltighter, &
+                          stanam, xt, yt, zt, t_first_in_rinex, t_last_in_rinex, vel, &
+                          mepo, nsat, jd0, nobs, tmpflg, tti, tts, obs, itypuse, bias_null,dwnd,GNSS_SYS)
+    endif
 
     ! read docb records
     allocate (bias(mday, MAXSAT, MAXTYP))
