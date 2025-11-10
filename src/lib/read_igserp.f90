@@ -267,7 +267,7 @@ contains
     implicit none
     real*8 dat0(3), tmur, pole(2)
     pole(1:2) = dat0(1:2)*1.d-6
-    tmur = dat0(3)
+    tmur = dat0(3)*1.d-7
   end subroutine
 
   subroutine interpolate(mjdx, datx, tmur, pole)
@@ -280,7 +280,7 @@ contains
       pole(i) = datx(i, 1) + alpha*(datx(i, 2) - datx(i, 1))
       pole(i) = pole(i)*1.d-6
     end do
-    tmur = datx(3, 1) + alpha*(datx(3, 2) - datx(3, 1))
+    tmur = (datx(3, 1) + alpha*(datx(3, 2) - datx(3, 1)))*1.d-7
   end subroutine
 
 end subroutine
