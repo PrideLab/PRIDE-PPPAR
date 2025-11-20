@@ -1,6 +1,11 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.2.0
+## PRIDE PPP-AR version 3.2.1
+
+### 2025-11-10 (v3.2.1)
+* `tedit`: Fix a problem in multi-day data processing
+* `read_igserp`: Fix a problem in read ERP file
+* `install.sh`: remove the IGN download address
 
 ### 2025-10-20 (v3.2.0)
 * `arsig`: A machine learning–based model is adopted by default for ambiguity validation
