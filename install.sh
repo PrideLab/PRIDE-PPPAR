@@ -6,9 +6,9 @@
 ##                                                                           ##
 ##  AUTHOR : the PRIDE Group pride@whu.edu.cn                                ##
 ##                                                                           ##
-##  VERSION: ver 3.1.1                                                         ##
+##  VERSION: ver 3.2.1                                                         ##
 ##                                                                           ##
-##  DATE   : Jan-14, 2025                                                    ##
+##  DATE   : Nov-10, 2025                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -90,7 +90,7 @@ fi
 ls ${install_dir}/lsq > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo -e "\033[1;31m" && cat ./doc/logo && echo -e "$NC"
-    printf "${BLUE}::${NC} PRIDE-PPPAR (v3.1.1) installation successfully completed!\n"
+    printf "${BLUE}::${NC} PRIDE-PPPAR (v3.2.1) installation successfully completed!\n"
     printf "${BLUE}::${NC} executable binaries are copy to $install_dir\n"
     printf "${BLUE}::${NC} $install_dir added to PATH\n"
 else
@@ -111,12 +111,6 @@ fi
 chmod 444 $install_dir/config_template
 chmod 755 ./example/*.sh
 
-# Select download sites
-printf "\n"
-read -p $'Would you like to download GNSS products from IGN (\e[31mrecommended for users outside China\e[0m) [Y/N]: ' test
-if [ ${#test} -ge 1 ] && ( [ ${test:0:1} == "y" ] || [ ${test:0:1} == "Y" ] ); then
-    touch $install_dir/.ign_priority
-fi
 
 # Test examples
 printf "\n"
