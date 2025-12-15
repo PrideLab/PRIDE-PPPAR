@@ -1576,13 +1576,6 @@ ProcessSingleSession() { # purpose : process data of a single observation sessio
         return 1
     fi
 
-    # Truncate (Reset) ambiguities at midnight (default as NO)
-    local tct_opt=$(get_ctrl "$ctrl_file" "Truncate at midnight" | tr 'a-z' 'A-Z')
-    if [[ "$tct_opt" == "DEFAULT" ]]; then
-        head -1 "$sp3" | grep -q "289   u+U IGS.. FIT  WHU" && tct_opt="NO" || tct_opt="YES"
-    fi
-    sedi "/^Truncate at midnight/s/ = .*/ = $tct_opt/" "$ctrl_file"
-
     # Process single site
     ProcessSingleSite "$rinexobs" "$rinexnav" "$ctrl_file" "$mjd_s" "$hms_s" "$mjd_e" "$hms_e" "$site" "$AR" "$tedit_avisys"
     if [ $? -ne 0 ]; then
@@ -2811,6 +2804,18 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             sedi "/Code\/phase bias/s/Default/$fcb/g" "$config"
         fi
     fi
+    
+	# Truncate (Reset) ambiguities at midnight (default as NO)
+	local tct_opt=$(get_ctrl "$ctrl_file" "Truncate at midnight" | tr 'a-z' 'A-Z')
+	if [[ "$tct_opt" == "DEFAULT" ]]; then
+   	    if grep -q "DOCB" "$fcb"; then
+     	  tct_opt="NO"
+   	    else
+      	  tct_opt="YES"
+   	    fi
+	fi
+	sedi "/^Truncate at midnight/s/ = .*/ = $tct_opt/" "$ctrl_file"
+
 
     # LEO quaternions
     local custom_pro_lat=$(get_ctrl "$config" "LEO quaternions")
