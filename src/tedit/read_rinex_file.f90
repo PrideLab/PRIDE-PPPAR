@@ -388,7 +388,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
         lfnjmp = get_valid_unit(10)
         open (lfnjmp, file='.'//stanam//'.jmp', status='replace')
       end if
-      write (lfnjmp, '(f8.1,2x,i1,x,f28.14)') ti(iepo), jumpflag, sec
+      write (lfnjmp, '(f15.1,2x,i1,x,f28.14)') ti(iepo), jumpflag, sec
     end if
 
     do ichn = 1, OB%nprn

@@ -814,23 +814,6 @@ ParseCmdArgs() { # purpose : parse command line into arguments
         fi
     fi
 
-    # Check time span
-    if [ "$OS" == "Darwin" ]; then
-        local sec_s=$(date -j -f "%Y-%m-%d %H:%M:%S" "${ymd_s} ${hms_s%.*}" +"%s" | awk '{printf("%.3f", $1 + ("0." "'${hms_s#*.}'"))}')
-        local sec_e=$(date -j -f "%Y-%m-%d %H:%M:%S" "${ymd_e} ${hms_e%.*}" +"%s" | awk '{printf("%.3f", $1 + ("0." "'${hms_s#*.}'"))}')
-    else
-        local sec_s=$(date -d "$ymd_s $hms_s" +"%s.%3N")
-        local sec_e=$(date -d "$ymd_e $hms_e" +"%s.%3N")
-    fi
-    local sspan=$(echo "$sec_e - $sec_s" | bc)
-    if [[ $(echo "$sspan <= 0" | bc) -eq 1 ]]; then
-        >&2 echo -e "$MSGERR illegal time span: from $ymd_s $hms_s to $ymd_e $hms_e"
-        exit 1
-    fi
-
-    local session_time="${ymd_s[@]//-/ } ${hms_s[@]//:/ } ${sspan}"
-    sedi "/^Session time/s/ = .*/ = $session_time/" "$ctrl_file"
-
     # Try getting observation interval option from the config file
     [ -n "$interval" ] || interval=$(get_ctrl "$ctrl_file" "Interval")
     [ -z "$time_sec" ] && time_sec=$(grep -E "^(> [0-9]{4} [ 0-1][0-9] | [ 0-9][0-9] [ 0-1][0-9] )" "$rnxo_path")
@@ -887,7 +870,53 @@ ParseCmdArgs() { # purpose : parse command line into arguments
 
     sedi "/^Interval/s/ = .*/ = $interval/" "$ctrl_file"
     [ -z "$twnd" ] && twnd=0.01
-    sedi "/^Time window/s/ = .*/ = $twnd/" "$ctrl_file"    
+    sedi "/^Time window/s/ = .*/ = $twnd/" "$ctrl_file"
+
+    # Check interval setting and first epoch time
+    if [ "$(echo "$interval != $obsintvl" | bc)" -eq 1 ]; then
+        time_sec=$(grep -E "^(> [ 0-9]{4} [ 0-1][0-9] | [ 0-9][0-9] [ 0-1][0-9] )" "$rnxo_path")
+        local time=$(echo "$time_sec" | head -1)
+        while read -r line; do
+            local hour minute sec
+            if [[ $line =~ ^\> ]]; then
+                read -r _ _ _ _ hour minute sec _ <<< "$line"
+            else
+                read -r _ _ _ hour minute sec _ <<< "$line"
+            fi
+            total_seconds=$(echo "$hour * 3600 + $minute * 60 + $sec" | bc -l)
+            re=$(awk -v a="$total_seconds" -v b="$interval" 'BEGIN{q=int(a/b);r=a-q*b;print r}')
+            if [ "$(echo "$re < 0.001" | bc)" -eq 1 ]; then
+                time=$line
+                break
+            fi
+        done < <(echo "$time_sec")
+        if [ -n "$time" ]; then
+            if [[ $time =~ ^\> ]]; then
+                ymd_s=$(echo "$time" | awk '{printf("%04d-%02d-%02d\n",$2,$3,$4)}')
+                hms_s=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$5,$6,$7)}')
+            else
+                ymd_s=$(echo "$time" | awk '{yr=$1+2000;if($1>80)yr-=100;printf("%04d-%02d-%02d\n",yr,$2,$3)}')
+                hms_s=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$4,$5,$6)}')
+            fi
+        fi
+    fi
+
+    # Check time span
+    if [ "$OS" == "Darwin" ]; then
+        local sec_s=$(date -j -f "%Y-%m-%d %H:%M:%S" "${ymd_s} ${hms_s%.*}" +"%s" | awk '{printf("%.3f", $1 + ("0." "'${hms_s#*.}'"))}')
+        local sec_e=$(date -j -f "%Y-%m-%d %H:%M:%S" "${ymd_e} ${hms_e%.*}" +"%s" | awk '{printf("%.3f", $1 + ("0." "'${hms_s#*.}'"))}')
+    else
+        local sec_s=$(date -d "$ymd_s $hms_s" +"%s.%3N")
+        local sec_e=$(date -d "$ymd_e $hms_e" +"%s.%3N")
+    fi
+    local sspan=$(echo "$sec_e - $sec_s" | bc)
+    if [[ $(echo "$sspan <= 0" | bc) -eq 1 ]]; then
+        >&2 echo -e "$MSGERR illegal time span: from $ymd_s $hms_s to $ymd_e $hms_e"
+        exit 1
+    fi
+
+    local session_time="${ymd_s[@]//-/ } ${hms_s[@]//:/ } ${sspan}"
+    sedi "/^Session time/s/ = .*/ = $session_time/" "$ctrl_file"
 
     # Piece length for PWC mode
     if [ -z "$plen" ]; then
