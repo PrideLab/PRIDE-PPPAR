@@ -183,6 +183,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
     sysid(i) = string(1:1)
     read (string, '(1x,i2)') prn_int
     isys = index(GNSS_PRIO, sysid(i))
+    if (isys==0) cycle
 !
 !! get the index and the priority of each GNSS and signal type
     lambda = 1.d0
