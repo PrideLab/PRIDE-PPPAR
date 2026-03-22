@@ -2212,13 +2212,14 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
 }
 
 PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working directory
-                    # usage   : PrepareProducts mjd_s mjd_e product_dir config rinexobs AR(A/Y/N)
+                    # usage   : PrepareProducts mjd_s mjd_e product_dir config rinexobs AR(A/Y/N) wcc_use
     local mjd_s="$1"
     local mjd_e="$2"
     local product_dir="$3"
     local config="$4"
     local rinexobs="$5"
     local AR="$6"
+    local wcc_use="$7"
 
     local ydoy_s=($(mjd2ydoy $mjd_s))
     local ymd_s=($(ydoy2ymd ${ydoy_s[*]}))
@@ -2281,6 +2282,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
+                "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
             )
             case "$wcc_use" in
@@ -2291,20 +2293,47 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     fi
                     local cmp=$(basename "$url")
                     local sp3="${cmp/\.[gZ]*/}"
-                    CopyOrDownloadProduct "$product_cmn_dir/$sp3"        && break
-                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                    if CopyOrDownloadProduct "$product_cmn_dir/$sp3"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback satellite orbit product $cmp"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback satellite orbit product $cmp"
+                        fi
+                        break
+                    fi
                 done
                 ;;
             1|2)
                 if [ "$wcc_use" -eq 1 ]; then
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
+                    )
                 else
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
+                    )
                 fi
-                local cmp=$(basename "$url")
-                local sp3="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$sp3"        
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                for url in ${urls[@]}; do
+                    local cmp=$(basename "$url")
+                    local sp3="${cmp/\.[gZ]*/}"
+                    if CopyOrDownloadProduct "$product_cmn_dir/$sp3"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $sp3"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $cmp"
+                        fi
+                        break
+                    fi
+                done
                 ;;
             esac
             [ -f "$cmp" ] && gunzip -f "$cmp"
@@ -2399,6 +2428,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
 			    "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
+                "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
             )
 			
@@ -2410,20 +2440,47 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     fi
                     local cmp=$(basename "$url")
                     local clk="${cmp/\.[gZ]*/}"
-                    CopyOrDownloadProduct "$product_cmn_dir/$clk"        && break
-                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                    if CopyOrDownloadProduct "$product_cmn_dir/$clk"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback satellite clock product $cmp"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback satellite clock product $cmp"
+                        fi
+                        break
+                    fi
                 done
                 ;;
             1|2)
                 if [ "$wcc_use" -eq 1 ]; then
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
+                    )
                 else
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_CLK.CLK.gz"
+                    )
                 fi
-                local cmp=$(basename "$url")
-                local clk="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$clk"       
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                for url in ${urls[@]}; do
+                    local cmp=$(basename "$url")
+                    local clk="${cmp/\.[gZ]*/}"
+                    if CopyOrDownloadProduct "$product_cmn_dir/$clk"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $clk"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $cmp"
+                        fi
+                        break
+                    fi
+                done
                 ;;
             esac
 			
@@ -2517,6 +2574,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
 			    "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
+                "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/COD0R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
             )
 
@@ -2528,20 +2586,47 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     fi
                     local cmp=$(basename "$url")
                     local erp="${cmp/\.[gZ]*/}"
-                    CopyOrDownloadProduct "$product_cmn_dir/$erp"        && break
-                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                    if CopyOrDownloadProduct "$product_cmn_dir/$erp"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback ERP product $cmp"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback ERP product $cmp"
+                        fi
+                        break
+                    fi
                 done
                 ;;
             1|2)
                 if [ "$wcc_use" -eq 1 ]; then
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
+                    )
                 else
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
+                    )
                 fi
-                local cmp=$(basename "$url")
-                local erp="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$erp"       
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                for url in ${urls[@]}; do
+                    local cmp=$(basename "$url")
+                    local erp="${cmp/\.[gZ]*/}"
+                    if CopyOrDownloadProduct "$product_cmn_dir/$erp"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $erp"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $cmp"
+                        fi
+                        break
+                    fi
+                done
                 ;;
             esac 
 			
@@ -2635,6 +2720,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
 			    "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
+                "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
             )
 
@@ -2646,20 +2732,47 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     fi
                     local cmp=$(basename "$url")
                     local att="${cmp/\.[gZ]*/}"
-                    CopyOrDownloadProduct "$product_cmn_dir/$att"        && break
-                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                    if CopyOrDownloadProduct "$product_cmn_dir/$att"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback satellite attitude product $cmp"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback satellite attitude product $cmp"
+                        fi
+                        break
+                    fi
                 done
                 ;;
             1|2)
                 if [ "$wcc_use" -eq 1 ]; then
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
+                    )
                 else
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_30S_ATT.OBX.gz"
+                    )
                 fi
-                local cmp=$(basename "$url")
-                local att="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$att"       
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                for url in ${urls[@]}; do
+                    local cmp=$(basename "$url")
+                    local att="${cmp/\.[gZ]*/}"
+                    if CopyOrDownloadProduct "$product_cmn_dir/$att"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $att"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $cmp"
+                        fi
+                        break
+                    fi
+                done
                 ;;
             esac
 			
@@ -2747,6 +2860,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
 			    "ftps://bdspride.com/wum/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 "ftp://igs.ign.fr/pub/igs/products/mgex/${wkdow[0]}/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
+                "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
                 "ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/IGS2R03FIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
             )
 			
@@ -2758,20 +2872,47 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                     fi
                     local cmp=$(basename "$url")
                     local fcb="${cmp/\.[gZ]*/}"
-                    CopyOrDownloadProduct "$product_cmn_dir/$fcb"        && break
-                    CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" && break
+                    if CopyOrDownloadProduct "$product_cmn_dir/$fcb"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback satellite code/phase bias product $cmp"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ ! "$cmp" =~ ^WUM0MGXRAP_ ]]; then
+                            echo -e "$MSGWAR PrepareProducts: downloaded fallback satellite code/phase bias product $cmp"
+                        fi
+                        break
+                    fi
                 done
                 ;;
             1|2)
                 if [ "$wcc_use" -eq 1 ]; then
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
+                    )
                 else
-                    url="ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
+                    local urls=(
+                        "ftps://bdspride.com/wcc/${wkdow[0]}/WCC0OPSRAP_${ydoy[0]}${ydoy[1]}0000_01D_01D_OSB.BIA.gz"
+                    )
                 fi
-                local cmp=$(basename "$url")
-                local fcb="${cmp/\.[gZ]*/}"
-                CopyOrDownloadProduct "$product_cmn_dir/$fcb"        
-                CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url" 
+                for url in ${urls[@]}; do
+                    local cmp=$(basename "$url")
+                    local fcb="${cmp/\.[gZ]*/}"
+                    if CopyOrDownloadProduct "$product_cmn_dir/$fcb"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $fcb"
+                        fi
+                        break
+                    fi
+                    if CopyOrDownloadProduct "$product_cmn_dir/$cmp" "$url"; then
+                        if [[ "$cmp" == WCC0OPSRAP_* && "$wcc_use" -eq 1 ]]; then
+                            echo -e "$MSGWAR PrepareProducts: WCC FIN not available, switched to WCC RAP product: $cmp"
+                        fi
+                        break
+                    fi
+                done
                 ;;
             esac  
 			
