@@ -147,7 +147,7 @@ PrepareGRACEFO() {
 
     local grac="gracefo_1B_${ymd[0]}-${ymd[1]}-${ymd[2]}_RL04.ascii.noLRI"
     local grac_cmb="${grac}.tgz"
-    local url="ftp://isdcftp.gfz-potsdam.de/grace-fo/Level-1B/JPL/INSTRUMENT/RL04/${ymd[0]}/${grac_cmb}"
+    local url="https://isdc-data.gfz.de/grace-fo/Level-1B/JPL/INSTRUMENT/RL04/${ymd[0]}/${grac_cmb}"
     
     if [ ! -e $grac_cmb ]; then
         WgetDownload "$url"
