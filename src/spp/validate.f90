@@ -36,7 +36,7 @@ enddo
 call dops(ns-1,azels(1:ns-1,:),opt%elmin,dop)
 sol%dop=dop
 if(dop(1)<=0.d0 .or. dop(1)>opt%maxgdop)then
-    write(msg,"('gdop error nv=',I4' gdop=',F10.4)") nv,dop(1)
+    write(msg,"('gdop error nv=',I4,' gdop=',F10.4)") nv,dop(1)
     stat=0; return
 endif
 stat=1
