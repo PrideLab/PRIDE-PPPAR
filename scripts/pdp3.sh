@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 3.2                                                         ##
 ##                                                                           ##
-##  DATE   : Oct-20, 2025                                                    ##
+##  DATE   : Apr-12, 2026                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2023               ##
 ##                                                                           ##
@@ -58,7 +58,7 @@ readonly USECACHE=YES
 readonly USERTS=YES
 
 readonly SCRIPT_NAME="pdp3"
-readonly VERSION_NUM="3.2.1"
+readonly VERSION_NUM="3.2.7"
 
 ######################################################################
 ##                     System-specific Command                      ##
