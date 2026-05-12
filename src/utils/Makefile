@@ -14,7 +14,7 @@ EXE_FILES = $(patsubst %.f90,%,$(F90_FILES))
 all : $(EXE_FILES)
 
 %: %.f90 $(LIBCOM) 
-	$(FTN) $(FFLAGS) $< $(LIBCOM) -o $@
+	$(FTN) $(FFLAGS) $< $(LIBCOM) -llapack -lblas -o $@
 
 .PHONY : all clean
 clean :

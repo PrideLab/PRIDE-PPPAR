@@ -17,7 +17,7 @@ OBJ := $(SRC:.f90=.o)
 OBJ := $(addprefix $(OBJ_PATH), $(OBJ))
 
 tedit : $(OBJ) $(LIBCOM)
-	$(FTN) $(FFLAGS) $(OBJ) $(LIBCOM) -o tedit
+	$(FTN) $(FFLAGS) $(OBJ) $(LIBCOM) -llapack -lblas -o tedit
 
 $(OBJ_PATH)%.o : %.f90
 	$(DIR_GUARD)

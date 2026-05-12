@@ -17,7 +17,7 @@ OBJ := $(SRC:.f90=.o)
 OBJ := $(addprefix $(OBJ_PATH), $(OBJ))
 
 lsq : $(OBJ) $(LIBEPH) $(LIBCOM)
-	$(FTN) $(FFLAGS) $(OBJ) $(LIBCOM) -o $@
+	$(FTN) $(FFLAGS) $(OBJ) $(LIBCOM) -llapack -lblas -o $@
 
 $(OBJ_PATH)%.o : %.f90
 	$(DIR_GUARD)

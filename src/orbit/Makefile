@@ -14,7 +14,7 @@ FTN = gfortran
 LIB = ../lib/libcom.a
 
 sp3orb : $(LIB) sp3orb.f90 get_sp3orb_args.f90 lagrange_interp_sp3.f90 ../header/const.h ../header/orbit.h
-	$(FTN) $(FFLAGS) sp3orb.f90 get_sp3orb_args.f90 lagrange_interp_sp3.f90 $(LIB) -o $@
+	$(FTN) $(FFLAGS) sp3orb.f90 get_sp3orb_args.f90 lagrange_interp_sp3.f90 $(LIB) -llapack -lblas -o $@
 
 .PHONY : clean
 clean :

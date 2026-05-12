@@ -20,7 +20,7 @@ OBJ := $(addprefix $(OBJ_PATH), $(OBJ))
 COBJ := $(OBJ_PATH)xgb_model.o
 
 arsig : $(OBJ) $(COBJ) $(LIBCOM)
-	$(FTN) $(FFLAGS) $(OBJ) $(COBJ) $(LIBCOM) -lm -o $@
+	$(FTN) $(FFLAGS) $(OBJ) $(COBJ) $(LIBCOM) -llapack -lblas -lm -o $@
 
 $(LIB) : $(OBJ)
 	ar -rv $(LIB) $(OBJ)
