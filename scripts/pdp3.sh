@@ -58,7 +58,7 @@ readonly USECACHE=YES
 readonly USERTS=YES
 
 readonly SCRIPT_NAME="pdp3"
-readonly VERSION_NUM="3.2.7"
+readonly VERSION_NUM="3.2.8"
 
 ######################################################################
 ##                     System-specific Command                      ##
@@ -189,7 +189,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     local gnss_mask map_opt rckl rckp ztdl ztdp htgp eloff
     local mul_use=0
 	local wcc_use=0
-    local posp=0 twnd
+    local posp=0 twnd ts_set=0
 	# modified by ranzeng
     local ai_model
 
@@ -234,6 +234,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 ;;
             ## Time setting
             -s | --start )
+                ts_set=1
                 [ -z "$ymd_s" ] && [ -z "$hms_s" ]              || throw_conflict_opt "$1"
                 check_optional_arg "$2" "$last_arg"             || throw_require_arg  "$1"
                 local time=($(echo $2 | tr '/:-' ' '))
@@ -873,7 +874,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     sedi "/^Time window/s/ = .*/ = $twnd/" "$ctrl_file"
 
     # Check interval setting and first epoch time
-    if [ "$(echo "$interval != $obsintvl" | bc)" -eq 1 ]; then
+    if [ "$ts_set" -eq 0 ] && [ "$(echo "$interval != $obsintvl" | bc)" -eq 1 ]; then
         time_sec=$(grep -E "^(> [ 0-9]{4} [ 0-1][0-9] | [ 0-9][0-9] [ 0-1][0-9] )" "$rnxo_path")
         local time=$(echo "$time_sec" | head -1)
         while read -r line; do
