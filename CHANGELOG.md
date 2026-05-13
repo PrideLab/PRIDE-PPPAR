@@ -1,6 +1,29 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.2.1
+## PRIDE PPP-AR version 3.2.8
+
+### 2026-05-13 (v3.2.8)
+* `pdp3`: Fix a problem with specifying the process start time
+
+### 2026-04-12 (v3.2.7)
+* `spp`: Fix a problem when compiling with Fortran (90/95/2003+)
+
+### 2026-03-22 (v3.2.6)
+* `pdp3`: Downloaded products will be switched to WCC products if the WUM0MGXRAP products are unavailable
+
+### 2026-03-07 (v3.2.5)
+* `pdp3`: Extend the threshold in check a priori position
+* `lib`: Fix a problem in read rinex observations
+
+### 2026-02-11 (v3.2.4)
+* `gui`: Update the product download address in windows version
+
+### 2026-01-15 (v3.2.3)
+* `pdp3`: Fix a problem in identifying the first epoch to process
+* `tedit`: Fix a output problem
+
+### 2025-12-15 (v3.2.2)
+* `pdp3`: Fix a problem in across-day processing with DOCB products
 
 ### 2025-11-10 (v3.2.1)
 * `tedit`: Fix a problem in multi-day data processing
