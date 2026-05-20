@@ -2073,7 +2073,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
         local rinexnav="brdm${doy}0.${year:2:2}p"
 
         # Try downloading hourly navigation file when processing current day's data
-        if [ $(date -u +"%Y%j") -eq "$year$doy" ]; then
+        if [ $(date -u +"%Y%j") -eq "$year$doy" ] && [ ! -f "$rinex_dir/$rinexnav" ]; then
             local navgps="hour${doy}0.${year:2:2}n" && rm -f "$navgps"
             local urlnav="ftp://igs.gnsswhu.cn/pub/gps/data/hourly/${year}/${doy}/${navgps}.gz"
             WgetDownload "$urlnav"
