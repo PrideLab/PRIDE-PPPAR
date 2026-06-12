@@ -58,7 +58,7 @@ readonly USECACHE=YES
 readonly USERTS=YES
 
 readonly SCRIPT_NAME="pdp3"
-readonly VERSION_NUM="3.2.8"
+readonly VERSION_NUM="3.2.9"
 
 ######################################################################
 ##                     System-specific Command                      ##
@@ -189,7 +189,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     local gnss_mask map_opt rckl rckp ztdl ztdp htgp eloff
     local mul_use=0
 	local wcc_use=0
-    local posp=0 twnd ts_set=0
+    local posp=0 twnd
 	# modified by ranzeng
     local ai_model
 
@@ -234,7 +234,6 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                 ;;
             ## Time setting
             -s | --start )
-                ts_set=1
                 [ -z "$ymd_s" ] && [ -z "$hms_s" ]              || throw_conflict_opt "$1"
                 check_optional_arg "$2" "$last_arg"             || throw_require_arg  "$1"
                 local time=($(echo $2 | tr '/:-' ' '))
@@ -873,34 +872,17 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     [ -z "$twnd" ] && twnd=0.01
     sedi "/^Time window/s/ = .*/ = $twnd/" "$ctrl_file"
 
-    # Check interval setting and first epoch time
-    if [ "$ts_set" -eq 0 ] && [ "$(echo "$interval != $obsintvl" | bc)" -eq 1 ]; then
-        time_sec=$(grep -E "^(> [ 0-9]{4} [ 0-1][0-9] | [ 0-9][0-9] [ 0-1][0-9] )" "$rnxo_path")
-        local time=$(echo "$time_sec" | head -1)
-        while read -r line; do
-            local hour minute sec
-            if [[ $line =~ ^\> ]]; then
-                read -r _ _ _ _ hour minute sec _ <<< "$line"
-            else
-                read -r _ _ _ hour minute sec _ <<< "$line"
-            fi
-            total_seconds=$(echo "$hour * 3600 + $minute * 60 + $sec" | bc -l)
-            re=$(awk -v a="$total_seconds" -v b="$interval" 'BEGIN{q=int(a/b);r=a-q*b;print r}')
-            if [ "$(echo "$re < 0.001" | bc)" -eq 1 ]; then
-                time=$line
-                break
-            fi
-        done < <(echo "$time_sec")
-        if [ -n "$time" ]; then
-            if [[ $time =~ ^\> ]]; then
-                ymd_s=$(echo "$time" | awk '{printf("%04d-%02d-%02d\n",$2,$3,$4)}')
-                hms_s=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$5,$6,$7)}')
-            else
-                ymd_s=$(echo "$time" | awk '{yr=$1+2000;if($1>80)yr-=100;printf("%04d-%02d-%02d\n",yr,$2,$3)}')
-                hms_s=$(echo "$time" | awk '{printf("%02d:%02d:%010.7f\n",$4,$5,$6)}')
-            fi
-        fi
-    fi
+    # Check interval setting and start epoch time
+    ts_sec=$(echo "$hms_s" | awk -F: '{print $1*3600 + $2*60 + $3}')
+    next_sec=$(awk -v ts="$ts_sec" -v b="$interval" 'BEGIN{
+        print int((ts + b - 1e-9)/b)*b
+    }')
+    hms_s=$(awk -v t="$next_sec" 'BEGIN{
+        h=int(t/3600)
+        m=int((t%3600)/60)
+        s=t%60
+        printf("%02d:%02d:%010.7f\n",h,m,s)
+    }')
 
     # Check time span
     if [ "$OS" == "Darwin" ]; then
