@@ -65,6 +65,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
   character*3   prn(MAXSAT)
   character*1   sysid(MAXSAT)
   character*80  line, msg, name
+  logical*1     lno_bias
 !! RINEX-3 signal priority
   integer*4     obs_prio_index(4)
   integer*4     phs_prio_index(4)
@@ -274,8 +275,10 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, bias, nbias_used,
         end if
         !
         !! correct raw observations
-        if ((.not. allocated(bias(i0, ityp)%val)) .or. &
-            (abs(bias(i0, ityp)%val(iepo) - 1.d9) .lt. 1.d-3)) then
+        lno_bias = .not. allocated(bias(i0, ityp)%val)
+        if (.not. lno_bias) &
+          lno_bias = abs(bias(i0, ityp)%val(iepo) - 1.d9) .lt. 1.d-3
+        if (lno_bias) then
           if (phs_prio_index(imes) .lt. prio_index) then
             obs_used_index(imes) = j
             phs_prio_index(imes) = prio_index
