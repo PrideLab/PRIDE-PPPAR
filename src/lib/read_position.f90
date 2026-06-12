@@ -88,7 +88,9 @@ subroutine read_position(flnpos, name, skd, x, dx0)
       name1 = upper_string(name1)
       if (name1 .eq. upper_string(name)) then
         x(1:3) = x1(1:3)*1.d-3
-        if ((skd(1:1) .eq. 'F') .and. (any(dx1(1:3) .gt. 0.d0))) dx0(1:3) = dx1(1:3)
+        if (skd(1:1) .eq. 'F') then
+          if (any(dx1(1:3) .gt. 0.d0)) dx0(1:3) = dx1(1:3)
+        end if
       end if
     end do
   end if
