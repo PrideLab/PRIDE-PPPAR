@@ -59,6 +59,16 @@ subroutine troposphere_delay(jd, sod, SITE, zdd, zwd)
       endif
     enddo
   else                               ! Saastamoinen model
+!
+!! validate station coordinates before the GPT3 grid lookup
+    if (isnan(SITE%geod(1)) .or. isnan(SITE%geod(2)) .or. isnan(SITE%geod(3)) .or. &
+        SITE%geod(1) .lt. -PI/2.d0 .or. SITE%geod(1) .gt. PI/2.d0 .or. &
+        SITE%geod(2) .lt. -PI .or. SITE%geod(2) .gt. 2.d0*PI) then
+      write (*, '(a,3f14.6)') '***ERROR(troposphere_delay): invalid station geodetic coordinate ', &
+        SITE%geod(1:3)
+      call exit(1)
+    endif
+
     call gpt3_1(jdutc+sodutc/86400.d0,SITE%geod(1),SITE%geod(2),SITE%geod(3)*1.d3,0,&
                 p0,t0,dt,tm,e,la,undu)
     if (t0 .le. -273.15d0) then
