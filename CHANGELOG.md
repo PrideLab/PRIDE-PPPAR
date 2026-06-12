@@ -1,6 +1,10 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.2.8
+## PRIDE PPP-AR version 3.2.9
+
+### 2026-06-12 (v3.2.9)
+* `pdp3`: Fix a problem with respect to pre-staged broadcast nav on same-day runs
+* `lib`: Avoid processing errors caused by NaN values in the input SINEX bias file
 
 ### 2026-05-13 (v3.2.8)
 * `pdp3`: Fix a problem with specifying the process start time
