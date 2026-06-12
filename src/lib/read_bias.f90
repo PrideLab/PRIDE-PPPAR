@@ -44,6 +44,7 @@ subroutine read_bias(flnosb, nprn, prn, bias, osbjd0, osbjd1)
   integer*4     iyear0, idoy0, isod0, imon0, id0, fsod0
   integer*4     iyear1, idoy1, isod1, imon1, id1, fsod1
   real*8        osbval, osbgrd
+  logical*1     lhasgrd
   character*2   styp(0:3)
   character*3   cprn, ctyp
   character*256 line
@@ -99,8 +100,13 @@ subroutine read_bias(flnosb, nprn, prn, bias, osbjd0, osbjd1)
         jd1 = modified_julday(id1, imon1, iyear1)
         if (jd1 + isod1/864.d2 .le. osbjd0 .or. jd0 + isod0/864.d2 .ge. osbjd1) cycle
         read (line, '(70x,f21.15)') osbval
+        !! skip records carrying a non-finite bias value 
+        if ((osbval .ne. osbval) .or. (abs(osbval) .ge. 1.0d9)) goto 50
+        !! a valid slope is only present on long records; absent or non-finite,
+        lhasgrd = .false.
         if (len_trim(line) .gt. 124) then
           read (line, '(104x,f21.15)') osbgrd
+          lhasgrd = (osbgrd .eq. osbgrd)
         end if
         if (cprn(1:1) .eq. 'R' .and. ctyp(1:1) .eq. 'L') cycle
         !
@@ -147,7 +153,8 @@ subroutine read_bias(flnosb, nprn, prn, bias, osbjd0, osbjd1)
         if (jepo .gt. nlen) jepo = nlen 
         if (jepo .le. 0) jepo = 1
         bias(iprn, ityp+9*imes)%val(iepo:jepo) = osbval*VLIGHT*1.d-9
-        if (nlen .gt. 1) bias(iprn, ityp+9*imes)%grd(iepo:jepo) = osbgrd*VLIGHT*1.d-9
+        if (nlen .gt. 1 .and. lhasgrd) &
+          bias(iprn, ityp+9*imes)%grd(iepo:jepo) = osbgrd*VLIGHT*1.d-9
       end do
     end if
     read (lfn, '(a)', end=100) line
