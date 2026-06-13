@@ -124,11 +124,11 @@ main() {
 
     
     if [ "$OS" == "Darwin" ]; then
-        local doy_s=$(date -j -f "%Y-%m-%d" "$date_s" +"%j")
-        local doy_e=$(date -j -f "%Y-%m-%d" "$date_e" +"%j")
+        local doy_s=$(TZ=UTC date -j -f "%Y-%m-%d" "$date_s" +"%j")
+        local doy_e=$(TZ=UTC date -j -f "%Y-%m-%d" "$date_e" +"%j")
     else
-        local doy_s=$(date -d "$date_s" +"%j")
-        local doy_e=$(date -d "$date_e" +"%j")
+        local doy_s=$(TZ=UTC date -d "$date_s" +"%j")
+        local doy_e=$(TZ=UTC date -d "$date_e" +"%j")
     fi
     local ymd_s=($(echo "$date_s" | tr '-' ' '))
     local ymd_e=($(echo "$date_e" | tr '-' ' '))
@@ -743,11 +743,11 @@ ParseCmdArgs() { # purpose : parse command line into arguments
         local mjd_s=$(ymd2mjd $(echo "${ymd_s[*]}" | tr '-' ' '))
         local mjd_e=$(ymd2mjd $(echo "${ymd_e[*]}" | tr '-' ' '))
         if [ "$OS" == "Darwin" ]; then
-            local doy_s=$(date -j -f "%Y-%m-%d" "$date_s" +"%j")
-            local doy_e=$(date -j -f "%Y-%m-%d" "$date_e" +"%j")
+            local doy_s=$(TZ=UTC date -j -f "%Y-%m-%d" "$date_s" +"%j")
+            local doy_e=$(TZ=UTC date -j -f "%Y-%m-%d" "$date_e" +"%j")
         else
-            local doy_s=$(date -d "${ymd_s[*]}" +"%j")
-            local doy_e=$(date -d "${ymd_e[*]}" +"%j")
+            local doy_s=$(TZ=UTC date -d "${ymd_s[*]}" +"%j")
+            local doy_e=$(TZ=UTC date -d "${ymd_e[*]}" +"%j")
         fi
 
         readonly local RNXO2D_GLOB="${rnxo_name:0:4}${doy_s}0.${ymd_s:2:2}@(o|O)"
@@ -886,11 +886,11 @@ ParseCmdArgs() { # purpose : parse command line into arguments
 
     # Check time span
     if [ "$OS" == "Darwin" ]; then
-        local sec_s=$(date -j -f "%Y-%m-%d %H:%M:%S" "${ymd_s} ${hms_s%.*}" +"%s" | awk '{printf("%.3f", $1 + ("0." "'${hms_s#*.}'"))}')
-        local sec_e=$(date -j -f "%Y-%m-%d %H:%M:%S" "${ymd_e} ${hms_e%.*}" +"%s" | awk '{printf("%.3f", $1 + ("0." "'${hms_s#*.}'"))}')
+        local sec_s=$(TZ=UTC date -j -f "%Y-%m-%d %H:%M:%S" "${ymd_s} ${hms_s%.*}" +"%s" | awk '{printf("%.3f", $1 + ("0." "'${hms_s#*.}'"))}')
+        local sec_e=$(TZ=UTC date -j -f "%Y-%m-%d %H:%M:%S" "${ymd_e} ${hms_e%.*}" +"%s" | awk '{printf("%.3f", $1 + ("0." "'${hms_s#*.}'"))}')
     else
-        local sec_s=$(date -d "$ymd_s $hms_s" +"%s.%3N")
-        local sec_e=$(date -d "$ymd_e $hms_e" +"%s.%3N")
+        local sec_s=$(TZ=UTC date -d "$ymd_s $hms_s" +"%s.%3N")
+        local sec_e=$(TZ=UTC date -d "$ymd_e $hms_e" +"%s.%3N")
     fi
     local sspan=$(echo "$sec_e - $sec_s" | bc)
     if [[ $(echo "$sspan <= 0" | bc) -eq 1 ]]; then
@@ -1443,11 +1443,11 @@ ProcessSingleSession() { # purpose : process data of a single observation sessio
     local rnxo_name=$(basename "$rnxo_path")
 
     if [ "$OS" == "Darwin" ]; then
-        local doy_s=$(date -j -f "%Y-%m-%d" "$date_s" +"%j")
-        local doy_e=$(date -j -f "%Y-%m-%d" "$date_e" +"%j")
+        local doy_s=$(TZ=UTC date -j -f "%Y-%m-%d" "$date_s" +"%j")
+        local doy_e=$(TZ=UTC date -j -f "%Y-%m-%d" "$date_e" +"%j")
     else
-        local doy_s=$(date -d "$ymd_s" +"%j")
-        local doy_e=$(date -d "$ymd_e" +"%j")
+        local doy_s=$(TZ=UTC date -d "$ymd_s" +"%j")
+        local doy_e=$(TZ=UTC date -d "$ymd_e" +"%j")
     fi
     local ymd_s=($(echo "$ymd_s" | tr '-' ' '))
     local ymd_e=($(echo "$ymd_e" | tr '-' ' '))
@@ -1810,7 +1810,7 @@ ProcessSingleSite() { # purpose : process data of single site
         fi
         cmd="redig res_${year}${doy} -jmp $jump -sht $short"
         [ "$positioning_mode" == "L" ] && cmd="$cmd -pce"
-        local time=`date +'%Y-%m-%d %H:%M:%S'`
+        local time=`TZ=UTC date +'%Y-%m-%d %H:%M:%S'`
         $cmd > tempout 2>&1
         if [ $? -eq 0 ]; then
             echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} execution ok"
@@ -1836,7 +1836,7 @@ ProcessSingleSite() { # purpose : process data of single site
         ExecuteWithoutOutput "$cmd" || return 1
         cmd="redig res_${year}${doy} -jmp $jump_end -sht $short"
         [ "$positioning_mode" == "L" ] && cmd="$cmd -pce"
-        local time=`date +'%Y-%m-%d %H:%M:%S'`
+        local time=`TZ=UTC date +'%Y-%m-%d %H:%M:%S'`
         $cmd > tempout 2>&1
         if [ $? -eq 0 ]; then
             echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} execution ok"
@@ -2055,7 +2055,7 @@ PrepareRinexNav() { # purpose : prepare RINEX multi-systems broadcast ephemeride
         local rinexnav="brdm${doy}0.${year:2:2}p"
 
         # Try downloading hourly navigation file when processing current day's data
-        if [ $(date -u +"%Y%j") -eq "$year$doy" ] && [ ! -f "$rinex_dir/$rinexnav" ]; then
+        if [ $(TZ=UTC date -u +"%Y%j") -eq "$year$doy" ] && [ ! -f "$rinex_dir/$rinexnav" ]; then
             local navgps="hour${doy}0.${year:2:2}n" && rm -f "$navgps"
             local urlnav="ftp://igs.gnsswhu.cn/pub/gps/data/hourly/${year}/${doy}/${navgps}.gz"
             WgetDownload "$urlnav"
@@ -2321,7 +2321,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
             esac
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$sp3" ]; then
-                local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
+                local mjd_t=$(ymd2mjd $(TZ=UTC date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
                     local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_05M_ORB.SP3.gz"
                     local cmp=$(basename "$url")
@@ -2469,7 +2469,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
 			
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$clk" ]; then
-                local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
+                local mjd_t=$(ymd2mjd $(TZ=UTC date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
                     local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/clock/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_05S_CLK.CLK.gz"
                     local cmp=$(basename "$url")
@@ -2615,7 +2615,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
 			
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$erp" ]; then
-                local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
+                local mjd_t=$(ymd2mjd $(TZ=UTC date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
                     local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/orbit/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_01D_ERP.ERP.gz"
                     local cmp=$(basename "$url")
@@ -2901,7 +2901,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
 			
             [ -f "$cmp" ] && gunzip -f "$cmp"
             if [ ! -f "$fcb" ]; then
-                local mjd_t=$(ymd2mjd $(date +"%Y %m %d"))
+                local mjd_t=$(ymd2mjd $(TZ=UTC date +"%Y %m %d"))
                 if [ $mjd_e -gt $(($mjd_t-3)) ] && [ "$USERTS" == "YES" ]; then
                     local url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${ydoy[0]}/bias/WUM0MGXRTS_${ydoy[0]}${ydoy[1]}0000_01D_05M_OSB.BIA.gz"
                     local cmp=$(basename "$url")
@@ -3545,7 +3545,7 @@ Execute() {
     if [ $# -gt 1 ]; then
         local outp="$2"
     fi
-    time=$(date +'%Y-%m-%d %H:%M:%S')
+    time=$(TZ=UTC date +'%Y-%m-%d %H:%M:%S')
     if [ $# -gt 1 ]; then
         echo "$cmd" | bash > "$outp"
     else
@@ -3564,7 +3564,7 @@ Execute() {
 
 ExecuteWithoutOutput() {
     local cmd="$1"
-    time=$(date +'%Y-%m-%d %H:%M:%S')
+    time=$(TZ=UTC date +'%Y-%m-%d %H:%M:%S')
     echo "$cmd" | bash &>/dev/null
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} execution ok"
