@@ -4,7 +4,9 @@
 
 ### 2026-06-12 (v3.2.9)
 * `pdp3`: Fix a problem with respect to pre-staged broadcast nav on same-day runs
+* `pdp3`: Fix GNU date calls for users in timezones with daylight savings
 * `lib`: Avoid processing errors caused by NaN values in the input SINEX bias file
+* `script`: Add a new python script that converts the output kinematic file to csv
 
 ### 2026-05-13 (v3.2.8)
 * `pdp3`: Fix a problem with specifying the process start time
