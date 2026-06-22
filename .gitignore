@@ -500,3 +500,8 @@ src/spp/.obj/string.o
 src/spp/.obj/time.o
 *.20p
 *.21p
+
+# Python artifacts:
+.venv
+*.pyc
+*.pyo
