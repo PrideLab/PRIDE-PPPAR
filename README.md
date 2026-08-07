@@ -68,7 +68,7 @@ The improvements made in PRIDE PPP-AR version 3.2 include:
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.2.
 
 ### 2026-08-07 (v3.2.10)
-* `install.sh`:Fix a problem concerning Python-shebang sed crashes on macOS (BSD sed)
+* `install.sh`: Fix a problem concerning Python-shebang sed crashes on macOS (BSD sed)
 * `lsq` & `tedit` & `lib` & `arsig` : Accommodate the BDS reconfiguration
 
 ### 2026-06-12 (v3.2.9)
