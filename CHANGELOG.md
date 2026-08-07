@@ -1,8 +1,9 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.2.9
+## PRIDE PPP-AR version 3.2.10
 
-### 2026-07-12 (v3.2.10)
+### 2026-08-07 (v3.2.10)
+* `install.sh`: Fix a problem concerning Python-shebang sed crashes on macOS (BSD sed)
 * `lsq` & `tedit` & `lib` & `arsig` : Accommodate the BDS reconfiguration
 
 ### 2026-06-12 (v3.2.9)
