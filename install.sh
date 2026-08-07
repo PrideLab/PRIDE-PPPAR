@@ -6,7 +6,7 @@
 ##                                                                           ##
 ##  AUTHOR : the PRIDE Group pride@whu.edu.cn                                ##
 ##                                                                           ##
-##  VERSION: ver 3.2.10                                                         ##
+##  VERSION: ver 3.2.10                                                      ##
 ##                                                                           ##
 ##  DATE   : Apr-12, 2026                                                    ##
 ##                                                                           ##
@@ -67,9 +67,17 @@ cd src && make clean && make && make install \
 
 # Check python
 if which python3 > /dev/null 2>&1; then
-    sed -i 's/\#\!\/usr\/bin\/env python$/\#\!\/usr\/bin\/env python3/g' ./scripts/*.py
+    if [ "$SYS" == "Darwin" ]; then
+        sed -i '' 's/\#\!\/usr\/bin\/env python$/\#\!\/usr\/bin\/env python3/g' ./scripts/*.py
+    else
+        sed -i 's/\#\!\/usr\/bin\/env python$/\#\!\/usr\/bin\/env python3/g' ./scripts/*.py
+    fi
 elif which python > /dev/null 2>&1; then
-    sed -i 's/\#\!\/usr\/bin\/env python3$/\#\!\/usr\/bin\/env python/g' ./scripts/*.py
+    if [ "$SYS" == "Darwin" ]; then
+        sed -i '' 's/\#\!\/usr\/bin\/env python3$/\#\!\/usr\/bin\/env python/g' ./scripts/*.py
+    else
+        sed -i 's/\#\!\/usr\/bin\/env python3$/\#\!\/usr\/bin\/env python/g' ./scripts/*.py
+    fi
 else
     printf "${YELLOW}warning:${NC} no python or python3, please install one of them before using py scripts\n"
 fi
