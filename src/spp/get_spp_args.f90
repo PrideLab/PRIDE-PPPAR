@@ -12,13 +12,15 @@ subroutine get_spp_args(ts,te,ti,twnd,prcopt,rnxolist,nrnxo,rnxnlist,nrnxn,outfi
   
   ! local
   integer*4 :: argc, i, nfile, info, mjd_s, trnxo, trnxn
+  integer*4 :: js, newsys
+  character(1) :: ch
   character(1024), pointer :: argv(:)
   character(1024) :: buff(6), infile(MAXFILE), flntmp, flntmp2, navdir, obsdir
   real*8 :: es(6), ee(6)
 
   ! function
   integer*4,external :: ymd2mjd, getrnxtyp, flexist
-  logical*1,external :: IsDayRight, IsTimeRight
+  logical*1,external :: IsDayRight, IsTimeRight, IsSysToken
   type(gtime_t),external :: epoch2time
 
   ! Initialize variables
@@ -79,6 +81,26 @@ subroutine get_spp_args(ts,te,ti,twnd,prcopt,rnxolist,nrnxo,rnxnlist,nrnxn,outfi
     elseif(argv(i)=='-elev'.and.(i+1)<=argc)then
       read(argv(i+1),*,iostat=info) prcopt%elmin
       prcopt%elmin=prcopt%elmin*D2R; i=i+1
+    elseif(argv(i)=='-sys'.and.(i+1)<=argc)then
+      ! pick which constellations to use, e.g. -sys GEC
+      ! G=GPS R=GLO E=GAL C=BDS J=QZS I=IRN S=SBAS. default is GREC
+      newsys=SYS_NONE
+      do while((i+1)<=argc)
+        if(argv(i+1)(1:1)=='-') exit            ! next option, stop
+        if(.not.IsSysToken(trim(argv(i+1)))) exit
+        do js=1,len_trim(argv(i+1))
+          ch=argv(i+1)(js:js)
+          if(ch=='G'.or.ch=='g') newsys=or(newsys,SYS_GPS)
+          if(ch=='R'.or.ch=='r') newsys=or(newsys,SYS_GLO)
+          if(ch=='E'.or.ch=='e') newsys=or(newsys,SYS_GAL)
+          if(ch=='C'.or.ch=='c') newsys=or(newsys,SYS_CMP)
+          if(ch=='J'.or.ch=='j') newsys=or(newsys,SYS_QZS)
+          if(ch=='I'.or.ch=='i') newsys=or(newsys,SYS_IRN)
+          if(ch=='S'.or.ch=='s') newsys=or(newsys,SYS_SBS)
+        enddo
+        i=i+1
+      enddo
+      if(newsys/=SYS_NONE) prcopt%navsys=newsys
     elseif(nfile<MAXFILE)then
       nfile=nfile+1; infile(nfile)=argv(i)
     endif
@@ -173,3 +195,22 @@ subroutine get_spp_args(ts,te,ti,twnd,prcopt,rnxolist,nrnxo,rnxnlist,nrnxn,outfi
   enddo
 
 end subroutine
+
+! true if the string is only constellation letters (GRECJIS, any case)
+! lets -sys handle spaces without eating the file names
+logical*1 function IsSysToken(str)
+  implicit none
+  character(*), intent(in) :: str
+  integer*4 :: k
+  character(1) :: c
+  IsSysToken = .false.
+  if(len_trim(str)==0) return
+  do k=1,len_trim(str)
+    c = str(k:k)
+    if(.not.( c=='G'.or.c=='g'.or.c=='R'.or.c=='r'.or. &
+              c=='E'.or.c=='e'.or.c=='C'.or.c=='c'.or. &
+              c=='J'.or.c=='j'.or.c=='I'.or.c=='i'.or. &
+              c=='S'.or.c=='s')) return
+  enddo
+  IsSysToken = .true.
+end function

@@ -47,7 +47,7 @@ subroutine printhelp()
 implicit none
 include 'file_para.h'
 integer*4 i
-character(63) :: helptext(42)=(/&
+character(63) :: helptext(46)=(/&
     "                                                               ",&
     "spp version 3.0,  based on open-source software rtklib.        ",&
     "  Wuhan University, Oct. 2024                                  ",&
@@ -82,6 +82,10 @@ character(63) :: helptext(42)=(/&
     "  -twnd [window]                                               ",&
     "    processing time window in seconds, for not standard or     ",&
     "    super high rate rinex obs. Default is 0.01. (Unit: second) ",&
+    "  -sys [letters]                                               ",&
+    "    select constellations (RINEX letters, no spaces needed).   ",&
+    "      G=GPS R=GLONASS E=Galileo C=BeiDou J=QZSS I=NavIC S=SBAS ",&
+    "      e.g. -sys GEC uses GPS+Galileo+BeiDou. Default GREC.     ",&
     "                                                               ",&
     "Examples:                                                      ",&
     "  spp -o kin_brux brux0010.24o brdm0010.24p                    ",&
