@@ -6,6 +6,10 @@ all : $(SUBDIR)
 $(SUBDIR) :
 	make -j4 -C $@
 
+# Every other directory links ../lib/libcom.a, so a parallel top-level make
+# (make -jN) must finish lib first.
+$(filter-out lib,$(SUBDIR)) : lib
+
 install :
 	@mkdir -p ../bin/
 	mv arsig/arsig lsq/lsq tedit/tedit redig/redig orbit/sp3orb spp/spp otl/otl mhm/mhm \
