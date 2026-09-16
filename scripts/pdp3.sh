@@ -3231,8 +3231,9 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
     fi
 
     echo -e "$MSGINF Prepare IGS ANTEX file: $abs_atx done"
+    [ "$mode" == "L" ] || CheckAntennaInAntex "$rinexobs" abs_igs.atx "$table_dir/$abs_atx"
 
-    # Position SINEX solution 
+    # Position SINEX solution
     if [ "$mode" == "F" ]; then
         [ "$OFFLINE" == "NO" ] && mkdir -p "$product_ssc_dir"
         local wkdow=($(mjd2wkdow $mjd_s))
@@ -3477,6 +3478,35 @@ CopyOrDownloadProduct() { # purpose : copy or download a product
     fi
 
     [ -f "$file" ] && return 0 || return 1
+}
+
+CheckAntennaInAntex() { # purpose : warn loudly when the receiver antenna of the RINEX file has no entry in the ANTEX file
+                        # usage   : CheckAntennaInAntex rinexobs atx_file hint_path
+                        # note    : rdatx applies a ZERO antenna model in that case (no PCO/PCV) and its own warning is
+                        #           discarded with the rest of the program output, so the height is biased silently
+    local rinexobs="$1"
+    local atx="$2"
+    local hint="$3"
+    local ant_type ant_none
+    ant_type="$(grep -m 1 "ANT # / TYPE" "$rinexobs" | cut -c 21-40)"
+    [ -n "${ant_type// /}" ] || return 0
+    if AntexHasAntenna "$atx" "$ant_type"; then
+        return 0
+    fi
+    ant_none="${ant_type:0:16}NONE"
+    if [ "$ant_none" != "$ant_type" ] && AntexHasAntenna "$atx" "$ant_none"; then
+        echo -e "$MSGWAR PrepareProducts: antenna \`$ant_type' not in ANTEX, the radome NONE entry \`$ant_none' will be used"
+        return 0
+    fi
+    echo -e "$MSGWAR PrepareProducts: antenna \`$ant_type' NOT FOUND in ANTEX file $atx"
+    echo -e "$MSGWAR PrepareProducts: a ZERO antenna model (no PCO/PCV) will be applied, which biases the height by centimetres"
+    echo -e "$MSGINF please check the antenna type in the RINEX header, or add its calibration (e.g. from NGS) to $hint"
+    return 0
+}
+
+AntexHasAntenna() { # purpose : test whether an ANTEX file holds an entry for a 20-character antenna type (with radome)
+                    # usage   : AntexHasAntenna atx_file ant_type
+    awk -v ant="$2" 'substr($0, 61, 16) == "TYPE / SERIAL NO" && substr($0, 1, 20) == ant { found = 1; exit } END { exit !found }' "$1"
 }
 
 WgetDownload() { # purpose : download a file with wget
