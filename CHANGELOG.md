@@ -1,6 +1,10 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.2.10
+## PRIDE PPP-AR version 3.2.11
+
+### 2026-09-20 (v3.2.11)
+* `pdp3`: Fix a problem on specifying BDS constellation after the BDS reconfiguration
+* `gui` : Fix a problem on reading RINEX observations
 
 ### 2026-08-07 (v3.2.10)
 * `install.sh`: Fix a problem concerning Python-shebang sed crashes on macOS (BSD sed)
@@ -13,7 +17,7 @@
 * `script`: Add a new python script that converts the output kinematic file to csv
 
 ### 2026-05-13 (v3.2.8)
-* `pdp3`: Fix a problem with specifying the process start time
+* `pdp3`: Fix a problem on specifying the process start time
 
 ### 2026-04-12 (v3.2.7)
 * `spp`: Fix a problem when compiling with Fortran (90/95/2003+)
@@ -23,22 +27,22 @@
 
 ### 2026-03-07 (v3.2.5)
 * `pdp3`: Extend the threshold in check a priori position
-* `lib`: Fix a problem in read rinex observations
+* `lib`: Fix a problem on reading rinex observations
 
 ### 2026-02-11 (v3.2.4)
 * `gui`: Update the product download address in windows version
 
 ### 2026-01-15 (v3.2.3)
-* `pdp3`: Fix a problem in identifying the first epoch to process
+* `pdp3`: Fix a problem on identifying the first epoch to process
 * `tedit`: Fix a output problem
 
 ### 2025-12-15 (v3.2.2)
-* `pdp3`: Fix a problem in across-day processing with DOCB products
+* `pdp3`: Fix a problem on across-day processing with DOCB products
 
 ### 2025-11-10 (v3.2.1)
-* `tedit`: Fix a problem in multi-day data processing
+* `tedit`: Fix a problem on multi-day data processing
 * `read_igserp`: Fix a problem in read ERP file
-* `install.sh`: remove the IGN download address
+* `install.sh`: Remove the IGN download address
 
 ### 2025-10-20 (v3.2.0)
 * `arsig`: A machine learning–based model is adopted by default for ambiguity validation
