@@ -1078,17 +1078,48 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     sedi "/^Verbose output/s/ = .*/ = $vbs_opt/" "$ctrl_file"
 
     # GNSS
+    readonly local BDS_RECONFIG_MJD=61151
+    local session_mjd=$(ymd2mjd $(echo "$ymd_s" | tr '-' ' '))
+    local bds_reconfigured="NO"
+    [ "$session_mjd" -ge "$BDS_RECONFIG_MJD" ] && bds_reconfigured="YES"
+
+    if [ "$bds_reconfigured" == "YES" ] \
+        && [[ " ${avail_sys[*]} " == *" 2 "* ]] \
+        && [[ " ${avail_sys[*]} " != *" 3 "* ]]; then
+        >&2 echo -e "$MSGWAR no supported BDS-2 satellites are available for this session; processing stopped"
+        rm -f "$ctrl_file"
+        exit 1
+    fi
+
     for s in ${gnss_mask[@]}; do
         s=$(echo $s | tr 'a-z' 'A-Z')
         case $s in
-        "2" ) prn_mask=($(seq -f  "C%02g"  1 16)) ;;
-        "3" ) prn_mask=($(seq -f  "C%02g" 17 99)) ;;
+        "2" )
+            if [ "$bds_reconfigured" == "YES" ]; then
+                prn_mask=()
+            else
+                prn_mask=($(seq -f "C%02g" 1 16))
+            fi
+            ;;
+        "3" )
+            if [ "$bds_reconfigured" == "YES" ]; then
+                prn_mask=($(seq -f "C%02g" 1 99))
+            else
+                prn_mask=($(seq -f "C%02g" 17 99))
+            fi
+            ;;
          *  ) prn_mask=($(seq -f "$s%02g"  1 99)) ;;
         esac
         for prn in ${prn_mask[@]}; do
             sedi "/^ $prn /s/^ /#/" "$ctrl_file"
         done
     done
+
+    if [ "$bds_reconfigured" == "YES" ]; then
+        for prn in C09 C10; do
+            sedi "/^ $prn /s/^ /#/" "$ctrl_file"
+        done
+    fi
 
     # Disable ambiguity resolution when process with GLONASS only
     grep -q "^ [GECJ][0-9][0-9] " "$ctrl_file" || AR="N"
@@ -3278,7 +3309,7 @@ PrepareProducts() { # purpose : prepare PRIDE-PPPAR needed products in working d
                 local ion_tmp="COD0OPSFIN_${ydoy[0]}${ydoy[1]}0000_01D_01H_GIM.INX"
                 local ion_cmp="${ion_tmp}.gz"
             fi
-            local ion_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${ion_cmp}"
+            local ion_url="https://www.aiub.unibe.ch/download/CODE/${ydoy[0]}/${ion_cmp}"
             CopyOrDownloadProduct "$product_ion_dir/$ion_tmp"
             if [ $? -ne 0 ]; then
                 CopyOrDownloadProduct "$product_ion_dir/$ion_cmp" "$ion_url"
