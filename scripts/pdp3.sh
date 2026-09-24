@@ -389,7 +389,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
                    [[ $(echo "$2 <= 1.00" | bc) -eq 1 ]]; then
                     twnd="$2" 
                 else
-                    throw_invalid_arg "cutoff elevation" "$2"
+                    throw_invalid_arg "time window" "$2"
                 fi
                 shift 1
                 ;;
