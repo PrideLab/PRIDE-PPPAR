@@ -1,6 +1,6 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
 
-## PRIDE-PPPAR ver. 3.2.11 (last updated on 2026-09-20)
+## PRIDE-PPPAR ver. 3.2.11 (last updated on 2026-09-24)
 
 PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -67,9 +67,10 @@ The improvements made in PRIDE PPP-AR version 3.2 include:
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.2.
 
-### 2026-09-20 (v3.2.11)
+### 2026-09-24 (v3.2.11)
 * `pdp3`: Fix a problem on specifying BDS constellation after the BDS reconfiguration
 * `gui` : Fix a problem on reading RINEX observations
+* `lib` : Ensure compatibility with the new version of DOCB products
 
 ### 2026-08-07 (v3.2.10)
 * `install.sh`: Fix a problem concerning Python-shebang sed crashes on macOS (BSD sed)
