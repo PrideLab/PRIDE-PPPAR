@@ -39,7 +39,7 @@ subroutine read_docb(flnosb, nprn, prn, bias, docbjd)
   integer*4     docbjd
 ! local
   integer*4     i0, iprn, ntyp, ityp, jtyp, xtyp, imes
-  integer*4     lfn, jd, nlen, dsod
+  integer*4     lfn, jd, nlen, dsod, nmjd, ipos, jpos
   integer*4     iy, idoy, imon, id, ih, im, isod, iepo, jepo, ierr
   real*8        docbval 
   character*2   styp(0:3)
@@ -69,21 +69,42 @@ subroutine read_docb(flnosb, nprn, prn, bias, docbjd)
   end if
 !
 !! read header
+  nmjd = 2
   read (lfn, '(a)') line
   do while (.true.)
     if (index(line, '+SOLUTION/DAY_BOUNDARY_DISCONTINUITY') .ne. 0) then
+      nmjd = 2
       do while (.true.)
  50     read (lfn, '(a)', iostat=ierr) line
         if (ierr .ne. 0) then
           backspace lfn
           exit
         end if
+        !
+        !! count midnight epochs declared in the *DBD header line
+        if (index(line, '*DBD') .ne. 0) then
+          nmjd = 0
+          jpos = 1
+          do while (jpos .le. len_trim(line))
+            ipos = index(line(jpos:), 'MIDNIGHT_AT')
+            if (ipos .eq. 0) exit
+            nmjd = nmjd + 1
+            jpos = jpos + ipos + 10
+          end do
+          if (nmjd .lt. 1) nmjd = 2
+          cycle
+        end if
         if (index(line, 'DOCB') .eq. 0) cycle
         if (line(16:19) .ne. '') cycle
         !
         !! read bias
-        read (line, '(2(11x,a3),22x,(i4,1x,i3,1x,i5,1x))', err=200) &
-            cprn, ctyp, iy, idoy, isod
+        if (nmjd .eq. 1) then
+          read (line, '(2(11x,a3),7x,(i4,1x,i3,1x,i5,1x))', err=200) &
+              cprn, ctyp, iy, idoy, isod
+        else
+          read (line, '(2(11x,a3),22x,(i4,1x,i3,1x,i5,1x))', err=200) &
+              cprn, ctyp, iy, idoy, isod
+        end if
         if (cprn .eq. '') cycle
         i0 = index(GNSS_PRIO, cprn(1:1))
         iprn = pointer_string(nprn, prn, cprn)
@@ -91,7 +112,11 @@ subroutine read_docb(flnosb, nprn, prn, bias, docbjd)
         call yeardoy2monthday(iy, idoy, imon, id)
         jd = modified_julday(id, imon, iy)
         if (jd .ne. docbjd) cycle
-        read (line, '(70x,f21.15)') docbval
+        if (nmjd .eq. 1) then
+          read (line, '(55x,f21.15)') docbval
+        else
+          read (line, '(70x,f21.15)') docbval
+        end if
         if (cprn(1:1) .eq. 'R' .and. ctyp(1:1) .eq. 'L') cycle
         !
         !! get index of bias attribute
