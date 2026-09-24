@@ -2,9 +2,10 @@
 
 ## PRIDE PPP-AR version 3.2.11
 
-### 2026-09-20 (v3.2.11)
+### 2026-09-24 (v3.2.11)
 * `pdp3`: Fix a problem on specifying BDS constellation after the BDS reconfiguration
 * `gui` : Fix a problem on reading RINEX observations
+* `lib` : Ensure compatibility with the new version of DOCB products
 
 ### 2026-08-07 (v3.2.10)
 * `install.sh`: Fix a problem concerning Python-shebang sed crashes on macOS (BSD sed)
