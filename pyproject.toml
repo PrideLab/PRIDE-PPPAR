@@ -1,0 +1,22 @@
+[project]
+name = "pride-pppar"
+version = "0.1.0"
+description = "An open-source software for Multi-GNSS PPP ambiguity resolution"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.11.0",
+    "numpy>=2.5.0",
+    "pandas>=3.0.3",
+]
+
+[dependency-groups]
+dev = [
+    "deptry>=0.25.1",
+]
+
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "deptry", # CLI dependency checker
+]
