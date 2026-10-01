@@ -1,6 +1,9 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.2.11
+## PRIDE PPP-AR version 3.2.12
+
+### 2026-10-01 (v3.2.12)
+* `lib` : Update the function 'read_satclk' to fix a problem on multi-day processing
 
 ### 2026-09-24 (v3.2.11)
 * `pdp3`: Fix a problem on specifying BDS constellation after the BDS reconfiguration
