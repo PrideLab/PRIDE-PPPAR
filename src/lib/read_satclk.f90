@@ -88,12 +88,13 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
       do while (line(1:3) .ne. 'AS ')
         read (lfn, '(a)', end=200, err=100) line
       end do
-      do while (line(1:1) .eq. 'A')
+      do while (line(1:3) .eq. 'AS ' .or. line(1:3) .eq. 'AR ')
 !
 !! in case of interspearsed AS and AR records
-        do while (line(1:3) .ne. 'AS ')
+        do while (line(1:3) .eq. 'AR ')
           read (lfn, '(a)', end=200, err=100) line
         end do
+        if (line(1:3) .ne. 'AS ') exit
         c = 0.d0
         read (line(4:), *, iostat=ierr) ii, iy, imon, id, ih, im, sec, j, c(1), c(2)
         if (isnan(c(1)) .or. isnan(c(2))) goto 201
@@ -166,13 +167,16 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
     do while (line(1:3) .ne. 'AS ')
       read (lfn, '(a)', end=200, err=100) line
     end do
-    do while (line(1:1) .eq. 'A')
+    do while (line(1:3) .eq. 'AS ' .or. line(1:3) .eq. 'AR ')
 !
 !! in case of interspearsed AS and AR records
-      do while (line(1:3) .ne. 'AS ')
+      ierr = 0
+      do while (line(1:3) .eq. 'AR ')
         read (lfn, '(a)', iostat=ierr) line
         if (ierr.ne.0) exit
       end do
+      if (ierr.ne.0) exit
+      if (line(1:3) .ne. 'AS ') exit
       c = 0.d0
       read (line(4:), *, iostat=ierr) ii, iy, imon, id, ih, im, sec, j, c(1), c(2)
       if (isnan(c(1)) .or. isnan(c(2))) cycle
