@@ -616,7 +616,7 @@ ParseCmdArgs() { # purpose : parse command line into arguments
     fi
 
     # Create temporary config file
-    ctrl_file=$(mktemp -u | sed "s/tmp\./config\./")
+    ctrl_file=$(mktemp -u | sed 's#/tmp\.\([^/]*\)$#/config.\1#')
     cp -f "$ctrl_path" "$ctrl_file" && chmod 644 "$ctrl_file"
     if [ $? -ne 0 ]; then
         >&2 echo -e "$MSGERR failed to create temporary config file: $ctrl_file"
