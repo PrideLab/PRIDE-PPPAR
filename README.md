@@ -1,6 +1,6 @@
 ![pridelab.icon](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/doc/PRIDE.png)
 
-## PRIDE-PPPAR ver. 3.2.12 (last updated on 2026-10-01)
+## PRIDE-PPPAR ver. 3.2.12 (last updated on 2026-10-07)
 
 PRIDE PPP-AR originates in Dr. Maorong Ge’s efforts on PPP-AR and later developed and improved by Dr. Jianghui Geng's team. It is an open-source software package which is based on many GNSS professionals’ collective work in GNSS Research Center, Wuhan University. We would like to thank them all for their brilliant contributions to this software. 
 
@@ -67,8 +67,10 @@ The improvements made in PRIDE PPP-AR version 3.2 include:
 
 See our [Change Log](https://github.com/PrideLab/PRIDE-PPPAR/blob/master/CHANGELOG.md) for detailed update history before version 3.2.
 
-### 2026-10-01 (v3.2.12)
+### 2026-10-07 (v3.2.12)
 * `lib` : Update the function 'read_satclk' to fix a problem on multi-day processing
+* `pdp3`: Update the command line creating temporary config file to make it more compatible with some special case
+* `merge2brdm`: Make it more compatible with some non-standard broadcast file
 
 
 ### 2026-09-24 (v3.2.11)
