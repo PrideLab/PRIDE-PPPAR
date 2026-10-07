@@ -32,6 +32,10 @@ import fnmatch
 import os
 import sys
 
+
+def _eval_field(s):
+    return eval(s) if s.strip() else 0.0
+
 if len(sys.argv) != 3:
     print("usage: merge2brdm.py brdcddd.yyn brdcddd.yyg")
     sys.exit(1)
@@ -84,8 +88,8 @@ while (i <= len(lines)):
                 num4 = eval(line[60:79])
                 fm.write("    {: .12e}{: .12e}{: .12e}{: .12e}\n".format(num1, num2, num3, num4))
             line = lines[i+7].replace("D","e")
-            num1 = eval(line[ 3:22])
-            num2 = eval(line[22:41])
+            num1 = _eval_field(line[ 3:22])
+            num2 = _eval_field(line[22:41])
             fm.write("    {: .12e}{: .12e}\n".format(num1, num2))
             i = i + 8
             if (i >= len(lines)):
