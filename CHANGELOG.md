@@ -2,8 +2,10 @@
 
 ## PRIDE PPP-AR version 3.2.12
 
-### 2026-10-01 (v3.2.12)
+### 2026-10-07 (v3.2.12)
 * `lib` : Update the function 'read_satclk' to fix a problem on multi-day processing
+* `pdp3`: Update the command line creating temporary config file to make it more compatible with some special case
+* `merge2brdm`: Make it more compatible with some non-standard broadcast file
 
 ### 2026-09-24 (v3.2.11)
 * `pdp3`: Fix a problem on specifying BDS constellation after the BDS reconfiguration
