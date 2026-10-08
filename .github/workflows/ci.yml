@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv and setup Python
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true 
+
+      - name: Code Linting
+        run: make lint
