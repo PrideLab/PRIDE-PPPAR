@@ -29,7 +29,7 @@ Multipath              = Default                 ! use the multipath correction 
 ## Ambiguity fixing options
 Ambiguity co-var        = Default                ! change to YES if the Ambiguity fixing method is LAMBDA
 Ambiguity duration      = 600                    ! time duration in seconds for a resolvable ambiguity
-AI Ambiguity validation = YES                    ! Ambiguity fixing validation is SVM or not
+AI Ambiguity validation = YES                    ! use XGBoost for LAMBDA ambiguity validation (YES/NO)
 Cutoff elevation        = 15                     ! cutoff mean elevation for eligible ambiguities to be resolved
 PCO on wide-lane        = YES                    ! pco corrections on Melbourne-Wubbena or not
 Widelane decision       = 0.20 0.15 1000.        ! deviation (cycle), sigma (cycle) and decision threshold for WL ambiguities
