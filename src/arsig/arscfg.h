@@ -1,7 +1,7 @@
 !
 !! AmBiguity Fractional cycle biases
 type arscfg
-  logical*1 lsearch, lverbose, lambsvm
+  logical*1 lsearch, lverbose, lambxgb
   integer*4 jd0,jd1,maxdel,minsav
   real*8 sod0,sod1,dintv
   real*8 minsec_common,wl_maxdev,wl_maxsig,wl_alpha,nl_maxdev,nl_maxsig,nl_alpha,cutoff,chisq,ratio
@@ -23,4 +23,3 @@ type arscfg
   integer*4 ntot_J,nwlfx_J,nwnfx_J
   integer*4 ntot_ind,nwl_ind,nwn_ind
 end type
-
