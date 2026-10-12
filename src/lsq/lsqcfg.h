@@ -49,7 +49,7 @@ type lsqcfg
   character*60 tide
 !
 !! fixing ambiguity
-  logical*1 pcowl, isini
+  logical*1 pcowl, isini, lambxgb
   character*3 fcbprn(MAXSAT)
   integer*4 fcbnprn
   integer*4 nconG, nconE, nconC2, nconC3, nconJ
