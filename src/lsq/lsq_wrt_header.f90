@@ -41,9 +41,32 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
   character*256 msg
   character*20  line1, line2, line3, line4, line5, line6
   character*60  line
+  character*8   amb_method
+  character*5   amb_validation
+  character*6, parameter :: clock_sys = 'GREC3J'
+  character*7, parameter :: clock_name(6) = &
+    (/'GPS    ', 'GLONASS', 'Galileo', 'BDS-2  ', 'BDS-3  ', 'QZSS   '/)
+  character*12  clock_label(6)
+  character*60  clock_description(6)
   character*(*) write_file
   logical*1     tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, tag10, &
                 tag11, tag12, tag13, tag14, tag15, tag16, tag17, tag18, tag19, tag20
+
+  amb_method = 'ROUNDING'
+  if (.not. LCF%lrmbias) amb_method = 'LAMBDA'
+  amb_validation = 'RATIO'
+  if (LCF%lambxgb) amb_validation = 'AI'
+  if (write_file .eq. 'rck') then
+    do i = 1, 6
+      if (index(LCF%isbsys, clock_sys(i:i)) .ne. 0) then
+        clock_label(i) = 'ISB('//trim(clock_name(i))//')'
+        clock_description(i) = trim(clock_name(i))//' INTER SYSTEM BIAS (meter)'
+      else
+        clock_label(i) = 'RCK('//trim(clock_name(i))//')'
+        clock_description(i) = trim(clock_name(i))//' RECEIVER CLOCK ERROR (meter)'
+      end if
+    end do
+  end if
 
   if (write_note) then
     tag1  = .false.; tag2  = .false.; tag3  = .false.; tag4  = .false.; tag5  = .false.; 
@@ -149,11 +172,15 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
         line6 = 'QZSS'
         write (lfn, '(a3,5(2x,a4,i5),2x,a)') 'YES', line1, LCF%nconG, line3, LCF%nconE, &
           line4, LCF%nconC2, line5, LCF%nconC3, line6, LCF%nconJ, 'AMB FIXING'
+        write (lfn, '(a8,52x,a)') amb_method, 'AMB FIXING METHOD'
         write (lfn, '(f8.2,52x,a)') LCF%minsec_common, 'AMB DURATION (sec)'
         write (lfn, '(f8.2,52x,a)') LCF%cutoff, 'AMB CUTOFF (deg)'
         write (lfn, '(3f8.2,36x,a)') LCF%wl_maxdev, LCF%wl_maxsig, LCF%wl_alpha, 'AMB WIDELANE'
         write (lfn, '(3f8.2,36x,a)') LCF%nl_maxdev, LCF%nl_maxsig, LCF%nl_alpha, 'AMB NARROWLANE'
         write (lfn, '(2(i5,3x),2f8.2,28x,a)') LCF%maxdel, LCF%minsav, LCF%chisq, LCF%ratio, 'AMB SEARCH'
+        if (.not. LCF%lrmbias) then
+          write (lfn, '(a5,55x,a)') amb_validation, 'AMB VALIDATION METHOD'
+        end if
         write (lfn, '(a15,45x,a)') LCF%amb_at_dbd, 'AMB AT DAY-BOUNDARY'
       else
         write (lfn, '(a2,58x,a)') 'NO', 'AMB FIXING'
@@ -245,12 +272,10 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
         write (lfn, '(a4,56x,a)') 'PDOP', 'POSITION DILUTION OF PRECISION'
       end if
       if (tag15) then
-        write (lfn, '(a8,52x,a)') 'RCK(GPS)', 'GPS RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a12,48x,a)') 'RCK(GLONASS)', 'GLONASS RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a12,48x,a)') 'RCK(Galileo)', 'Galileo RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a10,50x,a)') 'RCK(BDS-2)', 'BDS-2 RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a10,50x,a)') 'RCK(BDS-3)', 'BDS-3 RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a9,51x,a)') 'RCK(QZSS)', 'QZSS RECEIVER CLOCK ERROR (meter)'
+        do i = 1, 6
+          line = trim(clock_label(i))
+          write (lfn, '(a60,a)') line, trim(clock_description(i))
+        end do
       end if
       if (tag16) then
         write (lfn, '(a3,57x,a)') 'ZDD', 'ZENITH DRY DELAY (meter)'
@@ -285,7 +310,7 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
           'X', 'Y', 'Z', 'Latitude', 'Longitude', 'Height', 'Nsat/GREC2C3J', 'PDOP'
       else if (write_file .eq. 'rck') then
         write (lfn, '(a1,a5,4a6,a10,6a17)') '*', 'Year', 'Mon', 'Day', 'Hour', 'Min', 'Sec', &
-          'RCK(GPS)', 'RCK(GLONASS)', 'RCK(Galileo)', 'RCK(BDS-2)', 'RCK(BDS-3)', 'RCK(QZSS)'
+          (trim(clock_label(i)), i=1, 6)
       else if (write_file .eq. 'ztd') then
         write (lfn, '(a1,a5,4a6,a10,3a11)') '*', 'Year', 'Mon', 'Day', 'Hour', 'Min', 'Sec', &
           'ZDD', 'ZWDini', 'ZWDcor'
@@ -306,7 +331,7 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
           'X', 'Y', 'Z', 'Latitude', 'Longitude', 'Height', 'Nsat/GREC2C3J', 'PDOP'
       else if (write_file .eq. 'rck') then
         write (lfn, '(a1,a5,4a6,a10,6a17)') '*', 'Year', 'Mon', 'Day', 'Hour', 'Min', 'Sec', &
-          'RCK(GPS)', 'RCK(GLONASS)', 'RCK(Galileo)', 'RCK(BDS-2)', 'RCK(BDS-3)', 'RCK(QZSS)'
+          (trim(clock_label(i)), i=1, 6)
       else if (write_file .eq. 'ztd') then
         write (lfn, '(a1,a5,4a6,a10,3a11)') '*', 'Year', 'Mon', 'Day', 'Hour', 'Min', 'Sec', &
           'ZDD', 'ZWDini', 'ZWDcor'
@@ -342,12 +367,10 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
         write (lfn, '(a3,57x,a)') 'ZDD', 'ZENITH DRY DELAY (meter)'
       end if
       if (tag15) then
-        write (lfn, '(a9,51x,a)') 'RCK(QZSS)', 'QZSS RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a10,50x,a)') 'RCK(BDS-3)', 'BDS-3 RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a10,50x,a)') 'RCK(BDS-2)', 'BDS-2 RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a12,48x,a)') 'RCK(Galileo)', 'Galileo RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a12,48x,a)') 'RCK(GLONASS)', 'GLONASS RECEIVER CLOCK ERROR (meter)'
-        write (lfn, '(a8,52x,a)') 'RCK(GPS)', 'GPS RECEIVER CLOCK ERROR (meter)'
+        do i = 6, 1, -1
+          line = trim(clock_label(i))
+          write (lfn, '(a60,a)') line, trim(clock_description(i))
+        end do
       end if
       if (tag14) then
         write (lfn, '(a4,56x,a)') 'PDOP', 'POSITION DILUTION OF PRECISION'
@@ -423,11 +446,15 @@ subroutine lsq_wrt_header(lfn, LCF, SITE, OB, write_file, write_posseq, write_co
     if (write_config) then
       if (LCF%nconG + LCF%nconE + LCF%nconC2 + LCF%nconC3 + LCF%nconJ .gt. 0) then
         write (lfn, '(a15,45x,a)') LCF%amb_at_dbd, 'AMB AT DAY-BOUNDARY'
+        if (.not. LCF%lrmbias) then
+          write (lfn, '(a5,55x,a)') amb_validation, 'AMB VALIDATION METHOD'
+        end if
         write (lfn, '(2(i5,3x),2f8.2,28x,a)') LCF%maxdel, LCF%minsav, LCF%chisq, LCF%ratio, 'AMB SEARCH'
         write (lfn, '(3f8.2,36x,a)') LCF%nl_maxdev, LCF%nl_maxsig, LCF%nl_alpha, 'AMB NARROWLANE'
         write (lfn, '(3f8.2,36x,a)') LCF%wl_maxdev, LCF%wl_maxsig, LCF%wl_alpha, 'AMB WIDELANE'
         write (lfn, '(f8.2,52x,a)') LCF%cutoff, 'AMB CUTOFF (deg)'
         write (lfn, '(f8.2,52x,a)') LCF%minsec_common, 'AMB DURATION (sec)'
+        write (lfn, '(a8,52x,a)') amb_method, 'AMB FIXING METHOD'
         line1 = 'GPS '
         line3 = 'GAL '
         line4 = 'BDS2'
