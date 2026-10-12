@@ -227,6 +227,11 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT, IM)
   LCF%lrmbias = .true.
   if (key(1:1) .eq. 'Y') LCF%lrmbias = .false.
 !
+!! Match arsig's validation switch for the result headers.
+  msg = 'AI Ambiguity validation'
+  key = findkey(lfn, msg, ' ')
+  LCF%lambxgb = index(key, 'YES') .ne. 0
+!
 !! Ambiguity constraints
   LCF%nconG  = 0
   LCF%nconE  = 0
