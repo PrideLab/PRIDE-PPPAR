@@ -1,0 +1,1627 @@
+RINEX health Logfile      brux                              COMMENT
+     30.00                                                  INTERVAL
+DEFAULT                                                     AMB AT DAY-BOUNDARY
+        39        42         0                              AMB MAX/TOT/NEW
+      4375      1452         0                              EPO AVA/REM/NEW
+ 2025  3 26  5  0  0.0000000     3600.00                    RES TIME BEG/LEN
+GPS       L1   L2                                           SYS / FREQUENCY BAND
+GLO       G1   G2                                           SYS / FREQUENCY BAND
+GAL       E1   E5a                                          SYS / FREQUENCY BAND
+BDS       B1I  B3I                                          SYS / FREQUENCY BAND
+QZS       L1   L2                                           SYS / FREQUENCY BAND
+                                                            END OF HEADER
+TIM 2025  3 26  5  0  0.0000000
+G02                                                         DEL_LOWELEVATION
+G10                             2025  3 26  6  0  0.0000000 AMB
+G12                             2025  3 26  6  0  0.0000000 AMB
+G13                             2025  3 26  5 57  0.0000000 AMB
+G14                             2025  3 26  5 30 30.0000000 AMB
+G15                             2025  3 26  6  0  0.0000000 AMB
+G17                             2025  3 26  6  0  0.0000000 AMB
+G19                             2025  3 26  6  0  0.0000000 AMB
+G22                             2025  3 26  6  0  0.0000000 AMB
+G23                             2025  3 26  5 59 30.0000000 AMB
+G24                             2025  3 26  6  0  0.0000000 AMB
+R05                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R07                             2025  3 26  6  0  0.0000000 AMB
+R08                             2025  3 26  6  0  0.0000000 AMB
+R09                             2025  3 26  6  0  0.0000000 AMB
+R10                                                         DEL_LESSTHAN4OBS
+R15                             2025  3 26  5 18  0.0000000 AMB
+R16                             2025  3 26  6  0  0.0000000 AMB
+R17                             2025  3 26  6  0  0.0000000 AMB
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E02                                                         DEL_LOWELEVATION
+E03                             2025  3 26  6  0  0.0000000 AMB
+E05                             2025  3 26  6  0  0.0000000 AMB
+E08                             2025  3 26  6  0  0.0000000 AMB
+E09                                                         DEL_LOWELEVATION
+E16                             2025  3 26  6  0  0.0000000 AMB
+E24                             2025  3 26  6  0  0.0000000 AMB
+E25                             2025  3 26  6  0  0.0000000 AMB
+E26                                                         DEL_LOWELEVATION
+E31                             2025  3 26  5 19  0.0000000 AMB
+C07                             2025  3 26  6  0  0.0000000 AMB
+C10                             2025  3 26  6  0  0.0000000 AMB
+C14                             2025  3 26  6  0  0.0000000 AMB
+C21                                                         DEL_SHORTPIECE
+C24                             2025  3 26  6  0  0.0000000 AMB
+C26                             2025  3 26  6  0  0.0000000 AMB
+C29                             2025  3 26  6  0  0.0000000 AMB
+C30                                                         DEL_LOWELEVATION
+C33                             2025  3 26  6  0  0.0000000 AMB
+C35                             2025  3 26  6  0  0.0000000 AMB
+C40                             2025  3 26  6  0  0.0000000 AMB
+C41                                                         DEL_LESSTHAN4OBS
+C42                             2025  3 26  6  0  0.0000000 AMB
+C45                             2025  3 26  5 48  0.0000000 AMB
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BADRANGE
+TIM 2025  3 26  5  0 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R05                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E02                                                         DEL_LOWELEVATION
+E09                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  1  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R05                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E02                                                         DEL_LOWELEVATION
+E09                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  1 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E02                             2025  3 26  6  0  0.0000000 AMB
+E09                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  2  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  2 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  3  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  3 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  4  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  4 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  5  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R18                             2025  3 26  6  0  0.0000000 AMB
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  5 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LESSTHAN4OBS
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  6  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LESSTHAN4OBS
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  6 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C41                             2025  3 26  6  0  0.0000000 AMB
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  7  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  7 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  8  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_SHORTPIECE
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  8 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  9  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5  9 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 10  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 10 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 11  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 11 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 12  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 12 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 13  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E09                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 13 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 14  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 14 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C30                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 15  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 15 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 16  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 16 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LESSTHAN4OBS
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 17  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LESSTHAN4OBS
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 17 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 18  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LESSTHAN4OBS
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 18 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LESSTHAN4OBS
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 19  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LESSTHAN4OBS
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 19 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 20  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 20 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 21  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 21 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 22  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 22 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 23  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 23 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 24  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 24 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 25  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G25                             2025  3 26  6  0  0.0000000 AMB
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 25 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 26  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C21                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 26 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 27  0.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 27 30.0000000
+G01                                                         DEL_LOWELEVATION
+G02                                                         DEL_LESSTHAN4OBS
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 28  0.0000000
+G01                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 28 30.0000000
+G01                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 29  0.0000000
+G01                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 29 30.0000000
+G01                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 30  0.0000000
+G01                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 30 30.0000000
+G01                                                         DEL_LOWELEVATION
+G32                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 31  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+G32                                                         DEL_SHORTPIECE
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 31 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+G32                                                         DEL_SHORTPIECE
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 32  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+G32                                                         DEL_SHORTPIECE
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LOWELEVATION
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 32 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+G32                             2025  3 26  6  0  0.0000000 AMB
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 33  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 33 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 34  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 34 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LESSTHAN4OBS
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 35  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 35 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 36  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R15                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 36 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 37  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LESSTHAN4OBS
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 37 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 38  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 38 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LESSTHAN4OBS
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 39  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LESSTHAN4OBS
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 39 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R24                                                         DEL_LOWELEVATION
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LESSTHAN4OBS
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 40  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E31                                                         DEL_LESSTHAN4OBS
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 40 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_BAD1MS
+TIM 2025  3 26  5 41  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 41 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 42  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 42 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C25                             2025  3 26  6  0  0.0000000 AMB
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 43  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+E33                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 43 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+E33                             2025  3 26  6  0  0.0000000 AMB
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 44  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 44 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 45  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C44                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 45 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+C44                                                         DEL_SHORTPIECE
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 46  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LESSTHAN4OBS
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C44                                                         DEL_SHORTPIECE
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 46 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LESSTHAN4OBS
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_LESSTHAN4OBS
+E26                                                         DEL_LOWELEVATION
+C44                                                         DEL_SHORTPIECE
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 47  0.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LESSTHAN4OBS
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C44                                                         DEL_SHORTPIECE
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 47 30.0000000
+G01                                                         DEL_LOWELEVATION
+G14                                                         DEL_LESSTHAN4OBS
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_LESSTHAN4OBS
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C44                                                         DEL_SHORTPIECE
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 48  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C44                             2025  3 26  6  0  0.0000000 AMB
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 48 30.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 49  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 49 30.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_BADRANGE
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 50  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 50 30.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_LOWELEVATION
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 51  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 51 30.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 52  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 52 30.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 53  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 53 30.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 54  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 54 30.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 55  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 55 30.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 56  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 56 30.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LOWELEVATION
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 57  0.0000000
+G01                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LESSTHAN4OBS
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 57 30.0000000
+G01                                                         DEL_LOWELEVATION
+G13                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LESSTHAN4OBS
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 58  0.0000000
+G01                                                         DEL_LOWELEVATION
+G13                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LESSTHAN4OBS
+C45                                                         DEL_LOWELEVATION
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 58 30.0000000
+G01                                                         DEL_LOWELEVATION
+G13                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LESSTHAN4OBS
+C45                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 59  0.0000000
+G01                                                         DEL_LOWELEVATION
+G13                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LESSTHAN4OBS
+C45                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  5 59 30.0000000
+G01                                                         DEL_LOWELEVATION
+G13                                                         DEL_LOWELEVATION
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LESSTHAN4OBS
+C45                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
+TIM 2025  3 26  6  0  0.0000000
+G01                                                         DEL_LOWELEVATION
+G13                                                         DEL_LOWELEVATION
+G23                                                         DEL_SHORTPIECE
+R06                                                         DEL_LESSTHAN4OBS
+R10                                                         DEL_LESSTHAN4OBS
+R19                                                         DEL_SHORTPIECE
+R26                                                         DEL_BADRANGE
+E26                                                         DEL_LESSTHAN4OBS
+C45                                                         DEL_LESSTHAN4OBS
+C47                                                         DEL_LOWELEVATION
+C50                                                         DEL_LOWELEVATION
+C56                                                         DEL_LOWELEVATION
