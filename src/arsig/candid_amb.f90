@@ -28,7 +28,7 @@
 !!            min_ratio -- ratio test critical value
 !!    output: MD -- multiple difference struct
 !
-subroutine candid_amb(MD, QN, lambsvm, nobs, invx, max_del, min_sav, max_chisq, min_ratio)
+subroutine candid_amb(MD, QN, lambxgb, nobs, invx, max_del, min_sav, max_chisq, min_ratio)
   use iso_c_binding
   implicit none
   include 'ambssd.h'
@@ -44,7 +44,7 @@ subroutine candid_amb(MD, QN, lambsvm, nobs, invx, max_del, min_sav, max_chisq, 
   real*8, pointer :: bias(:), q22(:)
   integer*4 ncad, ndel, i, j, k, l, m
   real*8 disall(2), chisq, ratio, cdrto, cdprob, features(8), nobs
-  logical*1 lambsvm
+  logical*1 lambxgb
   integer(c_int) :: flag
   real(c_double) :: prob
 
@@ -93,7 +93,7 @@ subroutine candid_amb(MD, QN, lambsvm, nobs, invx, max_del, min_sav, max_chisq, 
             q22(m) = invx(QN%idq(QN%nxyz + j) + QN%nxyz + k)
           enddo
         enddo
-        if (lambsvm) then
+        if (lambxgb) then
           call cal_features(ncad, q22, bias, chisq, ratio, nobs, features)
           call callPyXgb(features, flag, prob)
           if (prob .gt. cdprob .and. flag .eq. 1) then
@@ -113,7 +113,7 @@ subroutine candid_amb(MD, QN, lambsvm, nobs, invx, max_del, min_sav, max_chisq, 
     enddo
     
    
-    if ((cdrto .gt. min_ratio .and. .not. lambsvm) .or. (lambsvm .and. cdprob .ne. 0.d0)) then
+    if ((cdrto .gt. min_ratio .and. .not. lambxgb) .or. (lambxgb .and. cdprob .ne. 0.d0)) then
       do i = 1, ndel
         MD(savi(i))%id = 1
       enddo
