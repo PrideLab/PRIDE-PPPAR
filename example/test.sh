@@ -78,7 +78,12 @@ echo -e "\n${BLUE}(6} multipath daily"
 pdp3 -m K -sys g -mp ./data/2023/wuh20020.23o
 MvDir 2023/002 ./results/multipath-24h-fixed
 
-rm -rf 2020 2021 2023
+echo -e "\n${BLUE}(7} kinematic fixed (AI) 1h"
+pdp3 -m K -x 3 -s 2025/085 05:00:00 -e 2025/085 06:00:00 ./data/2025/085/brux0850.25o
+MvDir 2025/085 ./results/kinematic-1h-fixed-AI
+
+
+rm -rf 2020 2021 2023 2025
 
 # Output
 printf "${BLUE}::${NC} computation results are put in %s\n" ./results/
