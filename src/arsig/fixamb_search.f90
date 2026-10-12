@@ -91,14 +91,14 @@ subroutine fixamb_search(SD, PM, QN, invx, max_del, min_sav, max_chisq, min_rati
 
 !
 !! partial AR
-    if (ACF%lambsvm) then
+    if (ACF%lambxgb) then
         call cal_features(QN%ncad, q22, bias_p, chisq, ratio, nobs, features)
         call callPyXgb(features, flag, prob)
         label = merge('SUC','FAL', flag .eq. 1)
         write(*,'(a,a,f10.3)') 'AI validation(flag, prob): ', label, prob
     endif
-    if ((.not. ACF%lambsvm .and. (chisq .ge. max_chisq .or. ratio .le. min_ratio)) .or. (ACF%lambsvm .and. flag .eq. 0)) then
-      call candid_amb(SD, QN, ACF%lambsvm, nobs, invx, max_del, min_sav, max_chisq, min_ratio)
+    if ((.not. ACF%lambxgb .and. (chisq .ge. max_chisq .or. ratio .le. min_ratio)) .or. (ACF%lambxgb .and. flag .eq. 0)) then
+      call candid_amb(SD, QN, ACF%lambxgb, nobs, invx, max_del, min_sav, max_chisq, min_ratio)
       if (QN%ncad .eq. 0) then
         write (*, '(a)') '$$$MESSAGE(fixamb_search): no more can be fixed '
         goto 100
@@ -110,7 +110,7 @@ subroutine fixamb_search(SD, PM, QN, invx, max_del, min_sav, max_chisq, min_rati
       call ambslv(QN%ncad, q22, bias, disall)
       chisq = (disall(1) + (QN%vtpv*25.d0))/(QN%frdm + QN%ncad)/(QN%vtpv*25.d0)*QN%frdm
       ratio = disall(2)/disall(1)
-      if (ACF%lambsvm) then
+      if (ACF%lambxgb) then
           call cal_features(QN%ncad, q22, bias_p, chisq, ratio, nobs, features)
           call callPyXgb(features, flag, prob)
           label = merge('SUC','FAL', flag .eq. 1)
@@ -118,7 +118,7 @@ subroutine fixamb_search(SD, PM, QN, invx, max_del, min_sav, max_chisq, min_rati
       endif
     endif
  
-    if(ACF%lambsvm) then
+    if(ACF%lambxgb) then
         do i = 1, QN%ncad
           bias(i) = bias_p(i)
         enddo
