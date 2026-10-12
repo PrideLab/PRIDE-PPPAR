@@ -181,10 +181,10 @@ subroutine get_arsig_args(ACF)
   if (index(key, 'YES') .ne. 0) ACF%lverbose = .true.
 !
 !! Ambiguity validation 
-  ACF%lambsvm = .false.
+  ACF%lambxgb = .false.
   msg = 'AI Ambiguity validation'
   key = findkey(lfn, msg, ' ')
-  if (index(key, 'YES') .ne. 0) ACF%lambsvm = .true.
+  if (index(key, 'YES') .ne. 0) ACF%lambxgb = .true.
 
   close (lfn)
   return
