@@ -140,9 +140,9 @@ if(iond.eq.0.d0.or.ionrms.eq.0.d0) then
   ionrms=10.d0
 else
   do i=1,2
-    i0 = index(GNSS_PRIO,OB%prn(i)(1:1))
-    if(OB%prn(i) (1:1) .eq. 'R') then
-      read (OB%prn(i),'(1x,i2)') prn_int
+    i0 = index(GNSS_PRIO,OB%prn(isat)(1:1))
+    if(OB%prn(isat) (1:1) .eq. 'R') then
+      read (OB%prn(isat),'(1x,i2)') prn_int
       frequency_glo_nu = OB%glschn(prn_int)
       f1(i0) = freq1_R(frequency_glo_nu)
       f2(i0) = freq2_R(frequency_glo_nu)
