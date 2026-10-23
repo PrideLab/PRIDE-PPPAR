@@ -1,6 +1,9 @@
 # Change Log
 
-## PRIDE PPP-AR version 3.2.12
+## PRIDE PPP-AR version 3.2.13
+
+### 2026-10-23 (v3.2.13)
+* `lib`: Fix a problem on calculating high-order ionospheric corrections
 
 ### 2026-10-12 (v3.2.12)
 * `lib` : Update the function 'read_satclk' to fix a problem on multi-day processing
