@@ -102,6 +102,10 @@ subroutine read_att(attfil, iprn, jd, sod, mate2j, xscf, yscf, zscf)
         end if
       else if (line(1:4) .eq. ' ATT') then
         read (line(5:), *, iostat=ierr) ii, jj, q(1), q(2), q(3), q(4)
+        if (ierr .ne. 0) then
+          write (*, '(2a)') '###WARNING(read_att): unreadable record skipped: ', trim(line)
+          cycle
+        end if
         !
         !! set prn and attitudes
         nprn(k) = nprn(k) + 1
@@ -168,6 +172,10 @@ subroutine read_att(attfil, iprn, jd, sod, mate2j, xscf, yscf, zscf)
       read (lfn, '(a)', end=200, err=100) line
       if (line(1:4) .ne. ' ATT') exit
       read (line(5:), *, iostat=ierr) ii, jj, q(1), q(2), q(3), q(4)
+      if (ierr .ne. 0) then
+        write (*, '(2a)') '###WARNING(read_att): unreadable record skipped: ', trim(line)
+        cycle
+      end if
       !
       !! set prn and attitudes
       nprn(2) = nprn(2) + 1
